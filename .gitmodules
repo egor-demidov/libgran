@@ -1,0 +1,6 @@
+[submodule "deps/libtimestep"]
+	path = deps/libtimestep
+	url = https://github.com/egor-demidov/libtimestep.git
+[submodule "deps/eigen"]
+	path = deps/eigen
+	url = https://gitlab.com/libeigen/eigen.git

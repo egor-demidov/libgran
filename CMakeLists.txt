@@ -3,7 +3,12 @@ project(libgran)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -O3 -flto=auto")
+set(ERROR_ON_WARN OFF)
+
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3 -march=native -flto=auto")
+if (${ERROR_ON_WARN})
+    set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
+endif ()
 
 # SYSTEM keyword suppressed warnings from included headers
 include_directories(SYSTEM deps/libtimestep/include)

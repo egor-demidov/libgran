@@ -59,7 +59,7 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & x,
                                                          std::vector<field_value_t> const & v,
                                                          std::vector<field_value_t> const & theta [[maybe_unused]],
-                                                         std::vector<field_value_t> const & omega [[maybe_unused]],
+                                                         std::vector<field_value_t> const & omega,
                                                          real_t t [[maybe_unused]]) {
 
         field_value_t n = (x[i] - x[j]).normalized();

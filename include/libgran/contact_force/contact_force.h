@@ -52,6 +52,9 @@ struct contact_force_functor {
 
         contact_springs.resize(n_part * n_part);
         std::fill(contact_springs.begin(), contact_springs.end(), std::make_tuple(field_zero, field_zero, field_zero));
+
+        enabled_contacts.resize(n_part * n_part);
+        std::fill(enabled_contacts.begin(), enabled_contacts.end(), true); // All contacts are enabled by default
     }
 
     std::pair<field_value_t, field_value_t> operator () (size_t i,
@@ -62,37 +65,40 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          real_t t [[maybe_unused]]) {
 
+        if (!enabled_contacts[i * n_part + j])
+            return std::make_pair(field_zero, field_zero); // No acceleration if contact is disabled
+
         field_value_t n = (x[i] - x[j]).normalized();
         real_t overlap = 2.0 * r_part - (x[i] - x[j]).dot(n);
 
         if (overlap <= 0) {
-            reset_springs(i, j);
-            return std::make_pair(field_zero, field_zero);
+            reset_springs(i, j); // Reset the accumulated tangential springs
+            return std::make_pair(field_zero, field_zero); // Return zeros - there is no force or torque for interparticle contact
         }
 
         real_t r_part_prime = r_part - overlap / 2.0;
 
-        field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
-
-        real_t v_n = -v_ij.dot(n); // Normal relative velocity
+        real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_t = v_ij - v_n * n; // Tangential relative velocity
+        field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
+
+        field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
         field_value_t v_r = -r_part_prime / 2.0 * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
         field_value_t v_o = r_part / 2.0 * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
 
-        field_value_t f_t = compute_shear_contribution<0>(i, j, k_t, gamma_t, f_n, mu_s, phi_d, v_t); // Sliding/sticking
-        field_value_t f_r = compute_shear_contribution<1>(i, j, k_r, gamma_r, f_n, mu_r, phi_r, v_r); // Rolling
-        field_value_t f_o = compute_shear_contribution<2>(i, j, k_o, gamma_o, f_n, mu_o, phi_o, v_o); // Torsion
+        field_value_t f_t = compute_shear_contribution<0>(i, j, n, k_t, gamma_t, f_n, mu_s, phi_d, v_t); // Sliding/sticking
+        field_value_t f_r = compute_shear_contribution<1>(i, j, n, k_r, gamma_r, f_n, mu_r, phi_r, v_r); // Rolling
+        field_value_t f_o = compute_shear_contribution<2>(i, j, n, k_o, gamma_o, f_n, mu_o, phi_o, v_o); // Torsion
 
         // Compute the torques associated with all the shear contributions
         field_value_t tau_t = r_part_prime * n.cross(f_t);
         field_value_t tau_r = r_part * n.cross(f_r);
         field_value_t tau_o = r_part * f_o;
 
-        return std::make_pair((f_n * n + f_t) / mass, (tau_t + tau_r + tau_o) / inertia);
+        return std::make_pair((f_n * n + f_t) / mass, (-tau_t + tau_r + tau_o) / inertia);
     }
 
     void reset_springs(size_t i, size_t j) {
@@ -102,7 +108,7 @@ struct contact_force_functor {
     // Computes either sliding/sticking, rolling, or torsion contribution
     // Use model_num 0 for sliding/sticking, 1 for rolling, 2 for torsion
     template<size_t model_num>
-    field_value_t compute_shear_contribution(size_t i, size_t j,
+    field_value_t compute_shear_contribution(size_t i, size_t j, field_value_t const & n,
                                                    real_t stiffness, real_t damping,
                                                    real_t normal_force,
                                                    real_t mu_static,
@@ -111,6 +117,14 @@ struct contact_force_functor {
 
         real_t mu_dynamic = mu_static * phi_dynamic; // Compute the dynamic friction coefficient
         field_value_t & xi = std::get<model_num>(contact_springs[i * n_part + j]); // Access the respective spring
+        field_value_t xi_new = xi - xi.dot(n) * n; // rotate the tangential spring
+        // Rescale the spring to preserve its magnitude after rotation
+        if (xi_new.norm() > 0.0) {
+            xi_new.normalize();
+            xi_new *= xi.norm();
+        }
+        // Update the spring in the spring buffer
+        xi = xi_new;
         field_value_t f_0 = -stiffness * xi - damping * relative_velocity; // Compute the test force
         real_t static_friction = mu_static * normal_force; // Compute the static friction force
         real_t dynamic_friction = mu_dynamic * normal_force; // Compute the dynamic friction force
@@ -124,7 +138,7 @@ struct contact_force_functor {
 
         // Select whether static of dynamic friction should be used based on the test force
         real_t f_selected;
-        if (f_0.norm() < static_friction) {
+        if (f_0.norm() <= static_friction) {
             // This is static friction
             xi += relative_velocity * dt;
             f_selected = static_friction;
@@ -136,6 +150,8 @@ struct contact_force_functor {
 
         return std::min(f_selected, f_0.norm()) * t;
     }
+
+    std::vector<bool> enabled_contacts;
 
 private:
     const size_t n_part;

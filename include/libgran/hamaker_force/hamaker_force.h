@@ -27,7 +27,7 @@ struct hamaker_functor {
 
     std::pair<field_value_t, field_value_t> operator () (size_t i, size_t j,
             std::vector<field_value_t> const & x, std::vector<field_value_t> const & v [[maybe_unused]],
-            std::vector<field_value_t> const & theta [[maybe_unused]], std::vector<field_value_t> const & omega [[maybe_unused]], real_t t [[maybe_unused]]) {
+            std::vector<field_value_t> const & theta [[maybe_unused]], std::vector<field_value_t> const & omega [[maybe_unused]], real_t t [[maybe_unused]]) const {
 
         field_value_t r = (x[j] - x[i]); // Distance vector
         real_t h = r.norm() - 2.0 * r_part; // Surface separation

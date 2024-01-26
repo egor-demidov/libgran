@@ -21,6 +21,8 @@ find_package(TBB REQUIRED)
 
 add_executable(libgran main.cpp writer.cpp)
 add_executable(contact_test test/contact.cpp writer.cpp)
+add_executable(hamaker_test test/hamaker.cpp writer.cpp)
 
 target_link_libraries(libgran PRIVATE TBB::tbb)
 target_link_libraries(contact_test PRIVATE TBB::tbb)
+target_link_libraries(hamaker_test PRIVATE TBB::tbb)

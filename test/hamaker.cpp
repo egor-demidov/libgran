@@ -9,6 +9,7 @@
 #include <Eigen/Eigen>
 
 #include <libgran/contact_force/contact_force.h>
+#include <libgran/hamaker_force/hamaker_force.h>
 #include <libgran/granular_system/granular_system.h>
 
 #include "../writer.h"
@@ -36,6 +37,10 @@ int main() {
     const double gamma_t = 0.2 * gamma_n;
     const double gamma_r = 0.05 * gamma_n;
     const double gamma_o = 0.05 * gamma_n;
+
+    // Parameters for the Van der Waals model
+    const double A = 1.0e-20;
+    const double h0 = 1.0e-9;
 
     // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
@@ -74,12 +79,18 @@ int main() {
        k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
        r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
 
+    // Create an instance of Hamaker model
+    hamaker_functor<Eigen::Vector3d, double> hamaker_model(A, h0,
+       r_part, mass, Eigen::Vector3d::Zero(), 0.0);
+
     // Create an instance of granular_system using the contact force model
     // Using velocity Verlet integrator for rotational systems and a default
     // step handler for rotational systems
     granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
-        rotational_step_handler, contact_force_functor<Eigen::Vector3d, double>> system(x0,
-            v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0, step_handler_instance, contact_force_model);
+        rotational_step_handler, contact_force_functor<Eigen::Vector3d, double>,
+        hamaker_functor<Eigen::Vector3d, double>> system(x0,
+            v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
+            step_handler_instance, contact_force_model, hamaker_model);
 
     auto start_time = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < n_steps; n ++) {

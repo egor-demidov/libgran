@@ -75,36 +75,39 @@ void write_particles(const std::string & dir, std::vector<Eigen::Vector3d> const
     ofs << "FIELD FieldData 3" << "\n";
     ofs << "thetax 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
-        Eigen::Matrix3d m;
-        m = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+    Eigen::Quaternion<double> q;
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
             * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
             * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitX();
+        Eigen::Matrix3d m = q.matrix();
         auto orient = m*unit;
 
         ofs << orient[0] << " " << orient[1] << " " << orient[2] << " ";
     }
     ofs << "\n" << "thetay 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
-        Eigen::Matrix3d m;
-        m = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+        Eigen::Quaternion<double> q;
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
             * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
             * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitY();
+        Eigen::Matrix3d m = q.matrix();
         auto orient = m*unit;
 
         ofs << orient[0] << " " << orient[1] << " " << orient[2] << " ";
     }
     ofs << "\n" << "thetaz 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
-        Eigen::Matrix3d m;
-        m = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+        Eigen::Quaternion<double> q;
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
             * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
             * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitZ();
+        Eigen::Matrix3d m = q.matrix();
         auto orient = m*unit;
 
         ofs << orient[0] << " " << orient[1] << " " << orient[2] << " ";

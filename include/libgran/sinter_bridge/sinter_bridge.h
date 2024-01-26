@@ -59,7 +59,7 @@ struct sinter_step_handler {
                 for (size_t k = 0; k < 5; k ++) {
                     // Compute the spring vector
                     field_value_t spring_vector = (*(begin_spring_connectors_itr + m))[k] - *(x_begin_itr + n);
-                    (*(begin_spring_connectors_itr + m))[k] += spring_vector.cross(dtheta);
+                    (*(begin_spring_connectors_itr + m))[k] += dtheta.cross(spring_vector);
                 }
             }
         }
@@ -190,11 +190,11 @@ struct sinter_functor {
             field_value_t spring = part_j_connectors[n] - part_i_connectors[n];
             real_t spring_length = spring.norm();
             real_t equilibrium_length = spring_lengths[i * n_part + j][n];
-            force -= (equilibrium_length - spring_length) * k * spring.normalized();
-
+            field_value_t dforce = -(equilibrium_length - spring_length) * k * spring.normalized();
+            force += dforce;
 
             field_value_t arm = part_i_connectors[n] - x[i];
-            torque -= arm.cross(force);
+            torque += arm.cross(dforce);
         }
 
 //        if (i == 0 && force.norm() > 0) {
@@ -212,6 +212,8 @@ struct sinter_functor {
     }
 
 private:
+
+
     std::vector<std::array<field_value_t, 5>> spring_connectors; // Positions of spring connectors
     std::vector<std::array<real_t, 5>> spring_lengths; // Equilibrium lengths of springs
 

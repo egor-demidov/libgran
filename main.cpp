@@ -23,7 +23,7 @@
 // 5) Performing the time steps
 
 template <typename field_container_t, typename field_value_t>
-using sinter_step_handler_h = sinter_step_handler<field_container_t, field_value_t, double>;
+using sinter_step_handler_double = sinter_step_handler<field_container_t, field_value_t, double>;
 
 std::mt19937_64 mt(0);
 std::uniform_real_distribution<double> dist(-1.0, 1.0);
@@ -61,6 +61,7 @@ int main() {
 
     // Parameters for the Van der Waals model
     const double A = 1.0e-20;
+//    const double A = 0.0;
     const double h0 = 1.0e-9;
 
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
@@ -69,11 +70,12 @@ int main() {
     x0.emplace_back(1.00 * r_part, 0.0, 0.0);
     x0.emplace_back(1.00 * r_part, 0.0, 2.00 * r_part);
 
-//    v0.emplace_back(0.01, 0.0, 0.0);
-//    v0.emplace_back(-0.01, 0.0, 0.0);
+    v0.emplace_back(1.0, 0.0, 0.0);
+    v0.emplace_back(0.0, 0.0, 0.0);
+    v0.emplace_back(0.0, 0.0, 0.0);
 
-    v0.resize(x0.size());
-    std::fill(v0.begin(), v0.end(), Eigen::Vector3d::Zero());
+//    v0.resize(x0.size());
+//    std::fill(v0.begin(), v0.end(), Eigen::Vector3d::Zero());
 
     theta0.resize(x0.size());
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
@@ -95,7 +97,9 @@ int main() {
 
     auto step_handler = sinter_bridge.get_step_handler<std::vector<Eigen::Vector3d>>();
 
-    granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half, sinter_step_handler_h,
+//    rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d> step_handler;
+
+    granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half, sinter_step_handler_double,
         contact_force_functor<Eigen::Vector3d, double>,
         hamaker_functor<Eigen::Vector3d, double>,
         sinter_functor<Eigen::Vector3d, double>> gran_system(x0, v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,

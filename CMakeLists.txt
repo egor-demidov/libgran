@@ -32,7 +32,7 @@ add_executable(libgran main.cpp writer.cpp)
 # A particle and a lattice colliding
 add_executable(contact_test test/contact.cpp test/compute_energy.cpp)
 # A particle and a lattice with VdW interactions colliding
-add_executable(hamaker_test test/hamaker.cpp writer.cpp)
+add_executable(hamaker_test test/hamaker.cpp writer.cpp test/compute_energy.cpp test/mass_distribution.cpp)
 # Two cubes with VdW interactions colliding
 add_executable(hamaker_2_test test/hamaker_2.cpp writer.cpp)
 # A conical lattice and an octahedral lattice colliding
@@ -50,3 +50,4 @@ if (${CMAKE_COMPILER_IS_GNUCXX})
 endif ()
 
 add_test(NAME contact_test COMMAND ${CMAKE_BINARY_DIR}/contact_test)
+add_test(NAME hamaker_test COMMAND ${CMAKE_BINARY_DIR}/hamaker_test)

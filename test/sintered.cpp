@@ -12,7 +12,6 @@
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/granular_system/granular_system.h>
 #include <libgran/sinter_bridge/sinter_bridge.h>
-#include <libgran/sinter_bridge/alt_sinter_bridge.h>
 
 #include "mass_distribution.h"
 #include "../writer.h"
@@ -34,7 +33,7 @@ Eigen::Vector3d generate_random_unit_vector() {
 // field_container_t and field_value_t
 // Therefore, we need to create an alias where real_t is specialized
 template <typename field_container_t, typename field_value_t>
-using alt_sinter_step_handler_double = alt_sinter_step_handler<field_container_t, field_value_t, double>;
+using sinter_step_handler_double = sinter_step_handler<field_container_t, field_value_t, double>;
 
 int main() {
     // General simulation parameters
@@ -90,8 +89,8 @@ int main() {
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
     std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 
-    alt_sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n,  k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
-       r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, x0.begin(), generate_random_unit_vector, 1.0e-9);
+    sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
+                                                         r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, x0.begin(), generate_random_unit_vector, 1.0e-9);
 
     // We need to use a custom step handler with the sintering model
     // Get the custom step handler instance from the sinter model
@@ -101,9 +100,9 @@ int main() {
     // Using velocity Verlet integrator for rotational systems and a default
     // step handler for rotational systems
     granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
-        alt_sinter_step_handler_double, alt_sinter_functor<Eigen::Vector3d, double>> system(x0,
-            v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0, step_handler_instance,
-            sinter_model);
+        sinter_step_handler_double, sinter_functor<Eigen::Vector3d, double>> system(x0,
+                                                                                    v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0, step_handler_instance,
+                                                                                    sinter_model);
 
     Eigen::Vector3d center_0 = center_of_mass(system.get_x());
 

@@ -9,6 +9,7 @@ set(ERROR_ON_WARN OFF)
 
 if (${MSVC})
     add_compile_definitions(_USE_MATH_DEFINES)
+    add_compile_options(/O2)
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})

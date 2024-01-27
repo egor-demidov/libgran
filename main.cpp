@@ -4,8 +4,6 @@
 
 #include <Eigen/Eigen>
 
-#include <boost/lambda/construct.hpp>
-
 #include <libgran/granular_system/granular_system.h>
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/hamaker_force/hamaker_force.h>

@@ -25,7 +25,7 @@
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 3.0e-7 / 3.0;
+    const double t_tot = 3.0e-7;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;
@@ -52,36 +52,30 @@ int main() {
 
     // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    // A pentahedron
-    for (size_t i = 0; i < 10; i ++) {
-        double delta_z = 2.0 * r_part * 1.0 / sqrt(2.0);
-        auto z = double(i) * delta_z;
-        for (size_t j = 0; j < i + 1; j ++) {
-            auto x = -4.0 * r_part -1.0 * r_part * double(i+1) + 2.0 * r_part * double (j);
-            for (size_t m = 0; m < i + 1; m ++) {
-                auto y = -1.0 * r_part * double(i+1) + 2.0 * r_part * double (m);
+    // Two cubes
+    size_t cube_size = 10;
+    for (size_t i = 0; i < cube_size; i ++) {
+        auto y = -2.0 * double(cube_size) * r_part + double(i) * 2.0 * r_part;
+        for (size_t j = 0; j < cube_size; j ++) {
+            auto x = -2.0 * double(cube_size) * r_part + double(j) * 2.0 * r_part;
+
+            // First cube
+            for (size_t n = 0; n < cube_size; n ++) {
+                auto z = -2.0 * double(n) * r_part;
                 x0.emplace_back(x, y, z);
-                v0.emplace_back(3.0, 0.0, -5.0); // The pentahedron is moving in the -z direction
+                v0.emplace_back(0.0, 0.0, 5.0); // Cube moving up
+            }
+
+            // Second cube
+            for (size_t n = 0; n < cube_size; n ++) {
+                auto z = 8.0 * r_part + 2.0 * double(n) * r_part;
+                x0.emplace_back(x + r_part * 0.5 * double(cube_size), y + r_part * 0.5 * double(cube_size), z);
+                v0.emplace_back(0.0, 0.0, -5.0); // Cube moving down
             }
         }
     }
 
-    // An octahedron
-    size_t width = 20, height = 20; // Must be multiples of two
-    size_t depth = 5;
-    for (size_t i = 0; i < depth; i ++) {
-        auto z = -4.0 * r_part - 2.0 * r_part * double(i);
-        for (size_t j = 0; j < width; j ++) {
-            auto x = -double(width) * r_part + double(j) * 2.0 * r_part;
-            for (size_t m = 0; m < height; m ++) {
-                auto y = -double(height) * r_part + double(m) * 2.0 * r_part;
-                x0.emplace_back(x, y, z);
-                v0.emplace_back(Eigen::Vector3d::Zero()); // The octahedron is static
-            }
-        }
-    }
-
-    std::cout << x0.size() << " particles total" << std::endl;
+    std::cout << "Number of particles: " << x0.size() << std::endl;
 
     // Initialize the remaining buffers
     theta0.resize(x0.size());
@@ -125,4 +119,6 @@ int main() {
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
     std::cout << "Elapsed time: " << duration << " sec" << std::endl;
+
+    return 0;
 }

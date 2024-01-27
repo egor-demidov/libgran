@@ -28,7 +28,7 @@ include_directories(SYSTEM deps/libtimestep/include)
 include_directories(SYSTEM deps/eigen)
 include_directories(include)
 
-if (${CMAKE_COMPILER_IS_GNUCXX})
+if ((${CMAKE_COMPILER_IS_GNUCXX}) OR (${APPLE}))
     find_package(TBB REQUIRED)
 endif ()
 

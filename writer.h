@@ -17,5 +17,7 @@ void write_spring_connectors(std::string const & dir,
                              double r_part,
                              std::vector<std::array<Eigen::Vector3d, 5>> const & spring_connectors,
                              std::vector<bool> const & enabled_contacts);
+void write_necks(std::string const & dir, std::vector<Eigen::Vector3d> const & x, double r_part,
+                 std::vector<bool> const & enabled_contacts);
 
 #endif //LIBGRAN_WRITER_H

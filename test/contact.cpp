@@ -11,7 +11,7 @@
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/granular_system/granular_system.h>
 
-#include "../writer.h"
+#include "compute_energy.h"
 
 int main() {
     // General simulation parameters
@@ -39,14 +39,13 @@ int main() {
 
     // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    // 15 particles in the x-y plane
-    for (size_t i = 0; i < 6; i ++) {
-        auto y = -5.0 * r_part + double(i) * 2.0 * r_part;
-        for (size_t j = 0; j < 15; j ++) {
-            auto x = -2.0 * 7.0 * r_part + double(j) * 2.0 * r_part;
+    // 18 particles in the x-y plane
+    for (size_t i = 0; i < 3; i ++) {
+        auto y = -3.0 * r_part + double(i) * 2.0 * r_part;
+        for (size_t j = 0; j < 3; j ++) {
+            auto x = -3.0 * r_part + double(j) * 2.0 * r_part;
             x0.emplace_back(x, y, 0.0);
             x0.emplace_back(x, y, -2.0*r_part);
-            x0.emplace_back(x, y, -4.0*r_part);
         }
     }
 
@@ -83,13 +82,24 @@ int main() {
 
     auto start_time = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < n_steps; n ++) {
-        if (n % dump_period == 0) {
-            std::cout << "Dump #" << n / dump_period << std::endl;
-            write_particles("run", system.get_x(), system.get_theta(), r_part);
-        }
         system.do_step(dt);
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
-    std::cout << "Elapsed time: " << duration << " sec" << std::endl;
+    std::cout << "Contact force test took " << duration << " sec" << std::endl;
+
+    double target_linear_momentum = 1.96373e-19;
+    double target_ke = 3.4925e-19;
+
+    double linear_momentum_tolerance = 1.0; // Percent
+    double ke_tolerance = 1.0; // Percent
+
+    double linear_momentum = compute_linear_momentum(system.get_v(), mass);
+    double ke = compute_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia);
+
+    if (abs(ke - target_ke) / target_ke > ke_tolerance / 100.0 ||
+        abs(linear_momentum - target_linear_momentum) / target_linear_momentum > linear_momentum_tolerance / 100.0)
+        return EXIT_FAILURE;
+
+    return 0;
 }

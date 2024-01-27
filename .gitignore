@@ -9,3 +9,6 @@
 !*.h
 !test/
 !test/**
+!deps/
+!.github
+!.github/**

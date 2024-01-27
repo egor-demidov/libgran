@@ -17,7 +17,7 @@
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 3.0e-7;
+    const double t_tot = 3.0e-7 / 3.0;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;
@@ -44,21 +44,40 @@ int main() {
 
     // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    // A cone
-    for (size_t i = 0; i < 2; i ++) {
-        double delta_z = r_part * sin(M_PI / 3.0);
+    // A pentahedron
+    for (size_t i = 0; i < 6; i ++) {
+        double delta_z = 2.0 * r_part * 1.0 / sqrt(2.0);
         auto z = double(i) * delta_z;
         for (size_t j = 0; j < i + 1; j ++) {
-            auto x = -2.0 * r_part * double(i + 1) + r_part * double (j);
-            x0.emplace_back(x, 0.0, z);
+            auto x = -4.0 * r_part -1.0 * r_part * double(i+1) + 2.0 * r_part * double (j);
+            for (size_t m = 0; m < i + 1; m ++) {
+                auto y = -1.0 * r_part * double(i+1) + 2.0 * r_part * double (m);
+                x0.emplace_back(x, y, z);
+                v0.emplace_back(3.0, 0.0, -5.0); // The pentahedron is moving in the -z direction
+            }
         }
     }
 
+    // An octahedron
+    size_t width = 6, height = 6; // Must be multiples of two
+    size_t depth = 3;
+    for (size_t i = 0; i < depth; i ++) {
+        auto z = -4.0 * r_part - 2.0 * r_part * double(i);
+        for (size_t j = 0; j < width; j ++) {
+            auto x = -double(width) * r_part + double(j) * 2.0 * r_part;
+            for (size_t m = 0; m < height; m ++) {
+                auto y = -double(height) * r_part + double(m) * 2.0 * r_part;
+                x0.emplace_back(x, y, z);
+                v0.emplace_back(Eigen::Vector3d::Zero()); // The octahedron is static
+            }
+        }
+    }
+
+    std::cout << x0.size() << " particles total" << std::endl;
+
     // Initialize the remaining buffers
-    v0.resize(x0.size());
     theta0.resize(x0.size());
     omega0.resize(x0.size());
-    std::fill(x0.begin(), x0.end(), Eigen::Vector3d::Zero());
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
     std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 

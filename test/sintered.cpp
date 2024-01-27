@@ -63,8 +63,8 @@ int main() {
     // 15 particles in the x-y plane
     for (size_t i = 0; i < 6; i ++) {
         auto y = -5.0 * r_part + double(i) * 2.0 * r_part;
-        for (size_t j = 0; j < 15; j ++) {
-            auto x = -2.0 * 7.0 * r_part + double(j) * 2.0 * r_part;
+        for (size_t j = 0; j < 6; j ++) {
+            auto x = -5.0 * r_part + double(j) * 2.0 * r_part;
             x0.emplace_back(x, y, 0.0);
             x0.emplace_back(x, y, -2.0*r_part);
             x0.emplace_back(x, y, -4.0*r_part);
@@ -74,7 +74,7 @@ int main() {
             Eigen::Vector3d init_vel;
             if (j == 0)
                 init_vel = {0.0, 0.0, 5.0};
-            else if (j == 14)
+            else if (j == 5)
                 init_vel = {0.0, 5.0, 0.0};
             else
                 init_vel = Eigen::Vector3d::Zero();
@@ -89,6 +89,7 @@ int main() {
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
     std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 
+    std::cout << "Number of particles: " << x0.size() << std::endl;
 
     // Create an instance of contact force model
     // Using field type Eigen::Vector3d with real type double
@@ -119,6 +120,9 @@ int main() {
         if (n % dump_period == 0) {
             std::cout << "Dump #" << n / dump_period << std::endl;
             write_particles("run", system.get_x(), system.get_theta(), r_part);
+            write_spring_connectors("run", r_part, sinter_model.spring_connectors,
+                                    contact_force_model.enabled_contacts);
+            write_necks("run", system.get_x(), r_part, contact_force_model.enabled_contacts);
         }
         system.do_step(dt);
     }

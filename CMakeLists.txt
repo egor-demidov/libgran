@@ -14,6 +14,7 @@ endif ()
 
 if (${APPLE})
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
+    add_compile_definitions(_LIBCPP_HAS_PARALLEL_ALGORITHMS)
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})

@@ -12,6 +12,10 @@ if (${MSVC})
     add_compile_options(/O2)
 endif ()
 
+if (${APPLE})
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
+endif ()
+
 if (${CMAKE_COMPILER_IS_GNUCXX})
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3 -march=native -flto=auto")
     if (${ERROR_ON_WARN})
@@ -40,7 +44,7 @@ add_executable(hamaker_3_test test/hamaker_3.cpp writer.cpp)
 # A sintered lattice undergoing rigid-body-motion
 add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
 
-if (${CMAKE_COMPILER_IS_GNUCXX})
+if ((${CMAKE_COMPILER_IS_GNUCXX}) OR (${APPLE}))
 #    target_link_libraries(libgran PRIVATE TBB::tbb)
     target_link_libraries(contact_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_test PRIVATE TBB::tbb)

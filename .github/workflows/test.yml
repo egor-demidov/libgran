@@ -15,8 +15,19 @@ jobs:
         with:
           submodules: recursive
       - run: sudo apt install libtbb2-dev
-      - run: ls /usr/lib/x86_64-linux-gnu/cmake/TBB
       - run: cmake -DTBB_DIR=/usr/lib/x86_64-linux-gnu/cmake/TBB .
+      - run: cmake --build .
+      - run: ctest
+
+  checkout-and-ctest-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - run: brew install onedpl
+      - run: cmake .
       - run: cmake --build .
       - run: ctest
 

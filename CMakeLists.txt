@@ -28,7 +28,7 @@ if (${CMAKE_COMPILER_IS_GNUCXX})
     find_package(TBB REQUIRED)
 endif ()
 
-add_executable(libgran main.cpp writer.cpp)
+#add_executable(libgran main.cpp writer.cpp)
 # A particle and a lattice colliding
 add_executable(contact_test test/contact.cpp test/compute_energy.cpp)
 # A particle and a lattice with VdW interactions colliding
@@ -41,7 +41,7 @@ add_executable(hamaker_3_test test/hamaker_3.cpp writer.cpp)
 add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
 
 if (${CMAKE_COMPILER_IS_GNUCXX})
-    target_link_libraries(libgran PRIVATE TBB::tbb)
+#    target_link_libraries(libgran PRIVATE TBB::tbb)
     target_link_libraries(contact_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_2_test PRIVATE TBB::tbb)

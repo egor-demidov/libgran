@@ -25,8 +25,10 @@ struct alt_sinter_step_handler {
                      field_value_t const & dx,
                      typename field_container_t::iterator x_begin_itr,
                      typename field_container_t::iterator v_begin_itr [[maybe_unused]],
+                     typename field_container_t::iterator a_begin_itr [[maybe_unused]],
                      typename field_container_t::iterator theta_begin_itr [[maybe_unused]],
-                     typename field_container_t::iterator omega_begin_itr [[maybe_unused]]) const {
+                     typename field_container_t::iterator omega_begin_itr [[maybe_unused]],
+                     typename field_container_t::iterator alpha_begin_itr [[maybe_unused]]) const {
         *(x_begin_itr + n) += dx;
 
         std::forward_list<size_t> const & contact_index = *(begin_particle_to_contact_map + n);
@@ -43,8 +45,10 @@ struct alt_sinter_step_handler {
                      field_value_t const & dv,
                      typename field_container_t::iterator x_begin_itr [[maybe_unused]],
                      typename field_container_t::iterator v_begin_itr,
+                     typename field_container_t::iterator a_begin_itr [[maybe_unused]],
                      typename field_container_t::iterator theta_begin_itr [[maybe_unused]],
-                     typename field_container_t::iterator omega_begin_itr [[maybe_unused]]) const {
+                     typename field_container_t::iterator omega_begin_itr [[maybe_unused]],
+                     typename field_container_t::iterator alpha_begin_itr [[maybe_unused]]) const {
         *(v_begin_itr + n) += dv;
     }
 
@@ -52,8 +56,10 @@ struct alt_sinter_step_handler {
                          field_value_t const & dtheta,
                          typename field_container_t::iterator x_begin_itr,
                          typename field_container_t::iterator v_begin_itr [[maybe_unused]],
+                         typename field_container_t::iterator a_begin_itr [[maybe_unused]],
                          typename field_container_t::iterator theta_begin_itr,
-                         typename field_container_t::iterator omega_begin_itr [[maybe_unused]]) const {
+                         typename field_container_t::iterator omega_begin_itr [[maybe_unused]],
+                         typename field_container_t::iterator alpha_begin_itr [[maybe_unused]]) const {
         *(theta_begin_itr + n) += dtheta;
 
         std::forward_list<size_t> const & contact_index = *(begin_particle_to_contact_map + n);
@@ -72,8 +78,10 @@ struct alt_sinter_step_handler {
                          field_value_t const & domega,
                          typename field_container_t::iterator x_begin_itr [[maybe_unused]],
                          typename field_container_t::iterator v_begin_itr [[maybe_unused]],
+                         typename field_container_t::iterator a_begin_itr [[maybe_unused]],
                          typename field_container_t::iterator theta_begin_itr [[maybe_unused]],
-                         typename field_container_t::iterator omega_begin_itr) const {
+                         typename field_container_t::iterator omega_begin_itr,
+                         typename field_container_t::iterator alpha_begin_itr [[maybe_unused]]) const {
         *(omega_begin_itr + n) += domega;
     }
 

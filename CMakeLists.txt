@@ -15,6 +15,7 @@ endif ()
 if (${APPLE})
     set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
     add_compile_definitions(_LIBCPP_HAS_PARALLEL_ALGORITHMS)
+    find_package(oneDPL REQUIRED)
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})
@@ -22,16 +23,13 @@ if (${CMAKE_COMPILER_IS_GNUCXX})
     if (${ERROR_ON_WARN})
         set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
     endif ()
+    find_package(TBB REQUIRED)
 endif ()
 
 # SYSTEM keyword suppressed warnings from included headers
 include_directories(SYSTEM deps/libtimestep/include)
 include_directories(SYSTEM deps/eigen)
 include_directories(include)
-
-if ((${CMAKE_COMPILER_IS_GNUCXX}) OR (${APPLE}))
-    find_package(TBB REQUIRED)
-endif ()
 
 #add_executable(libgran main.cpp writer.cpp)
 # A particle and a lattice colliding
@@ -45,13 +43,22 @@ add_executable(hamaker_3_test test/hamaker_3.cpp writer.cpp)
 # A sintered lattice undergoing rigid-body-motion
 add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
 
-if ((${CMAKE_COMPILER_IS_GNUCXX}) OR (${APPLE}))
+if (${CMAKE_COMPILER_IS_GNUCXX})
 #    target_link_libraries(libgran PRIVATE TBB::tbb)
     target_link_libraries(contact_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_2_test PRIVATE TBB::tbb)
     target_link_libraries(hamaker_3_test PRIVATE TBB::tbb)
     target_link_libraries(sintered_test PRIVATE TBB::tbb)
+endif ()
+
+if (${APPLE})
+    #    target_link_libraries(libgran PRIVATE TBB::tbb)
+    target_link_libraries(contact_test oneDPL)
+    target_link_libraries(hamaker_test oneDPL)
+    target_link_libraries(hamaker_2_test oneDPL)
+    target_link_libraries(hamaker_3_test oneDPL)
+    target_link_libraries(sintered_test oneDPL)
 endif ()
 
 add_test(NAME contact_test COMMAND ${CMAKE_BINARY_DIR}/contact_test)

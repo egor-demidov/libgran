@@ -120,7 +120,7 @@ int main() {
         if (n % dump_period == 0) {
             std::cout << "Dump #" << n / dump_period << std::endl;
             write_particles("run", system.get_x(), system.get_theta(), r_part);
-            std::cout << double(n) * dt << "\t"
+            ofs << double(n) * dt << "\t"
                 << compute_translational_kinetic_energy(system.get_v(), mass) << "\t"
                 << compute_rotational_kinetic_energy(system.get_v(), mass) << "\t"
                 << compute_total_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia) << "\t"

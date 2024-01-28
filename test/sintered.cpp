@@ -11,6 +11,7 @@
 
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/granular_system/granular_system.h>
+#include <libgran/no_unary_force/no_unary_force.h>
 #include <libgran/sinter_bridge/sinter_bridge.h>
 
 #include "mass_distribution.h"
@@ -92,6 +93,14 @@ int main() {
     sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
                                                          r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, x0.begin(), generate_random_unit_vector, 1.0e-9);
 
+    binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>
+            binary_force_functors{sinter_model};
+
+    no_unary_force_functor<Eigen::Vector3d, double> no_unary_force(Eigen::Vector3d::Zero());
+
+    unary_force_functor_container<Eigen::Vector3d, double, no_unary_force_functor<Eigen::Vector3d, double>>
+            unary_force_functors(no_unary_force);
+
     // We need to use a custom step handler with the sintering model
     // Get the custom step handler instance from the sinter model
     auto step_handler_instance = sinter_model.get_step_handler<std::vector<Eigen::Vector3d>>();
@@ -100,9 +109,11 @@ int main() {
     // Using velocity Verlet integrator for rotational systems and a default
     // step handler for rotational systems
     granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
-        sinter_step_handler_double, sinter_functor<Eigen::Vector3d, double>> system(x0,
-                                                                                    v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0, step_handler_instance,
-                                                                                    sinter_model);
+        sinter_step_handler_double, binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>,
+            unary_force_functor_container<Eigen::Vector3d, double, no_unary_force_functor<Eigen::Vector3d, double>>> system(x0,
+                                                                                    v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(),
+                                                                                    0.0, step_handler_instance,
+                                                                                    binary_force_functors, unary_force_functors);
 
     Eigen::Vector3d center_0 = center_of_mass(system.get_x());
 

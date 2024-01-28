@@ -12,7 +12,8 @@
 #include <libgran/hamaker_force/hamaker_force.h>
 #include <libgran/granular_system/granular_system.h>
 
-#include "../writer.h"
+#include "writer.h"
+#include "test/compute_energy.h"
 
 // The driver program is responsible for:
 // 1) Instantiating the force models
@@ -108,11 +109,23 @@ int main() {
                                                              v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
                                                              step_handler_instance, contact_force_model, hamaker_model);
 
+
+    // Output stream for data
+    std::ofstream ofs("energies.dat");
+
+    ofs << "t\tE_trs\tE_rot\tE_tot\tP\tL" << std::endl;
+
     auto start_time = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < n_steps; n ++) {
         if (n % dump_period == 0) {
             std::cout << "Dump #" << n / dump_period << std::endl;
             write_particles("run", system.get_x(), system.get_theta(), r_part);
+            std::cout << double(n) * dt << "\t"
+                << compute_translational_kinetic_energy(system.get_v(), mass) << "\t"
+                << compute_rotational_kinetic_energy(system.get_v(), mass) << "\t"
+                << compute_total_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia) << "\t"
+                << compute_linear_momentum(system.get_v(), mass) << "\t"
+                << compute_angular_momentum(system.get_x(), system.get_v(), mass, system.get_omega(), inertia) << std::endl;
         }
         system.do_step(dt);
     }

@@ -95,7 +95,7 @@ int main() {
     double ke_tolerance = 1.0; // Percent
 
     double linear_momentum = compute_linear_momentum(system.get_v(), mass);
-    double ke = compute_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia);
+    double ke = compute_total_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia);
 
     if (abs(ke - target_ke) / target_ke > ke_tolerance / 100.0 ||
         abs(linear_momentum - target_linear_momentum) / target_linear_momentum > linear_momentum_tolerance / 100.0)

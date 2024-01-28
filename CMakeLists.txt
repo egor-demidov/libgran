@@ -25,7 +25,7 @@ include_directories(SYSTEM deps/libtimestep/include)
 include_directories(SYSTEM deps/eigen)
 include_directories(include)
 
-add_executable(libgran main.cpp writer.cpp)
+add_executable(libgran main.cpp writer.cpp test/compute_energy.cpp)
 # A particle and a lattice colliding
 add_executable(contact_test test/contact.cpp test/compute_energy.cpp)
 # A particle and a lattice with VdW interactions colliding

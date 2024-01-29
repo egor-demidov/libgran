@@ -72,7 +72,7 @@ int main() {
                 double z = sphere_1_center[2] - r_sphere + r_part + 2.0 * r_part * double(m);
                 if ((Eigen::Vector3d{x, y, z} - sphere_1_center).norm() < r_sphere) {
                     x0.emplace_back(x, y, z);
-                    v0.emplace_back(1, 0, 0);
+                    v0.emplace_back(0.5, 0, 0);
                 }
             }
         }
@@ -87,7 +87,7 @@ int main() {
                 double z = sphere_2_center[2] - r_sphere + r_part + 2.0 * r_part * double(m);
                 if ((Eigen::Vector3d{x, y, z} - sphere_2_center).norm() < r_sphere) {
                     x0.emplace_back(x, y, z);
-                    v0.emplace_back(Eigen::Vector3d::Zero());
+                    v0.emplace_back(-0.5, 0, 0);
                 }
             }
         }

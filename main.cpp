@@ -157,7 +157,7 @@ int main() {
         if (n % thermo_dump_period == 0) {
             ofs << double(n) * dt << "\t"
                 << compute_translational_kinetic_energy(system.get_v(), mass) << "\t"
-                << compute_rotational_kinetic_energy(system.get_omega(), mass) << "\t"
+                << compute_rotational_kinetic_energy(system.get_omega(), inertia) << "\t"
                 << compute_total_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia) << "\t"
                 << compute_linear_momentum(system.get_v(), mass) << "\t"
                 << compute_angular_momentum(system.get_x(), system.get_v(), mass, system.get_omega(), inertia) << std::endl;

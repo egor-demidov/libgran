@@ -54,28 +54,43 @@ int main() {
 
     // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    // Two cubes
-    size_t cube_size = 10;
-    for (size_t i = 0; i < cube_size; i ++) {
-        auto y = -2.0 * double(cube_size) * r_part + double(i) * 2.0 * r_part;
-        for (size_t j = 0; j < cube_size; j ++) {
-            auto x = -2.0 * double(cube_size) * r_part + double(j) * 2.0 * r_part;
+    // A sphere
+    const double r_sphere = 8.0 * r_part;
+    const Eigen::Vector3d sphere_1_center = Eigen::Vector3d::Zero();
+    const Eigen::Vector3d sphere_2_center = Eigen::Vector3d::Zero() + 2.5 * Eigen::Vector3d::UnitX() * r_sphere;
 
-            // First cube
-            for (size_t n = 0; n < cube_size; n ++) {
-                auto z = -2.0 * double(n) * r_part;
-                x0.emplace_back(x, y, z);
-                v0.emplace_back(0.0, 0.0, 5.0); // Cube moving up
-            }
+    const size_t max_num_parts_per_dim = size_t(2.0 * r_sphere / r_part);
 
-            // Second cube
-            for (size_t n = 0; n < cube_size; n ++) {
-                auto z = 8.0 * r_part + 2.0 * double(n) * r_part;
-                x0.emplace_back(x + r_part * 0.5 * double(cube_size), y + r_part * 0.5 * double(cube_size), z);
-                v0.emplace_back(0.0, 0.0, -5.0); // Cube moving down
+    // Create sphere 1
+    for (size_t i = 0; i < max_num_parts_per_dim; i ++) {
+        double x = sphere_1_center[0] - r_sphere + r_part + 2.0 * r_part * double(i);
+        for (size_t j = 0; j < max_num_parts_per_dim; j ++) {
+            double y = sphere_1_center[1] - r_sphere + r_part + 2.0 * r_part * double(j);
+            for (size_t m = 0; m < max_num_parts_per_dim; m ++) {
+                double z = sphere_1_center[2] - r_sphere + r_part + 2.0 * r_part * double(m);
+                if ((Eigen::Vector3d{x, y, z} - sphere_1_center).norm() < r_sphere) {
+                    x0.emplace_back(x, y, z);
+                    v0.emplace_back(1, 0, 0);
+                }
             }
         }
     }
+
+    // Create sphere 2
+    for (size_t i = 0; i < max_num_parts_per_dim; i ++) {
+        double x = sphere_2_center[0] - r_sphere + r_part + 2.0 * r_part * double(i);
+        for (size_t j = 0; j < max_num_parts_per_dim; j ++) {
+            double y = sphere_2_center[1] - r_sphere + r_part + 2.0 * r_part * double(j);
+            for (size_t m = 0; m < max_num_parts_per_dim; m ++) {
+                double z = sphere_2_center[2] - r_sphere + r_part + 2.0 * r_part * double(m);
+                if ((Eigen::Vector3d{x, y, z} - sphere_2_center).norm() < r_sphere) {
+                    x0.emplace_back(x, y, z);
+                    v0.emplace_back(Eigen::Vector3d::Zero());
+                }
+            }
+        }
+    }
+
 
     std::cout << "Number of particles: " << x0.size() << std::endl;
 

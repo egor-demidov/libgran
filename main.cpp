@@ -29,7 +29,7 @@ int main() {
     const double dt = 1e-13;
     const double t_tot = 3.0e-7;
     const auto n_steps = size_t(t_tot / dt);
-    const size_t n_dumps = 300;
+    const size_t n_dumps = 10000;
     const size_t dump_period = n_steps / n_dumps;
 
     // General parameters

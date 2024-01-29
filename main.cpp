@@ -27,10 +27,12 @@
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 3.0e-6;
+    const double t_tot = 3.0e-7;
     const auto n_steps = size_t(t_tot / dt);
-    const size_t n_dumps = 10000;
+    const size_t n_dumps = 300;
+    const size_t n_thermo_dumps = 10000;
     const size_t dump_period = n_steps / n_dumps;
+    const size_t thermo_dump_period = n_steps / n_thermo_dumps;
 
     // General parameters
     const double rho = 1700.0;
@@ -151,6 +153,8 @@ int main() {
         if (n % dump_period == 0) {
             std::cout << "Dump #" << n / dump_period << std::endl;
             write_particles("run", system.get_x(), system.get_theta(), r_part);
+        }
+        if (n % thermo_dump_period == 0) {
             ofs << double(n) * dt << "\t"
                 << compute_translational_kinetic_energy(system.get_v(), mass) << "\t"
                 << compute_rotational_kinetic_energy(system.get_v(), mass) << "\t"

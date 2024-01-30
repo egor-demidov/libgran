@@ -7,6 +7,13 @@
 #include <vector>
 #include <random>
 
+#ifdef _GNU_SOURCE
+#include <cfenv>
+#define enable_fp_exceptions() feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO)
+#elif defined(_MSC_VER)
+#define enable_fp_exceptions()
+#endif
+
 #include <Eigen/Eigen>
 
 #include <libgran/contact_force/contact_force.h>
@@ -44,6 +51,8 @@ using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_ve
         sinter_step_handler_double, binary_force_container_t, unary_force_container_t>; // Granular system representation
 
 int main() {
+    enable_fp_exceptions();
+
     // General simulation parameters
     const double dt = 1e-13;
     const double t_tot = 1.0e-7;

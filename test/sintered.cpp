@@ -11,7 +11,6 @@
 #include <cfenv>
 #define enable_fp_exceptions() feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO)
 #elif defined(_MSC_VER)
-#pragma float_control(except, on)
 #define enable_fp_exceptions()
 #endif
 

@@ -10,7 +10,6 @@
 #include <cfenv>
 #define enable_fp_exceptions() feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO)
 #elif defined(_MSC_VER)
-#pragma float_control(except, on)
 #define enable_fp_exceptions()
 #endif
 
@@ -22,7 +21,6 @@
 #include "compute_energy.h"
 
 int main() {
-    feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO);
     enable_fp_exceptions();
 
     // General simulation parameters

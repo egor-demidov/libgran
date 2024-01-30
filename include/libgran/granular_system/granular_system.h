@@ -89,7 +89,8 @@ template <
     typename unary_force_functor_container_t>
 class granular_system : public rotational_binary_system<field_value_t, real_t, integrator_t, step_handler_t,
         granular_system<field_value_t, real_t, integrator_t, step_handler_t,
-        binary_force_functor_container_t, unary_force_functor_container_t>> {
+        binary_force_functor_container_t, unary_force_functor_container_t>,
+        (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)> {
 public:
     typedef std::vector<field_value_t> field_container_t;
 
@@ -100,7 +101,8 @@ public:
                     real_t t0, field_value_t field_zero, real_t real_zero, step_handler_t<field_container_t, field_value_t> & step_handler,
                     binary_force_functor_container_t binary_force_functors, unary_force_functor_container_t unary_force_functors) :
             rotational_binary_system<field_value_t, real_t, integrator_t, step_handler_t,
-                    granular_system<field_value_t, real_t, integrator_t, step_handler_t, binary_force_functor_container_t, unary_force_functor_container_t>>
+                    granular_system<field_value_t, real_t, integrator_t, step_handler_t, binary_force_functor_container_t, unary_force_functor_container_t>,
+                    (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)>
                     (std::move(x0), std::move(v0), std::move(theta0),
                      std::move(omega0), t0, field_zero, real_zero, *this, step_handler),
                      binary_force_functors(std::move(binary_force_functors)),

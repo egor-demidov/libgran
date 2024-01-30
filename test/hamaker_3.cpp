@@ -10,7 +10,6 @@
 
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/hamaker_force/hamaker_force.h>
-#include <libgran/no_unary_force/no_unary_force.h>
 #include <libgran/granular_system/granular_system.h>
 
 #include "../writer.h"
@@ -103,11 +102,8 @@ int main() {
         hamaker_functor<Eigen::Vector3d, double>>
             binary_force_functors{contact_force_model, hamaker_model};
 
-    no_unary_force_functor<Eigen::Vector3d, double> no_unary_force(Eigen::Vector3d::Zero());
-
-    unary_force_functor_container<Eigen::Vector3d, double,
-        no_unary_force_functor<Eigen::Vector3d, double>>
-            unary_force_functors(no_unary_force);
+    unary_force_functor_container<Eigen::Vector3d, double>
+            unary_force_functors;
 
     // Create an instance of granular_system using the contact force model
     // Using velocity Verlet integrator for rotational systems and a default
@@ -117,8 +113,7 @@ int main() {
         binary_force_functor_container<Eigen::Vector3d, double,
                 contact_force_functor<Eigen::Vector3d, double>,
                 hamaker_functor<Eigen::Vector3d, double>>,
-        unary_force_functor_container<Eigen::Vector3d, double,
-                no_unary_force_functor<Eigen::Vector3d, double>>> system(x0,
+        unary_force_functor_container<Eigen::Vector3d, double>> system(x0,
             v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
             step_handler_instance, binary_force_functors, unary_force_functors);
 

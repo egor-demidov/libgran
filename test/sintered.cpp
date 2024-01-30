@@ -11,7 +11,6 @@
 
 #include <libgran/contact_force/contact_force.h>
 #include <libgran/granular_system/granular_system.h>
-#include <libgran/no_unary_force/no_unary_force.h>
 #include <libgran/sinter_bridge/sinter_bridge.h>
 
 #include "mass_distribution.h"
@@ -96,10 +95,8 @@ int main() {
     binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>
             binary_force_functors{sinter_model};
 
-    no_unary_force_functor<Eigen::Vector3d, double> no_unary_force(Eigen::Vector3d::Zero());
-
-    unary_force_functor_container<Eigen::Vector3d, double, no_unary_force_functor<Eigen::Vector3d, double>>
-            unary_force_functors(no_unary_force);
+    unary_force_functor_container<Eigen::Vector3d, double>
+            unary_force_functors;
 
     // We need to use a custom step handler with the sintering model
     // Get the custom step handler instance from the sinter model
@@ -110,7 +107,7 @@ int main() {
     // step handler for rotational systems
     granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
         sinter_step_handler_double, binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>,
-            unary_force_functor_container<Eigen::Vector3d, double, no_unary_force_functor<Eigen::Vector3d, double>>> system(x0,
+            unary_force_functor_container<Eigen::Vector3d, double>> system(x0,
                                                                                     v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(),
                                                                                     0.0, step_handler_instance,
                                                                                     binary_force_functors, unary_force_functors);

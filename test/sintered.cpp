@@ -7,6 +7,14 @@
 #include <chrono>
 #include <random>
 
+#ifdef _GNU_SOURCE
+#include <cfenv>
+#define enable_fp_exceptions() feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO)
+#elif defined(_MSC_VER)
+#pragma float_control(except, on)
+#define enable_fp_exceptions()
+#endif
+
 #include <Eigen/Eigen>
 
 #include <libgran/contact_force/contact_force.h>
@@ -36,6 +44,8 @@ template <typename field_container_t, typename field_value_t>
 using sinter_step_handler_double = sinter_step_handler<field_container_t, field_value_t, double>;
 
 int main() {
+    enable_fp_exceptions();
+
     // General simulation parameters
     const double dt = 1e-13;
     const double t_tot = 1.0e-7;
@@ -89,7 +99,7 @@ int main() {
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
     std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 
-    sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
+    sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n*100000, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
                                                          r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, x0.begin(), generate_random_unit_vector, 1.0e-9);
 
     binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>

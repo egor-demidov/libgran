@@ -220,7 +220,7 @@ struct sinter_functor {
                                                          real_t t) {
 
         if (bonded_contacts[i * n_part + j])
-            return bonded_contact_accelerations(i, j, x);
+            return bonded_contact_accelerations(i, j, x, v, omega);
         return contact_force(i, j, x, v, theta, omega, t);
     }
 
@@ -232,7 +232,9 @@ struct sinter_functor {
     }
 
 private:
-    std::pair<field_value_t, field_value_t> bonded_contact_accelerations(size_t i, size_t j, std::vector<field_value_t> const & x) {
+    std::pair<field_value_t, field_value_t> bonded_contact_accelerations(size_t i, size_t j, std::vector<field_value_t> const & x,
+                                                                         std::vector<field_value_t> const & v,
+                                                                         std::vector<field_value_t> const & omega) {
         field_value_t force = field_zero, torque = field_zero;
 
         auto const & part_i_connectors = spring_connectors[i * n_part + j];
@@ -243,7 +245,10 @@ private:
             field_value_t spring = part_j_connectors[n] - part_i_connectors[n];
             real_t spring_length = spring.norm();
             real_t equilibrium_length = spring_lengths[i * n_part + j][n];
-            field_value_t dforce = -(equilibrium_length - spring_length) * k_d * spring.normalized();
+            field_value_t conn_part_i_v = v[i] + omega[i].cross(part_i_connectors[n] - x[i]);
+            field_value_t conn_part_j_v = v[j] + omega[j].cross(part_j_connectors[n] - x[j]);
+            field_value_t rel_v = conn_part_j_v - conn_part_i_v;
+            field_value_t dforce = -(equilibrium_length - spring_length) * k_d * spring.normalized() + gamma_d * rel_v;
             force += dforce;
 
             field_value_t arm = part_i_connectors[n] - x[i];

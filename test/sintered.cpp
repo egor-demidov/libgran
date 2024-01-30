@@ -60,6 +60,7 @@ int main() {
 
     // Parameters for the contact model
     const double k = 10000.0;
+    const double gamma_d = 0.0; // Sinter bridges are undamped
     const double gamma_n = 5.0e-9;
     const double mu = 1.0;
     const double phi = 1.0;
@@ -98,7 +99,7 @@ int main() {
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
     std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 
-    sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_n*100000, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
+    sinter_functor<Eigen::Vector3d, double> sinter_model(x0.size(), k, gamma_d, k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
                                                          r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, x0.begin(), generate_random_unit_vector, 1.0e-9);
 
     binary_force_functor_container<Eigen::Vector3d, double, sinter_functor<Eigen::Vector3d, double>>

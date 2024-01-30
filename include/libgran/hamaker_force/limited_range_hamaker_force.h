@@ -16,8 +16,8 @@ constexpr T cube(T x) {
 }
 
 template <typename field_value_t, typename real_t>
-struct hamaker_functor {
-    hamaker_functor(real_t A,                   // Hamaker constant
+struct limited_range_hamaker_functor {
+    limited_range_hamaker_functor(real_t A,                   // Hamaker constant
                     real_t h0,                  // Saturation separation
                     real_t r_cutoff,            // Cutoff distance between particle centers
                     real_t r_part,              // Particle radius

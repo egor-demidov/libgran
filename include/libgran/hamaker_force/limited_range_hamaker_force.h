@@ -31,7 +31,7 @@ struct limited_range_hamaker_functor {
                                                          std::vector<field_value_t> const & theta [[maybe_unused]], std::vector<field_value_t> const & omega [[maybe_unused]], real_t t [[maybe_unused]]) const {
 
         if ((x[i] - x[j]).norm() > r_cutoff)
-            return field_zero;
+            return std::make_pair(field_zero, field_zero);
 
         field_value_t r = (x[j] - x[i]); // Distance vector
         real_t h = r.norm() - 2.0 * r_part; // Surface separation

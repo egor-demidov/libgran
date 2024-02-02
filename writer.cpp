@@ -77,9 +77,9 @@ void write_particles(const std::string & dir, std::vector<Eigen::Vector3d> const
     ofs << "thetax 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
     Eigen::Quaternion<double> q;
-        q = Eigen::AngleAxis(-t[0], Eigen::Vector3d::UnitZ())
-            * Eigen::AngleAxis(-t[1], Eigen::Vector3d::UnitY())
-            * Eigen::AngleAxis(-t[2], Eigen::Vector3d::UnitX());
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+            * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
+            * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitX();
         Eigen::Matrix3d m = q.matrix();
@@ -90,9 +90,9 @@ void write_particles(const std::string & dir, std::vector<Eigen::Vector3d> const
     ofs << "\n" << "thetay 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
         Eigen::Quaternion<double> q;
-        q = Eigen::AngleAxis(-t[0], Eigen::Vector3d::UnitZ())
-            * Eigen::AngleAxis(-t[1], Eigen::Vector3d::UnitY())
-            * Eigen::AngleAxis(-t[2], Eigen::Vector3d::UnitX());
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+            * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
+            * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitY();
         Eigen::Matrix3d m = q.matrix();
@@ -103,9 +103,9 @@ void write_particles(const std::string & dir, std::vector<Eigen::Vector3d> const
     ofs << "\n" << "thetaz 3 " << x.size() << " double" << "\n";
     for (auto const & t : theta) {
         Eigen::Quaternion<double> q;
-        q = Eigen::AngleAxis(-t[0], Eigen::Vector3d::UnitZ())
-            * Eigen::AngleAxis(-t[1], Eigen::Vector3d::UnitY())
-            * Eigen::AngleAxis(-t[2], Eigen::Vector3d::UnitX());
+        q = Eigen::AngleAxis(t[0], Eigen::Vector3d::UnitX())
+            * Eigen::AngleAxis(t[1], Eigen::Vector3d::UnitY())
+            * Eigen::AngleAxis(t[2], Eigen::Vector3d::UnitZ());
 
         auto unit = Eigen::Vector3d::UnitZ();
         Eigen::Matrix3d m = q.matrix();

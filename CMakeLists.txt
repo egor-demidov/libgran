@@ -36,9 +36,10 @@ add_executable(hamaker_2_test test/hamaker_2.cpp writer.cpp)
 add_executable(hamaker_3_test test/hamaker_3.cpp writer.cpp)
 # A sintered lattice undergoing rigid-body-motion
 add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
+# A sintered lattice undergoing rigid-body motion with the new sintering model
+add_executable(alt_sintered_test test/alt_sintered.cpp writer.cpp test/mass_distribution.cpp)
 
 add_executable(sintered_2_test test/sintered_2.cpp writer.cpp)
-add_executable(alt_sintered_test test/alt_sintered.cpp writer.cpp)
 
 if (${CMAKE_COMPILER_IS_GNUCXX})
     target_link_libraries(libgran PRIVATE TBB::tbb)
@@ -54,3 +55,4 @@ endif ()
 add_test(NAME contact_test COMMAND ${CMAKE_BINARY_DIR}/contact_test)
 add_test(NAME hamaker_test COMMAND ${CMAKE_BINARY_DIR}/hamaker_test)
 add_test(NAME sintered_test COMMAND ${CMAKE_BINARY_DIR}/sintered_test)
+add_test(NAME alt_sintered_test COMMAND ${CMAKE_BINARY_DIR}/alt_sintered_test)

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #ifdef _GNU_SOURCE
 #include <cfenv>
@@ -17,6 +18,7 @@
 #include <libgran/sinter_bridge/alt_sinter_bridge.h>
 #include <libgran/granular_system/granular_system.h>
 
+#include "mass_distribution.h"
 #include "../writer.h"
 
 using sinter_functor_t = alt_sinter_functor<Eigen::Vector3d, double>;
@@ -29,8 +31,8 @@ int main () {
     enable_fp_exceptions();
 
     // General simulation parameters
-    const double dt = 1e-14;
-    const double t_tot = 3.0e-7;
+    const double dt = 5e-14;
+    const double t_tot = 1.0e-7;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;
@@ -42,8 +44,8 @@ int main () {
     const double inertia = 2.0 / 5.0 * mass * pow(r_part, 2.0);
 
     // Parameters for the contact model
-    const double k = 10000.0;
-    const double gamma_n = 5.0e-9;
+    const double k = 1000.0;
+    const double gamma_n = 2.0*sqrt(2.0*mass*k);
     const double mu = 1.0;
     const double phi = 1.0;
     const double mu_o = 0.1;
@@ -52,32 +54,35 @@ int main () {
     const double gamma_o = 0.05 * gamma_n;
     const double d_crit = 1.0e-9; // Critical separation
 
+    // Initialize the particles
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
+    for (size_t i = 0; i < 3; i ++) {
+        auto y = -1.0 * r_part + double(i) * 2.0 * r_part;
+        for (size_t j = 0; j < 3; j ++) {
+            auto x = -1.0 * r_part + double(j) * 2.0 * r_part;
+            x0.emplace_back(x, y, 0.0);
+            x0.emplace_back(x, y, -2.0*r_part);
+            x0.emplace_back(x, y, -4.0*r_part);
 
-    x0.emplace_back(0, 0, 0);
-    x0.emplace_back(0, 2.0*r_part, 0);
-    x0.emplace_back(2.0*r_part, 2.0*r_part, 0);
-    x0.emplace_back(2.0*r_part, 4.0*r_part, 0);
-    x0.emplace_back(2.0*r_part, 6.0*r_part, 0);
-    x0.emplace_back(2.0*r_part, 8.0*r_part, 0);
+            // Particles on the x=x_min edge will have an initial velocity in the +z direction
+            // Particle on the x=x_max edge will have an initial velocity in the +y direction
+            Eigen::Vector3d init_vel;
+            if (j == 0)
+                init_vel = {0.0, 0.0, 5.0};
+            else if (j == 2)
+                init_vel = {0.0, 5.0, 0.0};
+            else
+                init_vel = Eigen::Vector3d::Zero();
+            for (size_t n = 0; n < 3; n ++)
+                v0.emplace_back(init_vel);
+        }
+    }
 
-    v0.emplace_back(1, 0, 0);
-    v0.emplace_back(0, 0, 0);
-    v0.emplace_back(0, 0, 0);
-    v0.emplace_back(0, 0, 0);
-    v0.emplace_back(0, 0, 0);
-    v0.emplace_back(0, 0, 0);
-
-//    omega0.emplace_back(0, 100000000, 0);
-    omega0.emplace_back(0, 0, 0);
-    omega0.emplace_back(0, 0, 0);
-    omega0.emplace_back(0, 0, 0);
-    omega0.emplace_back(0, 0, 0);
-    omega0.emplace_back(0, 0, 0);
-    omega0.emplace_back(0, 0, 0);
-
+    // Initialize the remaining buffers
     theta0.resize(x0.size());
+    omega0.resize(x0.size());
     std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
+    std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
 
     // Create an instance of step_handler
     // Using field type Eigen::Vector3d with container std::vector
@@ -101,13 +106,32 @@ int main () {
     granular_system_t system(x0,
                    v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0, step_handler_instance, binary_force_functors, unary_force_functors);
 
+    Eigen::Vector3d center_0 = center_of_mass(system.get_x());
+
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (size_t n = 0; n < n_steps; n ++) {
-        if (n % dump_period == 0) {
-            write_particles("run", system.get_x(), system.get_theta(), r_part);
-            std::cout << "Dump #" << n / dump_period << std::endl;
-        }
         system.do_step(dt);
     }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
+    std::cout << "Elapsed time: " << duration << " sec" << std::endl;
+
+    Eigen::Vector3d center_f = center_of_mass(system.get_x());
+
+    double rg = radius_of_gyration(system.get_x());
+    double center_dist = (center_f - center_0).norm();
+
+    std::cout << rg << " " << center_dist << std::endl;
+
+    double target_rg = 3.9598e-08;
+    double target_center_dist = 2.35702e-07;
+
+    double rg_tolerance = 1.0; // Percent
+    double center_dist_tolerance = 1.0; // Percent
+
+    if (abs(center_dist - target_center_dist) / target_center_dist > center_dist_tolerance / 100.0 ||
+        abs(rg - target_rg) / target_rg > rg_tolerance / 100.0)
+        return EXIT_FAILURE;
 
     return 0;
 }

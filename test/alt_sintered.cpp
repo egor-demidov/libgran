@@ -29,7 +29,7 @@ int main () {
     enable_fp_exceptions();
 
     // General simulation parameters
-    const double dt = 1e-15;
+    const double dt = 1e-14;
     const double t_tot = 3.0e-7;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
@@ -57,13 +57,19 @@ int main () {
     x0.emplace_back(0, 2.0*r_part, 0);
     x0.emplace_back(2.0*r_part, 2.0*r_part, 0);
     x0.emplace_back(2.0*r_part, 4.0*r_part, 0);
+    x0.emplace_back(2.0*r_part, 6.0*r_part, 0);
+    x0.emplace_back(2.0*r_part, 8.0*r_part, 0);
 
     v0.emplace_back(1, 0, 0);
     v0.emplace_back(0, 0, 0);
     v0.emplace_back(0, 0, 0);
     v0.emplace_back(0, 0, 0);
+    v0.emplace_back(0, 0, 0);
+    v0.emplace_back(0, 0, 0);
 
 //    omega0.emplace_back(0, 100000000, 0);
+    omega0.emplace_back(0, 0, 0);
+    omega0.emplace_back(0, 0, 0);
     omega0.emplace_back(0, 0, 0);
     omega0.emplace_back(0, 0, 0);
     omega0.emplace_back(0, 0, 0);

@@ -10,10 +10,83 @@
 #include <cstddef>
 #include <forward_list>
 
-template <typename field_container_t, typename field_value_t>
-struct sinter_step_handler {
-
-};
+//#include <libtimestep/rotational_step_handler/rotational_step_handler.h>
+//
+//template <typename field_container_t, typename field_value_t, typename real_t>
+//struct sinter_step_handler {
+//    sinter_step_handler(std::vector<std::tuple<field_container_t, field_container_t, field_container_t>> & contact_springs,
+//                        std::vector<bool> const & bonded_contacts,
+//                        std::vector<std::forward_list<size_t>> const & particle_to_bond_map,
+//                        real_t r_part, size_t n_part) :
+//            contact_springs(contact_springs),
+//            bonded_contacts(bonded_contacts),
+//            particle_to_bond_map(particle_to_bond_map),
+//            r_part(r_part), n_part(n_part) {}
+//
+//    void increment_x(size_t n,
+//                     field_value_t const & dx,
+//                     typename field_container_t::iterator x_begin_itr,
+//                     typename field_container_t::iterator v_begin_itr,
+//                     typename field_container_t::iterator a_begin_itr,
+//                     typename field_container_t::iterator theta_begin_itr,
+//                     typename field_container_t::iterator omega_begin_itr,
+//                     typename field_container_t::iterator alpha_begin_itr) {
+//
+//        for (auto const & bond : particle_to_bond_map[n]) {
+//            size_t i = n;
+//            size_t j = bond;
+//
+//            // Relative tangential displacement
+//            field_value_t d_ij = *(v_begin_itr + i) - *(v_begin_itr + j);
+//            field_value_t d_t = d_ij - d_ij.dot(*())
+//        }
+//        base_step_handler.increment_x(n, dx, x_begin_itr, v_begin_itr, a_begin_itr, theta_begin_itr, omega_begin_itr, alpha_begin_itr);
+//    }
+//
+//    void increment_v(size_t n,
+//                     field_value_t const & dv,
+//                     typename field_container_t::iterator x_begin_itr,
+//                     typename field_container_t::iterator v_begin_itr,
+//                     typename field_container_t::iterator a_begin_itr,
+//                     typename field_container_t::iterator theta_begin_itr,
+//                     typename field_container_t::iterator omega_begin_itr,
+//                     typename field_container_t::iterator alpha_begin_itr) {
+//
+//        base_step_handler.increment_v(n, dv, x_begin_itr, v_begin_itr, a_begin_itr, theta_begin_itr, omega_begin_itr, alpha_begin_itr);
+//    }
+//
+//    void increment_theta(size_t n,
+//                     field_value_t const & dtheta,
+//                     typename field_container_t::iterator x_begin_itr,
+//                     typename field_container_t::iterator v_begin_itr,
+//                     typename field_container_t::iterator a_begin_itr,
+//                     typename field_container_t::iterator theta_begin_itr,
+//                     typename field_container_t::iterator omega_begin_itr,
+//                     typename field_container_t::iterator alpha_begin_itr) {
+//
+//        base_step_handler.increment_theta(n, dtheta, x_begin_itr, v_begin_itr, a_begin_itr, theta_begin_itr, omega_begin_itr, alpha_begin_itr);
+//    }
+//
+//    void increment_omega(size_t n,
+//                         field_value_t const & domega,
+//                         typename field_container_t::iterator x_begin_itr,
+//                         typename field_container_t::iterator v_begin_itr,
+//                         typename field_container_t::iterator a_begin_itr,
+//                         typename field_container_t::iterator theta_begin_itr,
+//                         typename field_container_t::iterator omega_begin_itr,
+//                         typename field_container_t::iterator alpha_begin_itr) {
+//
+//        base_step_handler.increment_omega(n, domega, x_begin_itr, v_begin_itr, a_begin_itr, theta_begin_itr, omega_begin_itr, alpha_begin_itr);
+//    }
+//
+//private:
+//    const rotational_step_handler<field_container_t, field_value_t> base_step_handler;
+//    std::vector<std::forward_list<size_t>> const & particle_to_bond_map;
+//    std::vector<bool> const & bonded_contacts;
+//    std::vector<std::tuple<field_container_t, field_container_t, field_container_t>> & contact_springs;
+//    const size_t n_part;
+//    const real_t r_part;
+//};
 
 template <typename field_value_t, typename real_t>
 struct alt_sinter_functor {
@@ -74,8 +147,8 @@ struct alt_sinter_functor {
                 if (abs((x0[i] - x0[j]).norm() - 2.0*r_part) < 1.0e-9) {
                     bonded_contacts[i*n_part + j] = true;
                     bonded_contacts[j*n_part + i] = true;
-                    particle_to_bond_map[i].emplace_front(i*n_part + j);
-                    particle_to_bond_map[j].emplace_front(j*n_part + i);
+                    particle_to_bond_map[i].emplace_front(j);
+                    particle_to_bond_map[j].emplace_front(i);
                 }
             }
         }

@@ -50,6 +50,7 @@ int main () {
     const double gamma_t = 0.2 * gamma_n;
     const double gamma_r = 0.05 * gamma_n;
     const double gamma_o = 0.05 * gamma_n;
+    const double d_crit = 1.0e-9; // Critical separation
 
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
 
@@ -86,7 +87,7 @@ int main () {
     // Using field type Eigen::Vector3d with real type double
     sinter_functor_t sinter_model(x0.size(), x0,
                                k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
-                               r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
+                               r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, d_crit);
 
     binary_force_container_t
         binary_force_functors{sinter_model};

@@ -111,7 +111,8 @@ struct alt_sinter_functor {
                           real_t inertia,           // Moment of inertia
                           real_t dt,                // Time step for spring update (same as integration time step for 1st order schemes)
                           field_value_t field_zero, // Zero-valued field_value_t
-                          real_t real_zero) :       // Zero-valued real_t
+                          real_t real_zero,         // Zero-valued real_t
+                          real_t critical_separation) : // Critical separation between particles to make them necked
         n_part(n_part),
         k(k),
         gamma_n(gamma_n),
@@ -144,7 +145,7 @@ struct alt_sinter_functor {
 
         for (size_t i = 0; i < n_part - 1; i ++) {
             for (size_t j = i+1; j < n_part; j ++) {
-                if (abs((x0[i] - x0[j]).norm() - 2.0*r_part) < 1.0e-9) {
+                if (abs((x0[i] - x0[j]).norm() - 2.0*r_part) < critical_separation) {
                     bonded_contacts[i*n_part + j] = true;
                     bonded_contacts[j*n_part + i] = true;
                     particle_to_bond_map[i].emplace_front(j);

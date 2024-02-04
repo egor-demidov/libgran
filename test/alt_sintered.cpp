@@ -21,7 +21,7 @@
 #include "mass_distribution.h"
 #include "../writer.h"
 
-using sinter_functor_t = alt_sinter_functor<Eigen::Vector3d, double>;
+using contact_functor_t = contact_force_functor<Eigen::Vector3d, double>;
 using alt_sinter_functor_t = alt_sinter_functor<Eigen::Vector3d, double>;
 using binary_force_container_t = binary_force_functor_container<Eigen::Vector3d, double, alt_sinter_functor_t>;
 using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double>;
@@ -43,15 +43,22 @@ int main () {
     const double mass = 4.0 / 3.0 * M_PI * pow(r_part, 3.0) * rho;
     const double inertia = 2.0 / 5.0 * mass * pow(r_part, 2.0);
 
-    // Parameters for the contact model
-    const double k = 1000.0;
-    const double gamma_n = 2.0*sqrt(2.0*mass*k);
+    // Parameters for the non-bonded contact model
+    const double k = 10000.0;
+    const double gamma_n = 5.0e-9;
     const double mu = 1.0;
     const double phi = 1.0;
     const double mu_o = 0.1;
     const double gamma_t = 0.2 * gamma_n;
     const double gamma_r = 0.05 * gamma_n;
     const double gamma_o = 0.05 * gamma_n;
+
+    // Parameters for the bonded contact model
+    const double k_bond = 1000.0;
+    const double gamma_n_bond = 2.0*sqrt(2.0*mass*k_bond);
+    const double gamma_t_bond = 0.2 * gamma_n_bond;
+    const double gamma_r_bond = 0.05 * gamma_n_bond;
+    const double gamma_o_bond = 0.05 * gamma_n_bond;
     const double d_crit = 1.0e-9; // Critical separation
 
     // Initialize the particles
@@ -88,11 +95,15 @@ int main () {
     // Using field type Eigen::Vector3d with container std::vector
     rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d> step_handler_instance;
 
+    contact_functor_t  contact_force(x0.size(),
+                                     k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
+                                     r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
+
     // Create an instance of contact force model
     // Using field type Eigen::Vector3d with real type double
-    sinter_functor_t sinter_model(x0.size(), x0,
-                               k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o, mu_o, phi,
-                               r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, d_crit);
+    alt_sinter_functor_t sinter_model(x0.size(), x0,
+                               k_bond, gamma_n_bond, k_bond, gamma_t_bond, k_bond, gamma_r_bond, k_bond, gamma_o_bond,
+                               r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0, d_crit, contact_force);
 
     binary_force_container_t
         binary_force_functors{sinter_model};

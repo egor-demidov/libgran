@@ -13,3 +13,4 @@
 !.github/**
 !deps
 !deps/**
+!README.md

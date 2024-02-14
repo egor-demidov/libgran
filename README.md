@@ -184,8 +184,9 @@ The force models that are provided by the implementation are described in this s
 The contact model is based on constraining the four degrees of freedom of motion of two particles relative to each other:
 normal translation, tangential translation, torsion, and rolling. Let us consider two particles i and j. We can begin by 
 defining a unit normal vector:
-
-$$\mathbf{n}=\frac{\mathbf{x}_{j}-\mathbf{x}_{i}}{\lVert\mathbf{x}_{j}-\mathbf{x}_{i}\rVert}$$
+```math
+\mathbf{n}=\frac{\mathbf{x}_{j}-\mathbf{x}_{i}}{\lVert\mathbf{x}_{j}-\mathbf{x}_{i}\rVert}
+```
 
 #### Frictional contact force
 

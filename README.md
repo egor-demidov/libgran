@@ -1,7 +1,7 @@
 # libgran
 
 libgran is a Discrete Element Method (DEM) framework for simulating the mechanical behavior of soot aggregates. DEM is a
-technique for simulation of granular media consisting of rigid, spherical particles. The resultant force and torque acting
+technique for simulation of granular media consisting of rigid spherical particles. The resultant force and torque acting
 on each particle are computed and used with Newton's second law to compute the motion of particles:
 ```math
 m\ddot{\mathbf{x}}=\mathbf{f}
@@ -11,7 +11,7 @@ I\ddot{\boldsymbol{\omega}}=\boldsymbol{\tau}
 ```
 The forces that particles experience arise from friction at inter-particle contacts, bonding between particles, 
 inter-particle attraction, field forces, etc. libgran contains a bonded and a non-bonded contact model, a Van der Waals
-attraction model and is designed to be extensible with custom models. A simulation is set up in the driver program, which needs to initialize three components:
+attraction model and is designed to be easily extensible with custom models. A simulation is set up in the driver program, which needs to initialize three components:
 - Force functor container
 - Step handler
 - Granular system
@@ -22,7 +22,7 @@ A force functor container is an object that contains instances of all force mode
 The choice of which force models to use is made statically and the list of force models is provided in template arguments
 to the force functor container. It is a good practice to create aliases to the force models and the force container types
 that will be used in the simulation at the start of the driver program to improve code readability later on. For example,
-the code snippet below creates an alias to a force functor container with a frictional contact force model and Van der Walls
+the code snippet below creates an alias to a force functor container with a frictional contact force model and Van der Waals
 attraction force model called `binary_force_container_t`:
 ```c++
 #include <Eigen/Eigen>
@@ -200,10 +200,21 @@ The relative velocity at the point of contact is:
 ```math
 \mathbf{v}_{ij}=\mathbf{v}_j-\mathbf{v}_i+\boldsymbol{\omega}_{j}\times a\mathbf{n}+\boldsymbol{\omega}_{i}\times a\mathbf{n}
 ```
-where $a$ is particle radius corrected for overlap/separation, $\mathbf{v}$ is particle translational velocity, and
+where $a$ is particle radius corrected for inter-particle overlap/separation, $\mathbf{v}$ is particle translational velocity, and
 $\boldsymbol{\omega}$ is particle angular velocity. Relative velocity can be decomposed into normal and residual components:
 ```math
 \mathbf{v}_{ij,\rm n}=\left(\mathbf{v}_{ij}\cdot \mathbf{n}\right)\mathbf{n}
+```
+```math
+\mathbf{v}_{ij,\rm t}=\mathbf{v}_{ij}-\mathbf{v}_{ij,\rm n}
+```
+Similarly, relative angular velocity:
+```math
+\boldsymbol{\omega}_{ij}=\boldsymbol{\omega}_j-\boldsymbol{\omega}_i
+```
+can be decomposed into normal and residual components:
+```math
+\boldsymbol{\omega}_{ij,\rm o}=\left(\boldsymbol{\omega}_{ij}\cdot\mathbf{n}\right)\mathbf{n}
 ```
 #### Frictional contact force
 

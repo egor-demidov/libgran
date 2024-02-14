@@ -6,6 +6,9 @@ on each particle are computed and used with Newton's second law to compute the m
 ```math
 m\ddot{\mathbf{x}}=\mathbf{f}
 ```
+```math
+I\ddot{\boldsymbol{\upomega}}=\boldsymbol{\uptau}
+```
 libgran contains a bonded and a non-bonded contact model, a Van der Waals attraction model and is extensible with custom
 models. A simulation is set up in the driver program, which needs to initialize three components:
 - Force functor container

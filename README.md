@@ -6,9 +6,11 @@ models. A simulation is set up in the driver program, which needs to initialize 
 - Force functor container
 - Step handler
 - Granular system
+- 
 ### Force functor container
+
 A force functor container is an object that contains instances of all force models that are used in the simulation.
-The choice of which force models to use is made statically in the list of force models is provided in template arguments
+The choice of which force models to use is made statically and the list of force models is provided in template arguments
 to the force functor container. It is a good practice to create aliases to the force models and the force container types
 that will be used in the simulation at the start of the driver program to improve code readability later on. For example,
 the code snippet below creates an alias to a force functor container with a frictional contact force model and Van der Walls
@@ -172,5 +174,32 @@ sequenceDiagram
     participant Granular system
     participant Step handler
     participant Force functor container
-    
 ```
+## Included force models
+
+The force models that are provided by the implementation are described in this section.
+
+### Contact force
+
+The contact model is based on constraining the four degrees of freedom of motion of two particles relative to each other:
+normal translation, tangential translation, torsion, and rolling. Let us consider two particles i and j. We can begin by 
+defining a unit normal vector:
+$$
+    \mathbf{n}=\frac{\mathbf{x}_{j}-\mathbf{x}_{i}}{\lVert\mathbf{x}_{j}-\mathbf{x}_{i}\rVert}
+$$
+
+#### Frictional contact force
+
+#### Bonded contact force
+
+### Van der Waals attraction force
+
+## Implementing custom binary force models
+
+## Implementing custom unary force models
+
+## Implementing custom step handlers
+
+## Simulation example
+
+## Class reference

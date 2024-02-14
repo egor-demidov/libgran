@@ -196,11 +196,11 @@ defining a unit normal vector:
 ```math
 \mathbf{n}=\frac{\mathbf{x}_{j}-\mathbf{x}_{i}}{\lVert\mathbf{x}_{j}-\mathbf{x}_{i}\rVert}
 ```
-The relative velocity at the point of contact is
+The relative velocity at the point of contact is:
 ```math
 \mathbf{v}_{ij}=\mathbf{v}_j-\mathbf{v}_i+\boldsymbol{\omega}_{j}\times a\mathbf{n}+\boldsymbol{\omega}_{i}\times a\mathbf{n}
 ```
-
+where $a$ is particle radius corrected for overlap/separation
 #### Frictional contact force
 
 

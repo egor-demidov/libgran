@@ -201,7 +201,7 @@ The relative velocity at the point of contact is:
 \mathbf{v}_{ij}=\mathbf{v}_j-\mathbf{v}_i+\boldsymbol{\omega}_{j}\times a\mathbf{n}+\boldsymbol{\omega}_{i}\times a\mathbf{n}
 ```
 where $a$ is particle radius corrected for inter-particle overlap/separation, $\mathbf{v}$ is particle translational velocity, and
-$\boldsymbol{\omega}$ is particle angular velocity. Relative velocity can be decomposed into normal and residual components:
+$\boldsymbol{\omega}$ is particle angular velocity. Relative velocity can be decomposed into normal and residual (tangential) components:
 ```math
 \mathbf{v}_{ij,\rm n}=\left(\mathbf{v}_{ij}\cdot \mathbf{n}\right)\mathbf{n}
 ```
@@ -212,9 +212,12 @@ Similarly, relative angular velocity:
 ```math
 \boldsymbol{\omega}_{ij}=\boldsymbol{\omega}_j-\boldsymbol{\omega}_i
 ```
-can be decomposed into normal and residual components:
+can be decomposed into normal (torsional) and residual (rolling) components:
 ```math
 \boldsymbol{\omega}_{ij,\rm o}=\left(\boldsymbol{\omega}_{ij}\cdot\mathbf{n}\right)\mathbf{n}
+```
+```math
+\boldsymbol{\omega}_{ij,\rm r}=\boldsymbol{\omega}_{ij}-\boldsymbol{\omega}_{ij,\rm o}
 ```
 #### Frictional contact force
 

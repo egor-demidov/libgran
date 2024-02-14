@@ -7,10 +7,11 @@ on each particle are computed and used with Newton's second law to compute the m
 m\ddot{\mathbf{x}}=\mathbf{f}
 ```
 ```math
-I\ddot{\boldsymbol{\omega}}=\boldsymbol{\uptau}
+I\ddot{\boldsymbol{\omega}}=\boldsymbol{\tau}
 ```
-libgran contains a bonded and a non-bonded contact model, a Van der Waals attraction model and is extensible with custom
-models. A simulation is set up in the driver program, which needs to initialize three components:
+The forces that particles experience arise from friction at inter-particle contacts, bonding between particles, 
+inter-particle attraction, field forces, etc. libgran contains a bonded and a non-bonded contact model, a Van der Waals
+attraction model and is designed to be extensible with custom models. A simulation is set up in the driver program, which needs to initialize three components:
 - Force functor container
 - Step handler
 - Granular system
@@ -195,7 +196,10 @@ defining a unit normal vector:
 ```math
 \mathbf{n}=\frac{\mathbf{x}_{j}-\mathbf{x}_{i}}{\lVert\mathbf{x}_{j}-\mathbf{x}_{i}\rVert}
 ```
-
+The relative velocity at the point of contact is
+```math
+\mathbf{v}_{ij}=\mathbf{v}_j-\mathbf{v}_i+\boldsymbol{\omega}_{j}\times a\mathbf{n}+\boldsymbol{\omega}_{i}\times a\mathbf{n}
+```
 
 #### Frictional contact force
 

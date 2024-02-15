@@ -232,7 +232,13 @@ The remaining three springs have zero length at the time the contact is formed a
 throughout the duration of the contact. Let a spring vector be $\boldsymbol\xi$. Then the rate of stretching /
 contraction of a spring, $\dot{\boldsymbol\xi}$, is given by:
 ```math
-\dot{\boldsymbol\xi}=\mathbf{v}_{ij,\rm t}
+\dot{\boldsymbol\xi}_{\rm t}=\mathbf{v}_{ij,\rm t}
+```
+```math
+\dot{\boldsymbol\xi}_{\rm o}=r\boldsymbol{\omega}_{ij,\rm o}
+```
+```math
+\dot{\boldsymbol\xi}_{\rm r}=\boldsymbol{\omega}_{ij,\rm r}\times a\mathbf{n}
 ```
 
 #### Frictional contact force

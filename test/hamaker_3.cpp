@@ -11,6 +11,10 @@
 #define enable_fp_exceptions() feenableexcept(FE_INVALID | FE_OVERFLOW | FE_DIVBYZERO)
 #elif defined(_MSC_VER)
 #define enable_fp_exceptions()
+#elif defined(__APPLE__)
+#define enable_fp_exceptions()
+#else
+#error "Unsupported system"
 #endif
 
 #include <Eigen/Eigen>

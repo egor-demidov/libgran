@@ -18,7 +18,7 @@ if (${APPLE})
     if (${ERROR_ON_WARN})
         set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
     endif ()
-    set(LIBRARY_LIST "-lopm -flto")
+    set(LIBRARY_LIST "-lomp -flto")
 endif ()
 
 if (${MSVC})

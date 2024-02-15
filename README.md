@@ -275,6 +275,22 @@ that are not applied to particles i and j, but are only used to compute torques 
 
 ### Van der Waals attraction force
 
+[Hamaker 1937](https://doi.org/10.1016/S0031-8914(37)80203-7) derived the potential energy, $U$, due
+to Van der Waals attraction between two particles of radius $r$ whose surfaces are separated by distance
+$\delta$ from each other to be:
+```math
+U=-\frac{A}{6}\left[\frac{2r^2}{(4r+\delta)\delta}+\frac{2r^2}{(2r+\delta)^2}+\ln\frac{(4r+\delta)\delta}{(2r+\delta)^2}\right]
+```
+where $A$ is the Hamaker constant - a material property. The magnitude of force acting on the particles can be derived by
+differentiating potential energy, $U$, with respect to separation distance, $\delta$, and the direction of the force will
+coincide with the normal unit vector $\bf n$ defined earlier:
+```math
+\mathbf{f}=-\frac{A}{6}\left[\frac{(4r+2\delta)}{(4r+\delta)\delta}-\frac{2}{(2r+\delta)}-\frac{4r^2}{(2r+\delta)^3}-\frac{2r^2(4r+2\delta)}{(4r+\delta)^2\delta^2}\right]\mathbf{n}
+```
+Since in the limit as $\delta$ approaches $0$ the magnitude of force (and potential energy) becomes infinite,
+a saturation distance $\delta_0$ is introduced. The magnitude of $\delta_0$ varies between 0.4 and 1 nm ([Ranade 1987](
+https://doi.org/10.1080/02786828708959155)).
+
 ## Implementing custom binary force models
 
 ## Implementing custom unary force models

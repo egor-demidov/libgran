@@ -611,6 +611,8 @@ The following compiler flags are recommended for best performance:
 ```
 /O2 /EHsc /GL /fp:except
 ```
+It is important that you **build configuration is set to Release**. Otherwise, MSVC produces
+very slow binaries.
 
 #### Parallelization with C++ 17 algorithms
 

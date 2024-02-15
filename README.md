@@ -245,6 +245,30 @@ obtain a new spring, $\boldsymbol{\xi}'$, to be used at the next time step:
 ```math
 \boldsymbol{\xi}'=\boldsymbol{\xi}+\dot{\boldsymbol{\xi}}\Delta t
 ```
+
+#### Bonded contact force
+
+For a pair of particles that is connected with a rigid bond, we would like to approximate a rigid--body motion.
+In other words, the common reference frame of particles i and j can rotate and translate, but any translation or
+rotation of particle i relative to particle j should be restricted. The distance between all points in the pair of
+particles should be approximately preserved over time. It can be shown that when using the springs defined in the
+[contact force section](#contact-force) to restrict the motion of particles i and j, then the union of particles i and j will undergo
+rigid body motion as the stiffness of inserted springs approaches infinity. In the simulation we need to use a finite
+stiffness value, but as long as the amplitude of oscillations is much smaller than the length scale of particles in the
+simulation, the motion will, approximately, be rigid.
+
+To stabilize the system over time and dissipate any vibrational kinetic energy in the bonds, each spring is supplemented by a
+dashpot element. The force, $\mathbf{f}$, exerted on particle i by each spring in the i-j bond is given by:
+```math
+\mathbf{f}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
+```
+where $k$ is stiffness and $\gamma$ is the damping coefficient of the respective spring.
+And forces exerted on particle j are equal in magnitude and opposite in direction.
+Forces arising from the normal and tangential springs are applied to the particles.
+The force associated with the tangential spring will also give rise to torques because the tangential force is not
+collinear with $\mathbf{n}$. Forces computed from the torsion and rolling resistance springs are quasi-forces
+that are not applied to particles i and j, but are only used to compute torques that will be applied to the particles.
+
 #### Frictional contact force
 
 The model described in [Luding 2008](https://doi.org/10.1007/s10035-008-0099-x) is used to simulate
@@ -278,7 +302,7 @@ on the following condition:
 
 In case the contact is determined to be in the state of static friction,
 the tangential spring $\boldsymbol\upxi$ is incremented as described in
-the previous section and the test force is used to compute torques and,
+[contact force section](#contact-force) and the test force is used to compute torques and,
 in the case of the tangential force, is also applied to the contacting particles.
 In case the contact is determined to be in the state of dynamic friction,
 the spring is not allowed to stretch anymore. Instead, a certain extent of slipping is allowed.
@@ -291,29 +315,6 @@ and the magnitude of the Coulomb's force, $f_{C,d}$, is used to compute torques 
 The model is only enabled when the normal force is repulsive. 
 Once particles are not overlapping, the frictional force is set
 to zero and accumulated springs are reset.
-
-#### Bonded contact force
-
-For a pair of particles that is connected with a rigid bond, we would like to approximate a rigid--body motion.
-In other words, the common reference frame of particles i and j can rotate and translate, but any translation or
-rotation of particle i relative to particle j should be restricted. The distance between all points in the pair of
-particles should be approximately preserved over time. It can be shown that when using the springs defined in the
-previous subsection to restrict the motion of particles i and j, then the union of particles i and j will undergo
-rigid body motion as the stiffness of inserted springs approaches infinity. In the simulation we need to use a finite
-stiffness value, but as long as the amplitude of oscillations is much smaller than the length scale of particles in the
-simulation, the motion will, approximately, be rigid.
-
-To stabilize the system over time and dissipate any vibrational kinetic energy in the bonds, each spring is supplemented by a
-dashpot element. The force, $\mathbf{f}$, exerted on particle i by each spring in the i-j bond is given by:
-```math
-\mathbf{f}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
-```
-where $k$ is stiffness and $\gamma$ is the damping coefficient of the respective spring.
-And forces exerted on particle j are equal in magnitude and opposite in direction.
-Forces arising from the normal and tangential springs are applied to the particles.
-The force associated with the tangential spring will also give rise to torques because the tangential force is not
-collinear with $\mathbf{n}$. Forces computed from the torsion and rolling resistance springs are quasi-forces
-that are not applied to particles i and j, but are only used to compute torques that will be applied to the particles.
 
 ### Van der Waals attraction force
 

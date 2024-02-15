@@ -219,6 +219,9 @@ can be decomposed into normal (torsional) and residual (rolling) components:
 ```math
 \boldsymbol{\omega}_{ij,\rm r}=\boldsymbol{\omega}_{ij}-\boldsymbol{\omega}_{ij,\rm o}
 ```
+To constrain the four degrees of freedom, we insert four springs, as illustrated in the figure below: 
+![Illustration of the four degrees of freedom that we would like
+to constrain and the springs that are inserted for each DOF](images/degrees-of-freedom.svg)
 #### Frictional contact force
 
 

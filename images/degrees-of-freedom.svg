@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1741 1058" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1.42109e-14,-1228.17)">
+        <g id="Artboard2" transform="matrix(1.04902,0,0,1,-84.3591,1130.67)">
+            <rect x="80.417" y="97.5" width="1659.58" height="1057.5" style="fill:none;"/>
+            <g id="Right-group" serif:id="Right group" transform="matrix(0.953266,0,0,1,4.15536,0.5)">
+                <g>
+                    <g transform="matrix(1,0,0,1,765,-52.5)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial1);"/>
+                    </g>
+                    <g transform="matrix(6.12323e-17,1,-1,6.12323e-17,1890,285)">
+                        <path d="M150,420L120,420L135,675L112.352,645L90,675L105,420L75,420L112.352,375L150,420Z"/>
+                    </g>
+                </g>
+                <g>
+                    <g transform="matrix(1,0,0,1,765,322.5)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial2);"/>
+                    </g>
+                    <g transform="matrix(-6.12323e-17,1,1,6.12323e-17,555,667.5)">
+                        <path d="M150,420L120,420L135,675L112.352,645L90,675L105,420L75,420L112.352,375L150,420Z"/>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,-112.5,15)">
+                    <g transform="matrix(1,0,0,1,1252.5,-60)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial3);"/>
+                    </g>
+                    <g transform="matrix(6.12323e-17,1,1,-6.12323e-17,930,-844.182)">
+                        <g transform="matrix(-6.12323e-17,1,1,6.12323e-17,694.182,682.5)">
+                            <path d="M98.884,408.046C91.909,400.843 84.934,393.639 77.959,386.436C64.2,400.653 52.787,417.088 44.249,434.934C17.445,490.961 19.947,559.399 51.853,612.84C60.492,627.31 71.192,640.534 83.579,651.964C101.119,668.149 121.909,680.56 144.26,688.858C126.471,689.802 108.57,688.4 91.144,684.706C100.535,701.766 112.836,717.136 127.039,730.433C108.776,722.225 91.54,711.726 76.057,699.016C58.231,684.384 42.829,666.858 30.667,647.26C20.216,630.418 12.18,612.103 6.768,593.038C-6.108,547.68 -3.993,498.302 13.096,454.326C18.49,440.445 25.356,427.134 33.595,414.726C43.164,400.313 54.577,387.139 67.496,375.631C60.521,368.427 53.546,361.224 46.571,354.02C74.985,343.647 105.369,338.91 135.593,340.217C118.088,359.423 104.85,382.657 98.884,408.046Z"/>
+                        </g>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,-112.5,15)">
+                    <g transform="matrix(1,0,0,1,1252.5,315)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial4);"/>
+                    </g>
+                    <g transform="matrix(-6.12323e-17,-1,1,-6.12323e-17,930,1999.18)">
+                        <g transform="matrix(-6.12323e-17,1,1,6.12323e-17,694.182,682.5)">
+                            <path d="M98.884,408.046C91.909,400.843 84.934,393.639 77.959,386.436C64.2,400.653 52.787,417.088 44.249,434.934C17.445,490.961 19.947,559.399 51.853,612.84C60.492,627.31 71.192,640.534 83.579,651.964C101.119,668.149 121.909,680.56 144.26,688.858C126.471,689.802 108.57,688.4 91.144,684.706C100.535,701.766 112.836,717.136 127.039,730.433C108.776,722.225 91.54,711.726 76.057,699.016C58.231,684.384 42.829,666.858 30.667,647.26C20.216,630.418 12.18,612.103 6.768,593.038C-6.108,547.68 -3.993,498.302 13.096,454.326C18.49,440.445 25.356,427.134 33.595,414.726C43.164,400.313 54.577,387.139 67.496,375.631C60.521,368.427 53.546,361.224 46.571,354.02C74.985,343.647 105.369,338.91 135.593,340.217C118.088,359.423 104.85,382.657 98.884,408.046Z"/>
+                        </g>
+                    </g>
+                </g>
+                <g id="tangential-spring" serif:id="tangential spring" transform="matrix(1,0,0,1,929.583,7.63493)">
+                    <g transform="matrix(1,0,0,1,91.3492,-1134.87)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,91.3492,-1059.87)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-849.583,-1138.8)">
+                        <path d="M1129.07,1678.55L1080,1678.17L1080,1715.67L1095,1715.67L1102.5,1700.67L1117.5,1730.67L1132.5,1700.67L1147.5,1730.67L1162.5,1700.67L1173.16,1715.67L1192.5,1715.67L1192.5,1753.17L1135.93,1753.67" style="fill:none;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                </g>
+            </g>
+            <g id="Left-group" serif:id="Left group" transform="matrix(0.953266,0,0,1,4.15536,0.5)">
+                <g transform="matrix(1,0,0,1,127.5,-15)">
+                    <g transform="matrix(1,0,0,1,-300,322.5)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial5);"/>
+                    </g>
+                    <g transform="matrix(1,1.22465e-16,1.22465e-16,-1,37.5,1432.5)">
+                        <path d="M150,420L120,420L135,675L112.352,645L90,675L105,420L75,420L112.352,375L150,420Z"/>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,127.5,-15)">
+                    <g transform="matrix(1,0,0,1,90,315)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial6);"/>
+                    </g>
+                    <g transform="matrix(-1,0,0,-1,1759.18,1552.5)">
+                        <g transform="matrix(-6.12323e-17,1,1,6.12323e-17,694.182,682.5)">
+                            <path d="M98.884,408.046C91.909,400.843 84.934,393.639 77.959,386.436C64.2,400.653 52.787,417.088 44.249,434.934C17.445,490.961 19.947,559.399 51.853,612.84C60.492,627.31 71.192,640.534 83.579,651.964C101.119,668.149 121.909,680.56 144.26,688.858C126.471,689.802 108.57,688.4 91.144,684.706C100.535,701.766 112.836,717.136 127.039,730.433C108.776,722.225 91.54,711.726 76.057,699.016C58.231,684.384 42.829,666.858 30.667,647.26C20.216,630.418 12.18,612.103 6.768,593.038C-6.108,547.68 -3.993,498.302 13.096,454.326C18.49,440.445 25.356,427.134 33.595,414.726C43.164,400.313 54.577,387.139 67.496,375.631C60.521,368.427 53.546,361.224 46.571,354.02C74.985,343.647 105.369,338.91 135.593,340.217C118.088,359.423 104.85,382.657 98.884,408.046Z"/>
+                        </g>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,127.5,-15)">
+                    <g transform="matrix(1,0,0,1,-300,-52.5)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial7);"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,37.5,-262.5)">
+                        <path d="M150,420L120,420L135,675L112.352,645L90,675L105,420L75,420L112.352,375L150,420Z"/>
+                    </g>
+                </g>
+                <g transform="matrix(1,0,0,1,127.5,-15)">
+                    <g transform="matrix(1,0,0,1,90,-60)">
+                        <circle cx="450" cy="450" r="150" style="fill:url(#_Radial8);"/>
+                    </g>
+                    <g transform="matrix(1,0,0,-1,-679.182,1162.5)">
+                        <g transform="matrix(-6.12323e-17,1,1,6.12323e-17,694.182,682.5)">
+                            <path d="M98.884,408.046C91.909,400.843 84.934,393.639 77.959,386.436C64.2,400.653 52.787,417.088 44.249,434.934C17.445,490.961 19.947,559.399 51.853,612.84C60.492,627.31 71.192,640.534 83.579,651.964C101.119,668.149 121.909,680.56 144.26,688.858C126.471,689.802 108.57,688.4 91.144,684.706C100.535,701.766 112.836,717.136 127.039,730.433C108.776,722.225 91.54,711.726 76.057,699.016C58.231,684.384 42.829,666.858 30.667,647.26C20.216,630.418 12.18,612.103 6.768,593.038C-6.108,547.68 -3.993,498.302 13.096,454.326C18.49,440.445 25.356,427.134 33.595,414.726C43.164,400.313 54.577,387.139 67.496,375.631C60.521,368.427 53.546,361.224 46.571,354.02C74.985,343.647 105.369,338.91 135.593,340.217C118.088,359.423 104.85,382.657 98.884,408.046Z"/>
+                        </g>
+                    </g>
+                </g>
+                <g id="nromal-spring" serif:id="nromal spring" transform="matrix(1,0,0,1,-0.416667,-0.5)">
+                    <g transform="matrix(1,0,0,1,83.8492,-1142.24)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,83.8492,-1066.74)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,80.4167,-1130.67)">
+                        <path d="M195,1666.6L195,1678.17L180,1685.67L210,1701.17L180,1715.67L195,1723.17L195,1735.24" style="fill:none;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                </g>
+                <g id="torsional-spring" serif:id="torsional spring" transform="matrix(1,0,0,1,389.583,-7.36507)">
+                    <g transform="matrix(1,0,0,1,-13.6508,-1180.37)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-309.583,-1123.8)">
+                        <path d="M487.5,1621.6L487.5,1670.67C487.5,1670.67 614.731,1670.26 637.5,1670.67C640,1670.72 640,1678.12 637.5,1678.17C615.817,1678.58 545.423,1677.76 525,1678.17C522.501,1678.22 522.501,1685.72 525,1685.67C545.702,1685.25 615.682,1685.54 637.5,1685.67C640,1685.68 640,1693.19 637.5,1693.17C615.961,1693.03 543.894,1693.04 525,1693.17C522.5,1693.19 522.5,1700.65 525,1700.67C543.75,1700.8 616.24,1700.54 637.5,1700.67C640,1700.68 640,1708.15 637.5,1708.17C616.375,1708.3 551.28,1707.48 525,1708.17C522.501,1708.24 522.5,1715.66 525,1715.67C551.529,1715.8 682.5,1715.67 682.5,1715.67L682.5,1764.74" style="fill:none;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,181.349,-1030.37)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                </g>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,-2.99414,-14.5)">
+                <g transform="matrix(50,0,0,50,625.283,1145.82)">
+                </g>
+                <text x="319.717px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">Normal DOFs</text>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,897.843,-20.3154)">
+                <g transform="matrix(50,0,0,50,658.694,1145.82)">
+                </g>
+                <text x="286.306px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">T<tspan x="311.306px 339.114px " y="1145.82px 1145.82px ">an</tspan>gential DOFs</text>
+            </g>
+            <g id="Oval-textbox" serif:id="Oval textbox" transform="matrix(0.953266,0,0,1,-303.67,-315)">
+                <g transform="matrix(1,0,0,1,80.4167,-1130.67)">
+                    <ellipse cx="517.5" cy="2139.42" rx="142.5" ry="63.75" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,279.167,-125.892)">
+                    <text x="202.069px" y="1130.89px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">Normal (elasticity)</text>
+                    <g transform="matrix(29.1667,0,0,29.1667,358.47,1161.01)">
+                    </g>
+                    <text x="279.03px" y="1161.01px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">spring</text>
+                </g>
+            </g>
+            <g id="Oval-textbox1" serif:id="Oval textbox" transform="matrix(0.953266,0,0,1,68.1036,-315)">
+                <g transform="matrix(1,0,0,1,80.4167,-1130.67)">
+                    <ellipse cx="517.5" cy="2139.42" rx="142.5" ry="63.75" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,279.167,-125.892)">
+                    <text x="201.222px" y="1130.89px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">T<tspan x="215.805px 232.026px " y="1130.89px 1130.89px ">or</tspan>sion resistance</text>
+                    <g transform="matrix(29.1667,0,0,29.1667,358.47,1161.01)">
+                    </g>
+                    <text x="279.03px" y="1161.01px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">spring</text>
+                </g>
+            </g>
+            <g id="Oval-textbox2" serif:id="Oval textbox" transform="matrix(0.953266,0,0,1,592.4,-303.75)">
+                <g transform="matrix(1,0,0,1,80.4167,-1130.67)">
+                    <ellipse cx="517.5" cy="2139.42" rx="142.5" ry="63.75" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,279.167,-125.892)">
+                    <text x="195.546px" y="1130.89px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">T<tspan x="210.13px 226.351px " y="1130.89px 1130.89px ">an</tspan>gential (friction)</text>
+                    <g transform="matrix(29.1667,0,0,29.1667,358.47,1161.01)">
+                    </g>
+                    <text x="279.03px" y="1161.01px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">spring</text>
+                </g>
+            </g>
+            <g id="Oval-textbox3" serif:id="Oval textbox" transform="matrix(0.953266,0,0,1,949.875,-307.5)">
+                <g transform="matrix(1,0,0,1,80.4167,-1130.67)">
+                    <ellipse cx="517.5" cy="2139.42" rx="142.5" ry="63.75" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,279.167,-125.892)">
+                    <text x="203.65px" y="1130.89px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">Rolling resistance</text>
+                    <g transform="matrix(29.1667,0,0,29.1667,358.47,1161.01)">
+                    </g>
+                    <text x="279.03px" y="1161.01px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:29.167px;">spring</text>
+                </g>
+            </g>
+            <g id="Rolling-resistance-spring" serif:id="Rolling resistance spring" transform="matrix(1.16038,0,0,1,-12.8976,0)">
+                <g id="torsional-spring1" serif:id="torsional spring" transform="matrix(5.03029e-17,1,0.821509,-6.12323e-17,1017.46,152.083)">
+                    <g transform="matrix(1,0,0,1,-13.6508,-1180.37)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-309.583,-1123.8)">
+                        <path d="M487.5,1621.6L487.5,1670.67C487.5,1670.67 614.731,1670.26 637.5,1670.67C640,1670.72 640,1678.12 637.5,1678.17C615.817,1678.58 545.423,1677.76 525,1678.17C522.501,1678.22 522.501,1685.72 525,1685.67C545.702,1685.25 615.682,1685.54 637.5,1685.67C640,1685.68 640,1693.19 637.5,1693.17C615.961,1693.03 543.894,1693.04 525,1693.17C522.5,1693.19 522.5,1700.65 525,1700.67C543.75,1700.8 616.24,1700.54 637.5,1700.67C640,1700.68 640,1708.15 637.5,1708.17C616.375,1708.3 551.28,1707.48 525,1708.17C522.501,1708.24 522.5,1715.66 525,1715.67C551.529,1715.8 821.567,1715.73 821.567,1715.73" style="fill:none;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                </g>
+                <g id="torsional-spring2" serif:id="torsional spring" transform="matrix(5.03029e-17,-1,0.821509,6.12323e-17,1017.46,1036.98)">
+                    <g transform="matrix(1,0,0,1,-13.6508,-1180.37)">
+                        <circle cx="191.567" cy="1674.74" r="3.433" style="fill:white;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-309.583,-1123.8)">
+                        <path d="M487.5,1621.6L487.5,1670.67C487.5,1670.67 614.731,1670.26 637.5,1670.67C640,1670.72 640,1678.12 637.5,1678.17C615.817,1678.58 545.423,1677.76 525,1678.17C522.501,1678.22 522.501,1685.72 525,1685.67C545.702,1685.25 615.682,1685.54 637.5,1685.67C640,1685.68 640,1693.19 637.5,1693.17C615.961,1693.03 543.894,1693.04 525,1693.17C522.5,1693.19 522.5,1700.65 525,1700.67C543.75,1700.8 616.24,1700.54 637.5,1700.67C640,1700.68 640,1708.15 637.5,1708.17C616.375,1708.3 551.28,1707.48 525,1708.17C522.501,1708.24 522.5,1715.66 525,1715.67C551.529,1715.8 682.5,1715.67 682.5,1715.67" style="fill:none;stroke:black;stroke-width:4.17px;"/>
+                    </g>
+                </g>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,-76.8723,-930)">
+                <g transform="matrix(50,0,0,50,278.054,1145.82)">
+                </g>
+                <text x="216.946px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">(a)</text>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,287.752,-928.315)">
+                <g transform="matrix(50,0,0,50,278.054,1145.82)">
+                </g>
+                <text x="216.946px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">(b)</text>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,809.665,-928.315)">
+                <g transform="matrix(50,0,0,50,276.65,1145.82)">
+                </g>
+                <text x="218.35px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">(c)</text>
+            </g>
+            <g transform="matrix(0.953266,0,0,1,1162.37,-930)">
+                <g transform="matrix(50,0,0,50,278.054,1145.82)">
+                </g>
+                <text x="216.946px" y="1145.82px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:50px;">(d)</text>
+            </g>
+        </g>
+    </g>
+    <defs>
+        <radialGradient id="_Radial1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial4" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial5" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial6" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial7" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+        <radialGradient id="_Radial8" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(133.907,102.904,-102.904,133.907,375,391.732)"><stop offset="0" style="stop-color:rgb(235,235,235);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(163,163,163);stop-opacity:1"/></radialGradient>
+    </defs>
+</svg>

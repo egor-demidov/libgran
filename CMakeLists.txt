@@ -7,7 +7,7 @@ include(CTest)
 
 set(ERROR_ON_WARN OFF)
 
-set(CMAKE_LIBGRAN_USE_OMP OFF)
+set(CMAKE_LIBGRAN_USE_OMP ON)
 
 if (${CMAKE_LIBGRAN_USE_OMP})
     add_compile_definitions(LIBGRAN_USE_OMP)

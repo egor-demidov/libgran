@@ -323,7 +323,7 @@ add_compile_definitions(LIBGRAN_USE_OMP)
 ```
 Note that for improved performance / parallelization capabilities, additional compiler flags might be required on your
 system. Platform- and toolchain-specific instructions are provided below. Also, the optimal number of threads depends on
-the size of the system. Using too many threads can be detrimental to performance.
+the size of the granular system. Using too many threads can be detrimental to performance.
 
 ### Linux & GNU C++ compiler
 

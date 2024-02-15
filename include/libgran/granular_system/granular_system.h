@@ -9,6 +9,12 @@
 #include <libtimestep/rotational_step_handler/rotational_step_handler.h>
 #include <libtimestep/rotational_system/rotational_system.h>
 
+#ifndef USE_OMP
+#define binary_system_implementation rotational_binary_system
+#else
+#define binary_system_implementation rotational_binary_system_omp
+#endif //USE_OMP
+
 template<typename T1, typename T2>
 std::pair<T1, T2> operator + (std::pair<T1, T2> const & lhs, std::pair<T1, T2> const & rhs) {
     return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);
@@ -87,7 +93,7 @@ template <
     typename step_handler_t,
     typename binary_force_functor_container_t,
     typename unary_force_functor_container_t>
-class granular_system : public rotational_binary_system<field_value_t, real_t, integrator_t, step_handler_t,
+class granular_system : public binary_system_implementation<field_value_t, real_t, integrator_t, step_handler_t,
         granular_system<field_value_t, real_t, integrator_t, step_handler_t,
         binary_force_functor_container_t, unary_force_functor_container_t>,
         (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)> {
@@ -100,7 +106,7 @@ public:
                     field_container_t theta0, field_container_t omega0,
                     real_t t0, field_value_t field_zero, real_t real_zero, step_handler_t<field_container_t, field_value_t> & step_handler,
                     binary_force_functor_container_t binary_force_functors, unary_force_functor_container_t unary_force_functors) :
-            rotational_binary_system<field_value_t, real_t, integrator_t, step_handler_t,
+            binary_system_implementation<field_value_t, real_t, integrator_t, step_handler_t,
                     granular_system<field_value_t, real_t, integrator_t, step_handler_t, binary_force_functor_container_t, unary_force_functor_container_t>,
                     (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)>
                     (std::move(x0), std::move(v0), std::move(theta0),

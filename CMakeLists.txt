@@ -7,13 +7,19 @@ include(CTest)
 
 set(ERROR_ON_WARN OFF)
 
+set(CMAKE_USE_OMP ON)
+
+if (${CMAKE_USE_OMP})
+    add_compile_definitions(USE_OMP)
+endif ()
+
 if (${MSVC})
     add_compile_definitions(_USE_MATH_DEFINES)
     add_compile_options(/O2)
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})
-    set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3 -march=native -flto=auto")
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3 -march=native -flto=auto -fopenmp")
     if (${ERROR_ON_WARN})
         set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
     endif ()

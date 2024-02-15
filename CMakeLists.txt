@@ -15,7 +15,7 @@ endif ()
 
 if (${MSVC})
     add_compile_definitions(_USE_MATH_DEFINES)
-    add_compile_options(/O2)
+    add_compile_options(/O2 /openmp)
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})

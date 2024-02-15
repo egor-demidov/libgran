@@ -248,7 +248,7 @@ obtain a new spring, $\boldsymbol{\xi}'$, to be used at the next time step:
 
 #### Bonded contact force
 
-For a pair of particles that is connected with a rigid bond, we would like to approximate a rigid--body motion.
+For a pair of particles that is connected with a rigid bond, we would like to approximate a rigid-body motion.
 In other words, the common reference frame of particles i and j can rotate and translate, but any translation or
 rotation of particle i relative to particle j should be restricted. The distance between all points in the pair of
 particles should be approximately preserved over time. It can be shown that when using the springs defined in the
@@ -401,3 +401,7 @@ Then, every time you run your simulation, the number of threads can be set prior
 ```shell
 export OMP_NUM_THREADS=4
 ```
+
+## Acknowledgement
+
+- Project funded by U.S. National Science Foundation, award #AGS-2222104

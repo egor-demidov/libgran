@@ -254,11 +254,11 @@ for a more detailed description. Luding's model uses the same four springs descr
 in an earlier section to compute normal and tangential forces, rolling
 and torsion resistance torques. Instead of directly setting force proportional
 to spring elongation, a certain degree of slip is allowed between particles in contact.
-That is done by computing a test force, $\mathbf{f}_{0}$,
+That is done by computing a test force, $\mathbf{f}_{0}$:
 ```math
-\mathbf{f}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
+\mathbf{f}_{0}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
 ```
-and deciding whether static or dynamic friction should be used based on Coulomb's law of friction,
+and deciding whether static or dynamic friction should be used based on Coulomb's law of friction:
 ```math
 f_{C,s}=\mu_s f_{\rm n}
 ```

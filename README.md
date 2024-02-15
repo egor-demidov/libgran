@@ -427,9 +427,34 @@ set OMP_NUM_THREADS=4
 
 ### macOS & LLVM/clang compiler
 
+LLVM/clang compiler has to be used with OpenMP parallelization.
+LLVM/clang and OpenMP need to be installed:
+```shell
+brew install llvm libomp
+```
+To use LLVM/clang instead of AppleClang with CMake, run:
+```shell
+export CC=/usr/local/opt/llvm/bin/clang
+export CXX=/usr/local/opt/llvm/bin/clang++
+cmake <path to CMakeLists.txt>
+```
+The following compiler flags are recommended for best performance:
+```
+-O3 -fopenmp -flto -march=native
+```
+The following linker flags are recommended for best performance:
+```
+-lomp -flto
+```
+Every time you run your simulation, the number of threads can be set prior to execution with:
+```shell
+export OMP_NUM_THREADS=4
+```
+
 ### macOS & AppleClang compiler
 
-The default AppleClang compiler bundled with XCode **is not supported**, because it does
+The default AppleClang compiler bundled with XCode **is not supported**, because it does not support
+C++ 17 parallel algorithms or OpenMP
 
 ## Acknowledgement
 

@@ -223,10 +223,16 @@ To constrain the four degrees of freedom, we insert four springs, as illustrated
 ![Illustration of the four degrees of freedom that we would like
 to constrain and the springs that are inserted for each DOF](images/degrees-of-freedom.svg)
 
-The length of the normal spring can be computed directly at any point in the simulation from positions of the particles,
+The length of the normal spring, $\delta$, can be computed directly at any point in the simulation from positions of the particles,
 $\mathbf{x}$, and their radius, $r$:
 ```math
 \delta=\lVert\mathbf{x}_j-\mathbf{x}_i\rVert-2r
+```
+The remaining three springs have zero length at the time the contact is formed and have their lengths accumulated
+throughout the duration of the contact. Let a spring vector be $\boldsymbol\xi$. Then the rate of stretching /
+contraction of a spring, $\dot{\boldsymbol\xi}$, is given by:
+```math
+\dot{\boldsymbol\xi}=\mathbf{v}_{ij,\rm t}
 ```
 
 #### Frictional contact force

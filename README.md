@@ -240,7 +240,10 @@ contraction of a spring, $\dot{\boldsymbol\xi}$, is given by:
 ```math
 \dot{\boldsymbol\xi}_{\rm r}=\boldsymbol{\omega}_{ij,\rm r}\times a\mathbf{n}
 ```
-
+Then, as long as the contact lasts, spring $\dot{\boldsymbol{\xi}}$ is incremented at each time step:
+```math
+\boldsymbol{\xi}=\boldsymbol{\xi}'+\dot{\boldsymbol{\xi}}\Delta t
+```
 #### Frictional contact force
 
 

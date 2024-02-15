@@ -7,13 +7,14 @@
 
 #include <libtimestep/rotational_integrator/rotational_integrator.h>
 #include <libtimestep/rotational_step_handler/rotational_step_handler.h>
-#include <libtimestep/rotational_system/rotational_system.h>
 
 #ifndef LIBGRAN_USE_OMP
 #define binary_system_implementation rotational_binary_system
+#include <libtimestep/rotational_system/rotational_binary_system.h>
 #pragma message("libgran: using C++ 17 parallel algorithms")
 #else
 #define binary_system_implementation rotational_binary_system_omp
+#include <libtimestep/rotational_system/rotational_binary_system_omp.h>
 #pragma message("libgran: using OpenMP parallelization")
 #endif //LIBGRAN_USE_OMP
 

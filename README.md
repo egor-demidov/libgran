@@ -247,8 +247,50 @@ obtain a new spring, $\boldsymbol{\xi}'$, to be used at the next time step:
 ```
 #### Frictional contact force
 
-The frictional contact model uses the accumulated springs defined in the previous section in conjunction with
-Coulomb's law of friction, as described in [Luding 2008](https://doi.org/10.1007/s10035-008-0099-x).
+The model described in [Luding 2008](https://doi.org/10.1007/s10035-008-0099-x) is used to simulate
+frictional contacts between non-bonded particles. A brief description
+is provided here and the reader is referred to [Luding 2008](https://doi.org/10.1007/s10035-008-0099-x)
+for a more detailed description. Luding's model uses the same four springs described
+in an earlier section to compute normal and tangential forces, rolling
+and torsion resistance torques. Instead of directly setting force proportional
+to spring elongation, a certain degree of slip is allowed between particles in contact.
+That is done by computing a test force, $\mathbf{f}_{0}$,
+```math
+\mathbf{f}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
+```
+and deciding whether static or dynamic friction should be used based on Coulomb's law of friction,
+```math
+f_{C,s}=\mu_s f_{\rm n}
+```
+```math
+f_{C,d}=\mu_d f_{\rm n}
+```
+where $\mu_s$ is the static friction coefficient, $\mu_d$ is the dynamic friction coefficient,
+and $f_n$ is the magnitude of the normal force between the two particles.
+Then a choice is made whether static or dynamic friction should be used based
+on the following condition:
+```math
+\text{if}\ \lVert\mathbf{f}_0\rVert\leq f_{C,s}\ \text{use static friction}
+```
+```math
+\text{if}\ \lVert\mathbf{f}_0\rVert> f_{C,s}\ \text{use dynamic friction}
+```
+
+In case the contact is determined to be in the state of static friction,
+the tangential spring $\boldsymbol\upxi$ is incremented as described in
+the previous section and the test force is used to compute torques and,
+in the case of the tangential force, is also applied to the contacting particles.
+In case the contact is determined to be in the state of dynamic friction,
+the spring is not allowed to stretch anymore. Instead, a certain extent of slipping is allowed.
+The spring to be used at the next iteration, $\boldsymbol\upxi'$, is set to
+```math
+\boldsymbol\upxi'=-\frac{1}{k}\left(f_{C,d}\frac{\mathbf{f}_0}{\lVert \mathbf{f}_0\rVert}+\gamma\dot{\boldsymbol\upxi}\right)
+```
+and the magnitude of the Coulomb's force, $f_{C,d}$, is used to compute torques and, if applicable, accelerate the particles in contact.
+
+The model is only enabled when the normal force is repulsive. 
+Once particles are not overlapping, the frictional force is set
+to zero and accumulated springs are reset.
 
 #### Bonded contact force
 
@@ -288,7 +330,7 @@ coincide with the normal unit vector $\bf n$ defined earlier:
 \mathbf{f}=-\frac{A}{6}\left[\frac{(4r+2\delta)}{(4r+\delta)\delta}-\frac{2}{(2r+\delta)}-\frac{4r^2}{(2r+\delta)^3}-\frac{2r^2(4r+2\delta)}{(4r+\delta)^2\delta^2}\right]\mathbf{n}
 ```
 Since in the limit as $\delta$ approaches $0$ the magnitude of force (and potential energy) becomes infinite,
-a saturation distance $\delta_0$ is introduced. The magnitude of $\delta_0$ varies between 0.4 and 1 nm ([Ranade 1987](
+a saturation distance $\delta_0$ is introduced. Attractive force does not increase past the saturation distance. The magnitude of $\delta_0$ varies between 0.4 and 1 nm ([Ranade 1987](
 https://doi.org/10.1080/02786828708959155)).
 
 ## Implementing custom binary force models

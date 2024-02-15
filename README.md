@@ -341,9 +341,9 @@ Van der Waals attraction are assembled and collided with each other. We will use
 functionality. If your project is a git repository, the dependencies for this example can be installed as
 git submodules:
 ```shell
-git submodule add deps/eigen https://gitlab.com/libeigen/eigen.git
-git submodule add deps/libgran https://github.com/egor-demidov/libgran
-git submodule add deps/libtimestep https://github.com/egor-demidov/libtimestep
+git submodule add https://gitlab.com/libeigen/eigen.git deps/eigen
+git submodule add https://github.com/egor-demidov/libgran deps/libgran
+git submodule add https://github.com/egor-demidov/libtimestep deps/libtimestep
 ```
 Then add the include directories in your CMakeLists.txt file:
 ```cmake
@@ -391,7 +391,7 @@ Okay, now we can proceed to implement the main function. After the alias definit
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 5.0e-9;
+    const double t_tot = 5.0e-8;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;
@@ -424,7 +424,7 @@ int main() {
 We just declared and initialized the simulation constants. They include general parameters, such as time step size,
 number of time steps, number of data dumps, etc. The constants in this section also contain parameters
 for the force models that we are going to use. The list of parameters that each force models requires is provided
-in the [class reference](#class-reference) section.
+in the [class reference](#class-reference) section. If `M_PI` is undefined, add the `_USE_MATH_DEFINES` compile definition.
 
 Now, after the definition of constants, we can initialize the initial conditions for the simulation. 
 We need to provide four buffers populated with initial values, each of size $N$, where $N$ is the number of particles
@@ -443,16 +443,16 @@ for (size_t i = 0; i < 3; i ++) {
     auto x = double(i) * 2.0 * r_part;
     for (size_t j = 0; j < 3; j ++) {
         auto y = double(j) * 2.0 * r_part;
-        for(size_t n = 0; n < 3;d n ++) {
+        for(size_t n = 0; n < 3; n ++) {
             auto z = double(n) * 2.0 * r_part;
             
             // Add particle to cube 1
-            x0.empalce_back(x, y, z);
+            x0.emplace_back(x, y, z);
             // Set velocity of the newly created particle
             v0.emplace_back(0.5, 0.0, 0.0);
             
             // Add particle to cube 2
-            x0.empalce_back(x + x_offset, y + y_offset, z);
+            x0.emplace_back(x + x_offset, y + y_offset, z);
             // Set velocity of the newly created particle
             v0.emplace_back(-0.5, 0.0, 0.0);
         }
@@ -517,7 +517,7 @@ void dump_particle_positions(std::string const & dir, size_t count,
     std::vector<Eigen::Vector3d> const & x, double r_part) {
     
     std::stringstream out_file_name;
-    out_file_name << dir << "/" << count << "_particles.csv";
+    out_file_name << dir << "/particles_" << count << ".csv";
     std::ofstream ofs(out_file_name.str());
     
     if (!ofs.good()) {
@@ -552,8 +552,8 @@ corresponding time step.
 If your project is a git repository, libgran can be added to it as a git submodule. For example, to install libgran and
 its dependency libtimestep in a directory named deps under your project root, run:
 ```shell
-git submodule add deps/libgran https://github.com/egor-demidov/libgran
-git submodule add deps/libtimestep https://github.com/egor-demidov/libtimestep
+git submodule add https://github.com/egor-demidov/libgran deps/libgran
+git submodule add https://github.com/egor-demidov/libtimestep deps/libtimestep
 ```
 Since libgran and libtimestep are header-only libraries, they can be included in your project without linking against
 an object. Simply, add the include directories of libgran and libtimestep in your CMakeLists.txt file:

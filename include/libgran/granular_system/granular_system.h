@@ -9,11 +9,11 @@
 #include <libtimestep/rotational_step_handler/rotational_step_handler.h>
 #include <libtimestep/rotational_system/rotational_system.h>
 
-#ifndef USE_OMP
+#ifndef LIBGRAN_USE_OMP
 #define binary_system_implementation rotational_binary_system
 #else
 #define binary_system_implementation rotational_binary_system_omp
-#endif //USE_OMP
+#endif //LIBGRAN_USE_OMP
 
 template<typename T1, typename T2>
 std::pair<T1, T2> operator + (std::pair<T1, T2> const & lhs, std::pair<T1, T2> const & rhs) {

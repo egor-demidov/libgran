@@ -262,3 +262,60 @@ obtain a new spring, $\boldsymbol{\xi}'$, to be used at the next time step:
 ## Simulation example
 
 ## Class reference
+
+## Installation
+
+If your project is a git repository, libgran can be added to it as a git submodule. For example, to install libgran and
+its dependency libtimestep in a directory named deps under your project root, run:
+```shell
+git submodule add deps/libgran https://github.com/egor-demidov/libgran
+git submodule add deps/libtimestep https://github.com/egor-demidov/libtimestep
+```
+Since libgran and libtimestep are header-only libraries, they can be included in your project without linking against
+an object. Simply, add the include directories of libgran and libtimestep in your CMakeLists.txt file:
+```cmake
+include_directories(deps/libgran/include)
+include_directories(deps/libtimestep/include)
+```
+By default, libgran uses C++ 17 parallel algorithms for computation of binary interactions. In case you would like to
+use OpenMP instead, `LIBGRAN_USE_OMP` compile definition needs to be added. In your CMakeLists.txt, add the following
+line:
+```cmake
+add_compile_definitions(LIBGRAN_USE_OMP)
+```
+Note that for improved performance / parallelization capabilities, additional compiler flags might be required on your
+system. Platform- and toolchain-specific instructions are provided below.
+
+### Linux & GNU C++ compiler
+
+The following compiler flags are recommended for best performance:
+```
+-O3 -flto=auto -march=native
+```
+
+#### Parallelization with C++ 17 algorithms
+
+If you opted for C++ 17 parallel algorithms (default), Intel TBB library needs to be installed and linked against.
+On Ubuntu, TBB can be installed with:
+```shell
+sudo apt install libtbb2-dev
+```
+Then, in your CMakeLists.txt file, add:
+```cmake
+find_package(TBB REQUIRED)
+
+# Set up your targets...
+
+target_link_libraries(<your target name> PRIVATE TBB::tbb)
+```
+
+#### Parallelization with OpenMP
+
+If you opted for OpenMP, the following flag needs to be added:
+```
+-fopenmp
+```
+Then, every time you run your simulation, the number of threads can be set prior to execution with:
+```shell
+export OMP_NUM_THREADS=4
+```

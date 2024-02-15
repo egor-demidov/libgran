@@ -247,9 +247,31 @@ obtain a new spring, $\boldsymbol{\xi}'$, to be used at the next time step:
 ```
 #### Frictional contact force
 
-
+The frictional contact model uses the accumulated springs defined in the previous section in conjunction with
+Coulomb's law of friction, as described in [Luding 2008](https://doi.org/10.1007/s10035-008-0099-x).
 
 #### Bonded contact force
+
+For a pair of particles that is connected with a rigid bond, we would like to approximate a rigid--body motion.
+In other words, the common reference frame of particles i and j can rotate and translate, but any translation or
+rotation of particle i relative to particle j should be restricted. The distance between all points in the pair of
+particles should be approximately preserved over time. It can be shown that when using the springs defined in the
+previous subsection to restrict the motion of particles i and j, then the union of particles i and j will undergo
+rigid body motion as the stiffness of inserted springs approaches infinity. In the simulation we need to use a finite
+stiffness value, but as long as the amplitude of oscillations is much smaller than the length scale of particles in the
+simulation, the motion will, approximately, be rigid.
+
+To stabilize the system over time and dissipate any vibrational kinetic energy in the bonds, each spring is supplemented by a
+dashpot element. The force, $\mathbf{f}$, exerted on particle i by each spring in the i-j bond is given by:
+```math
+\mathbf{f}=k\boldsymbol{\xi}+\gamma\dot{\boldsymbol{\xi}}
+```
+where $k$ is stiffness and $\gamma$ is the damping coefficient of the respective spring.
+And forces exerted on particle j are equal in magnitude and opposite in direction.
+Forces arising from the normal and tangential springs are applied to the particles.
+The force associated with the tangential spring will also give rise to torques because the tangential force is not
+collinear with $\mathbf{n}$. Forces computed from the torsion and rolling resistance springs are quasi-forces
+that are not applied to particles i and j, but are only used to compute torques that will be applied to the particles.
 
 ### Van der Waals attraction force
 
@@ -284,7 +306,8 @@ line:
 add_compile_definitions(LIBGRAN_USE_OMP)
 ```
 Note that for improved performance / parallelization capabilities, additional compiler flags might be required on your
-system. Platform- and toolchain-specific instructions are provided below.
+system. Platform- and toolchain-specific instructions are provided below. Also, the optimal number of threads depends on
+the size of the system. Using too many threads can be detrimental to performance.
 
 ### Linux & GNU C++ compiler
 

@@ -11,8 +11,10 @@
 
 #ifndef LIBGRAN_USE_OMP
 #define binary_system_implementation rotational_binary_system
+#pragma message("libgran: using C++ 17 parallel algorithms")
 #else
 #define binary_system_implementation rotational_binary_system_omp
+#pragma message("libgran: using OpenMP parallelization")
 #endif //LIBGRAN_USE_OMP
 
 template<typename T1, typename T2>

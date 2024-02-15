@@ -15,8 +15,10 @@ endif ()
 
 if (${MSVC})
     add_compile_definitions(_USE_MATH_DEFINES)
-#    add_compile_options(/O2 /openmp)
-    set(CMAKE_CXX_FLAGS "/O2 /openmp /EHsc /LTCG")
+    set(CMAKE_CXX_FLAGS "/O2 /openmp /EHsc /GL /fp:except /Wall")
+    if (${ERROR_ON_WARN})
+        set(CMAKE_CXX_FLAGS "/Wx ${CMAKE_CXX_FLAGS}")
+    endif ()
 endif ()
 
 if (${CMAKE_COMPILER_IS_GNUCXX})

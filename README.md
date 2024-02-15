@@ -425,6 +425,12 @@ Then, every time you run your simulation, the number of threads can be set prior
 set OMP_NUM_THREADS=4
 ```
 
+### macOS & LLVM/clang compiler
+
+### macOS & AppleClang compiler
+
+The default AppleClang compiler bundled with XCode **is not supported**, because it does
+
 ## Acknowledgement
 
 - Project funded by U.S. National Science Foundation, award #AGS-2222104

@@ -15,7 +15,10 @@ jobs:
         with:
           submodules: recursive
       - run: brew install llvm libomp
-      - run: export CC=/usr/local/opt/llvm/bin/clang && export CXX=/usr/local/opt/llvm/bin/clang++ && cmake .
+      - run: >
+          export PATH="/usr/local/opt/llvm/bin:$PATH" && export LDFLAGS="-L/usr/local/opt/llvm/lib" &&
+          export CPPFLAGS="-I/usr/local/opt/llvm/include" && export CC=/usr/local/opt/llvm/bin/clang &&
+          export CXX=/usr/local/opt/llvm/bin/clang++ && cmake .
       - run: cmake --build .
       - run: ctest
 

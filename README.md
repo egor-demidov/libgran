@@ -402,6 +402,30 @@ Then, every time you run your simulation, the number of threads can be set prior
 export OMP_NUM_THREADS=4
 ```
 
+### Windows & MSVC compiler
+
+The following compiler flags are recommended for best performance:
+```
+/O2 /EHsc /GL /fp:except
+```
+
+#### Parallelization with C++ 17 algorithms
+
+C++ 17 parallel algorithms work out of the box under MSVC without the need for additional compiler
+flags or libraries.
+
+#### Parallelization with OpenMP
+
+If you opted for OpenMP, the following flag needs to be added:
+```
+/openmp
+```
+Then, every time you run your simulation, the number of threads can be set prior to execution with:
+```shell
+set OMP_NUM_THREADS=4
+```
+
 ## Acknowledgement
 
 - Project funded by U.S. National Science Foundation, award #AGS-2222104
+

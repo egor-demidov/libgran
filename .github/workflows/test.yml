@@ -7,6 +7,17 @@ on:
     branches: [ main ]
 
 jobs:
+  checkout-and-ctest-macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - run: cmake .
+      - run: cmake --build .
+      - run: ctest
+
   checkout-and-ctest-ubuntu:
     runs-on: ubuntu-latest
 

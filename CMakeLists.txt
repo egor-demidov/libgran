@@ -13,6 +13,13 @@ if (${CMAKE_LIBGRAN_USE_OMP})
     add_compile_definitions(LIBGRAN_USE_OMP)
 endif ()
 
+if (${APPLE})
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3 -fopenmp")
+    if (${ERROR_ON_WARN})
+        set(CMAKE_CXX_FLAGS "-Werror ${CMAKE_CXX_FLAGS}")
+    endif ()
+endif ()
+
 if (${MSVC})
     add_compile_definitions(_USE_MATH_DEFINES)
     set(CMAKE_CXX_FLAGS "/O2 /openmp /EHsc /GL /fp:except /Wall")

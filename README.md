@@ -334,13 +334,216 @@ Since in the limit as $\delta$ approaches $0$ the magnitude of force (and potent
 a saturation distance $\delta_0$ is introduced. Attractive force does not increase past the saturation distance. The magnitude of $\delta_0$ varies between 0.4 and 1 nm ([Ranade 1987](
 https://doi.org/10.1080/02786828708959155)).
 
+## Simulation example
+
+In this section, we set up a simulation where two cubes made up of particles held together by friction and
+Van der Waals attraction are assembled and collided with each other. We will use libeigen for linear algebra
+functionality. If your project is a git repository, the dependencies for this example can be installed as
+git submodules:
+```shell
+git submodule add deps/eigen https://gitlab.com/libeigen/eigen.git
+git submodule add deps/libgran https://github.com/egor-demidov/libgran
+git submodule add deps/libtimestep https://github.com/egor-demidov/libtimestep
+```
+Then add the include directories in your CMakeLists.txt file:
+```cmake
+include_directories(deps/libtimestep/include)
+include_directories(deps/libgran/include)
+include_directories(deps/eigen)
+```
+See [installation](#installation) section for more information about compiler flags and parallelization capabilities.
+
+Now that the dependencies are met, we can start writing the driver program. In your main.cpp, include
+the necessary headers:
+```c++
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include <sstream>
+#include <fstream>
+
+// Using Eigen for linear algebra
+#include <Eigen/Eigen>
+
+#include <libgran/contact_force/contact_force.h>
+#include <libgran/hamaker_force/hamaker_force.h>
+#include <libgran/granular_system/granular_system.h>
+```
+In addition to some STL headers and libeigen, we included three libgran headers. Two of them define the force models
+that we want to use in this simulation, contact force and Van der Waals force, and the thord header defines
+the granular system object.
+
+Now, let us "assemble" the templates that we will use and create shorter aliases for the produced types:
+```c++
+using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
+using vdw_force_dunctor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
+using binary_force_container_t
+    = binary_force_functor_container<Eigen::Vector3d, double,
+    contact_force_functor_t, vdw_force_dunctor_t>; // Binary force container
+
+using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double>; // Unary force container (empty)
+
+using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
+    rotational_step_handler, binary_force_container_t, unary_force_container_t>; // Granular system representation
+```
+Okay, now we can proceed to implement the main function. After the alias definitions, write:
+```c++
+int main() {
+    // General simulation parameters
+    const double dt = 1e-13;
+    const double t_tot = 5.0e-9;
+    const auto n_steps = size_t(t_tot / dt);
+    const size_t n_dumps = 300;
+    const size_t dump_period = n_steps / n_dumps;
+    const size_t n_thermo_dumps = 10000;
+    const size_t thermo_dump_period = n_steps / n_thermo_dumps;
+
+    // General parameters
+    const double rho = 1700.0;
+    const double r_part = 1.4e-8;
+    const double mass = 4.0 / 3.0 * M_PI * pow(r_part, 3.0) * rho;
+    const double inertia = 2.0 / 5.0 * mass * pow(r_part, 2.0);
+
+    // Parameters for the contact model
+    const double k = 10000.0;
+    const double gamma_n = 5.0e-9;
+    const double mu = 1.0;
+    const double phi = 1.0;
+    const double mu_o = 0.1;
+    const double gamma_t = 0.2 * gamma_n;
+    const double gamma_r = 0.05 * gamma_n;
+    const double gamma_o = 0.05 * gamma_n;
+
+    // Parameters for the Van der Waals model
+    const double A = 1.0e-20;
+    const double h0 = 1.0e-9;
+    
+    return 0;
+}
+```
+We just declared and initialized the simulation constants. They include general parameters, such as time step size,
+number of time steps, number of data dumps, etc. The constants in this section also contain parameters
+for the force models that we are going to use. The list of parameters that each force models requires is provided
+in the [class reference](#class-reference) section.
+
+Now, after the definition of constants, we can initialize the initial conditions for the simulation. 
+We need to provide four buffers populated with initial values, each of size $N$, where $N$ is the number of particles
+in the system. These buffers correspond to positions, translational velocities, orientations, and angular velocities
+respectively. We will declare four corresponding `std::vector`s: `x0`, `v0`, `theta0`, and `omega0`:
+```c++
+std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
+```
+Let us build two cubes, with each side of a cube containing three particles. The cubes will have initial
+translational velocities directed towards each other.
+```c++
+const double x_offset = 10.0 * r_part;
+const double y_offset = 3.0 * r_part;
+
+for (size_t i = 0; i < 3; i ++) {
+    auto x = double(i) * 2.0 * r_part;
+    for (size_t j = 0; j < 3; j ++) {
+        auto y = double(j) * 2.0 * r_part;
+        for(size_t n = 0; n < 3;d n ++) {
+            auto z = double(n) * 2.0 * r_part;
+            
+            // Add particle to cube 1
+            x0.empalce_back(x, y, z);
+            // Set velocity of the newly created particle
+            v0.emplace_back(0.5, 0.0, 0.0);
+            
+            // Add particle to cube 2
+            x0.empalce_back(x + x_offset, y + y_offset, z);
+            // Set velocity of the newly created particle
+            v0.emplace_back(-0.5, 0.0, 0.0);
+        }
+    }
+}
+```
+Now, let us set the remaining buffers - orientations and angular velocities - to zero. It is important
+that **all initial condition buffers are initialized** and are of the same size.
+```c++
+ // Initialize the remaining buffers
+theta0.resize(x0.size());
+omega0.resize(x0.size());
+std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
+std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
+```
+The next step is to create instances of the force models, force model containers, and the step handler:
+```c++
+// Create an instance of contact force model
+contact_force_functor_t contact_force_model(x0.size(),
+    k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o,
+    mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
+
+// Create an instance of Hamaker model
+vdw_force_dunctor_t hamaker_model(A, h0,
+    r_part, mass, Eigen::Vector3d::Zero(), 0.0);
+
+// Create an instance of binary force container
+binary_force_container_t
+    binary_force_functors{contact_force_model, hamaker_model};
+
+// Create an instance of unary force container (empty)
+unary_force_container_t
+    unary_force_functors;
+
+// Create an instance of step_handler
+rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d>
+    step_handler_instance;
+```
+At this point, we have everything we need to assemble our granular system object. Add the following line
+after instantiation of force models:
+```c++
+granular_system_t system(x0,
+    v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
+    step_handler_instance, binary_force_functors, unary_force_functors);
+```
+Now, all that is left is to perform the time-stepping, perform periodic data dumps, and post-process
+the results. Add an integration loop:
+```c++
+for (size_t n = 0; n < n_steps; n ++) {
+    if (n % dump_period == 0) {
+        /* TODO: add some code to dump data */
+    }
+    system.do_step(dt);
+}
+```
+To advance the system by on time step of size dt, we simply need to call the `do_step(dt)` method
+of the granular system object. If you run the program now, the simulation will be performed but no output will
+be produced. We need to add some code to write out the state of the system periodically. Above your
+main function, add a new declaration:
+```c++
+void dump_particle_positions(std::string const & dir, size_t count,
+    std::vector<Eigen::Vector3d> const & x, double r_part) {
+    
+    std::stringstream out_file_name;
+    out_file_name << dir << "/" << count << "_particles.csv";
+    std::ofstream ofs(out_file_name.str());
+    
+    if (!ofs.good()) {
+        std::cerr << "Unable to create a dump file at " << out_file_name.str() << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    ofs << "x, y, z\n";
+    for (auto const & point : x) {
+        ofs << point[0] / r_part << ", " << point[1] / r_part << ", " << point[2] / r_part << "\n";
+    }
+}
+```
+Now back in your integration loop, where you left space for data dumping code, add:
+```c++
+dump_particle_positions("run", n / dump_period, system.get_x(), r_part);
+```
+Now, create a directory named run in the same directory as the executable and run it. You should see
+the run directory get populated with 300 .csv files, each containing the coordinates of all particles at the
+corresponding time step.
+
 ## Implementing custom binary force models
 
 ## Implementing custom unary force models
 
 ## Implementing custom step handlers
-
-## Simulation example
 
 ## Class reference
 
@@ -454,7 +657,7 @@ export OMP_NUM_THREADS=4
 ### macOS & AppleClang compiler
 
 The default AppleClang compiler bundled with XCode **is not supported**, because it does not support
-C++ 17 parallel algorithms or OpenMP
+C++ 17 parallel algorithms or OpenMP.
 
 ## Acknowledgement
 

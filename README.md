@@ -669,7 +669,7 @@ return std::make_pair(a, zero_field); // Return the translational and angular ac
 
 Now, create a simple driver program to test this newly created binary force model
 ([driver program tutorial](#simulation-example)). We will use a file with geometry of a fractal
-aggregates, [aggregate.h](/resources/aggregate.h), to initialize this simulation. It needs to
+aggregates, [aggregate.h](https://github.com/egor-demidov/libgran/blob/cbd7c7d3423d52fd55a95de6b81c56775a852624/resources/aggregate.h), to initialize this simulation. It needs to
 be downloaded and added to your project.
 
 ```c++
@@ -688,6 +688,9 @@ be downloaded and added to your project.
 
 #include "linear_attraction.h" // Include your custom model
 
+// Include the fractal aggregate used as initial conditions
+#include "aggregate.h"
+
 using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
 using vdw_force_functor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
 using lienar_force_functor_t = linear_attraction_functor<Eigen::Vector3d, double>; // Your custom model
@@ -699,6 +702,24 @@ using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, d
 
 using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
     rotational_step_handler, binary_force_container_t, unary_force_container_t>; // Granular system representation
+
+void dump_particle_positions(std::string const & dir, size_t count,
+    std::vector<Eigen::Vector3d> const & x, double r_part) {
+
+    std::stringstream out_file_name;
+    out_file_name << dir << "/particles_" << count << ".csv";
+    std::ofstream ofs(out_file_name.str());
+
+    if (!ofs.good()) {
+        std::cerr << "Unable to create a dump file at " << out_file_name.str() << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    ofs << "x, y, z\n";
+    for (auto const & point : x) {
+        ofs << point[0] / r_part << ", " << point[1] / r_part << ", " << point[2] / r_part << "\n";
+    }
+}
 
 int main() {
     // General simulation parameters
@@ -731,14 +752,70 @@ int main() {
     const double h0 = 1.0e-9;
     
     // Parameter for your custom model
-    const double k_attr = 10.0;
-    
+    const double k_attr = 4.0e-8;
+
+    // Declare the initial condition buffers
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    
+
+    // Copy the particle coordinates into the initial position buffer
+    x0.resize(std::size(aggregate));
+    std::transform(std::begin(aggregate), std::end(aggregate), x0.begin(), [r_part] (auto const & particle) -> Eigen::Vector3d {
+        return Eigen::Vector3d{particle[0], particle[1], particle[2]} * r_part;
+    });
+
+    // Fill the remaining buffers with zeros
+    v0.resize(x0.size());
+    theta0.resize(x0.size());
+    omega0.resize(x0.size());
+    std::fill(v0.begin(), v0.end(), Eigen::Vector3d::Zero());
+    std::fill(theta0.begin(), theta0.end(), Eigen::Vector3d::Zero());
+    std::fill(omega0.begin(), omega0.end(), Eigen::Vector3d::Zero());
+
+    // Create an instance of contact force model
+    contact_force_functor_t contact_force_model(x0.size(),
+        k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o,
+        mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
+
+    // Create an instance of Hamaker model
+    vdw_force_functor_t hamaker_model(A, h0,
+        r_part, mass, Eigen::Vector3d::Zero(), 0.0);
+
+    // Create an isntance of your custom model
+    lienar_force_functor_t linear_model(r_part, k_attr, mass, Eigen::Vector3d::Zero());
+
+    // Create an instance of binary force container
+    binary_force_container_t
+        binary_force_functors{contact_force_model, hamaker_model, linear_model};
+
+    // Create an instance of unary force container (empty)
+    unary_force_container_t
+        unary_force_functors;
+
+    // Create an instance of step_handler
+    rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d>
+        step_handler_instance;
+
+    granular_system_t system(x0,
+        v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
+        step_handler_instance, binary_force_functors, unary_force_functors);
+
+    for (size_t n = 0; n < n_steps; n ++) {
+        if (n % dump_period == 0) {
+            std::cout << "Dump " << n / dump_period << " out of " << n_dumps << std::endl;
+            dump_particle_positions("run", n / dump_period, system.get_x(), r_part);
+        }
+        system.do_step(dt);
+    }
     
     return 0;
 }
 ```
+
+If you run this simulation and use the steps described in the [driver program tutorial](#simulation-example),
+you will see a fractal aggregate that becomes more compact due to the linear attraction
+between particles:
+
+![Aggregate undergoing compaction](resources/images/aggregate.gif)
 
 ## Implementing custom unary force models
 

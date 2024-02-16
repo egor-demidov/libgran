@@ -391,7 +391,7 @@ Okay, now we can proceed to implement the main function. After the alias definit
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 1.0e-9;
+    const double t_tot = 1.0e-7;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;

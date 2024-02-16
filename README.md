@@ -811,7 +811,8 @@ int main() {
 }
 ```
 
-If you run this simulation and use the steps described in the [driver program tutorial](#simulation-example),
+If you run this simulation and use the steps described in the [driver program tutorial](#simulation-example)
+to set up a visualization,
 you will see a fractal aggregate that becomes more compact due to the linear attraction
 between particles:
 

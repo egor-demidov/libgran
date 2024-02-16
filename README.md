@@ -221,7 +221,7 @@ can be decomposed into normal (torsional) and residual (rolling) components:
 ```
 To constrain the four degrees of freedom, we insert four springs, as illustrated in the figure below: 
 ![Illustration of the four degrees of freedom that we would like
-to constrain and the springs that are inserted for each DOF](images/degrees-of-freedom.svg)
+to constrain and the springs that are inserted for each DOF](resources/imagesdegrees-of-freedom.svg)
 
 The length of the normal spring, $\delta$, can be computed directly at any point in the simulation from positions of the particles,
 $\mathbf{x}$, and their radius, $r$:
@@ -546,44 +546,44 @@ To create a visualization, open the files in ParaView. Press `File->Open` and na
 the directory with generated data files. ParaView will automatically recognize
 sequentially numbered files a time series:
 
-![Screenshot of ParaView file dialog](images/01_pv_open.png)
+![Screenshot of ParaView file dialog](resources/images01_pv_open.png)
 
 Select the entry and press OK. ParaView will ask to select the appropriate data reader.
 Select the CSV reader and press OK:
 
-![Prompt to select the data reader](images/02_pv_reader.png)
+![Prompt to select the data reader](resources/images02_pv_reader.png)
 
 ParaView will load the data as a table. Press the green Apply button in the left panel.
 A table previewing the data should appear on the right side of the screen. This preview 
 can be closed.
 
-![Previewing the loaded data](images/03_pv_applied.png)
+![Previewing the loaded data](resources/images03_pv_applied.png)
 
 Now, we need to tell ParaView to interpret the rows in the loaded table as x-y-z points.
 Select the loaded data set in the left panel and got to `Filters->Seacrh`. Start typing
 `table to points` and select the corresponding filter when it appears among search results.
 
-![Adding the table to points filter](images/05_filter.png)
+![Adding the table to points filter](resources/images05_filter.png)
 
 Now in the left panel there should be a filter that is a child of the table. Click
 on it and in the dropdowns, select x column, y column, and z column to be x, y, and z
 respectively.
 
-![Selecting the x, y, and z columns](images/06_converted.png)
+![Selecting the x, y, and z columns](resources/images06_converted.png)
 
 Press the green Apply button. With the filter selected in the left panel, click the
 `Glyph` button in the ribbon. In the left panel, set Glyph Type to sphere, scale array 
 and orientation array to none, scale factor to 2, and Glyph Mode to all points. Click the 
 green Apply button. Cubes made up of spherical particles should appear:
 
-![Rendered cubes made up of spherical particles](images/07_ready.png)
+![Rendered cubes made up of spherical particles](resources/images07_ready.png)
 
 In the top ribbon, you can see that the current frame is 0 out of 300. You can press the
 green play button to preview the animation, or directly type in 300 in the text box to jump 
 to the last frame. If you do, you will see that at the end of the simulation, the cubes had collided
 and are now stuck together.
 
-![Collided cubes at the end of the simulation](images/08_final_state.png)
+![Collided cubes at the end of the simulation](resources/images08_final_state.png)
 
 ## Implementing custom binary force models
 
@@ -668,7 +668,9 @@ return std::make_pair(a, zero_field); // Return the translational and angular ac
 ```
 
 Now, create a simple driver program to test this newly created binary force model
-([driver program tutorial](#simulation-example)):
+([driver program tutorial](#simulation-example)). We will use a file with geometry of a fractal
+aggregates, [aggregate.h](/resources/aggregate.h), to initialize this simulation. It needs to
+be downloaded and added to your project.
 
 ```c++
 #include <vector>

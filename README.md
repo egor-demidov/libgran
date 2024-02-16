@@ -612,7 +612,20 @@ The template parameter `field_value_t` is the type of the primary field (like `E
 or `Eigen::Vector3f`) and the parameter `real_t` is the type of a real-valued scalar value (like `double` or `float`).
 
 Now, let us implement a constructor. In order compute accelerations, we need to know the
-$r$, $k_{\rm a}$, and $m$. The algorithm is then as follows:
+$r$, $k_{\rm a}$, and $m$. We will also need to know the zero value of the primary field.
+Inside the struct, declare the private member constants and the 
+constructor. The constructor only initializes the member constants:
+
+```c++
+linear_attraction_functor(real_t r, real_t k_a, real_t mass, field_value_t zero_field) :
+    r(r), k_a(k_a), mass(mass), zero_field(zero_field) {}
+
+private:
+const real_t r, k_a, mass;
+const field_value_t zero_field;
+```
+
+The algorithm is then as follows:
 ```math
 \mathbf{n}=\frac{\mathbf{x}_j-\mathbf{x}_i}{\lVert\mathbf{x}_j-\mathbf{x}_i\rVert}
 ```
@@ -620,7 +633,38 @@ $r$, $k_{\rm a}$, and $m$. The algorithm is then as follows:
 \delta=\lVert\mathbf{x}_j-\mathbf{x}_i\rVert - 2r
 ```
 ```math
-\mathbf{a}=\frac{1}{m}k_{\rm a}\delta\mathbf{n}
+\mathbf{a}=\frac{k_{\rm a}\delta}{m}\mathbf{n}
+```
+
+In your struct, after the constructor and before the `private` keyword, add:
+```c++
+std::pair<field_value_t, field_value_t> operator () 
+   (size_t i, size_t j,
+    std::vector<field_value_t> const & x,
+    std::vector<field_value_t> const & v [[maybe_unused]],
+    std::vector<field_value_t> const & theta [[maybe_unused]],
+    std::vector<field_value_t> const & omega [[maybe_unused]],
+    real_t t [[maybe_unused]]) const {
+    
+    /* Compute and return the accelerations */
+}
+```
+This lengthy statement is the signature of operator () - the function that will be called by the 
+integrator to compute the acceleration acing on particle i due to its linear attractive interaction
+with particle j. The arguments are: index of particle i, index of particle j, position buffer,
+velocity buffer, orientation buffer, angular velocity buffer, and time. All these arguments must be accepted
+by the `operator ()` function even if they are not used. In case an argument is not used, it should be
+marked with the `[[maybe_unused]]` attribute to avoid causing compiler warnings.
+
+Now, all that is left to do is to compute the acceleration and return it. Note that the return type
+is an `std::pair`, because we need to return two accelerations: translational and angular. However, we assume that
+this linear attractive model is a body force acting on the particles and does not directly produce torques. Therefore,
+the angular acceleration that we return will be zero. Inside your `operator ()`, write:
+```c++
+field_value_t n = (x[j] - x[i]).normalized(); // Compute the normal unit vector
+real_t delta = (x[j] - x[i]).norm() - 2.0 * r; // COmpute the separation between particles
+field_value_t a = k_a * delta * n / mass; // Compute the translational acceleration
+return std::make_pair(a, zero_field); // Return the translational and angular accelerations
 ```
 
 ## Implementing custom unary force models

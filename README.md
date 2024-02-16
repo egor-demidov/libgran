@@ -590,7 +590,31 @@ and are now stuck together.
 Let us create a custom binary force model: linear pairwise attraction.
 Particle $i$ will be attracted to particle $j$ as:
 ```math
-\mathbf{f}=k_{\rm attr}\delta\mathbf{n}
+\mathbf{f}=k_{\rm a}\delta\mathbf{n}
+```
+In your project, create a file `linear_attraction.h` and add include guards to it:
+```c++
+#ifndef LINEAR_ATTRACTION_H
+#define LINEAR_ATTRACTION_H
+
+/* Code will go here */
+
+#endif //LINEAR_ATTRACTION_H
+```
+Now, between the include guards, add the template declaration:
+```c++
+template<typename field_value_t, typename real_t>
+struct linear_attraction_functor {
+    
+};
+```
+The template parameter `field_value_t` is the type of the primary field (like `Eigen::Vector3d`
+or `Eigen::Vector3f`) and the parameter `real_t` is the type of a real-valued scalar value (like `double` or `float`).
+
+Now, let us implement a constructor. In order compute accelerations, we need to know the
+$r$, $k_{\rm a}$, and $m$. The algorithm is then as follows:
+```math
+\mathbf{n}=\frac{\mathbf{x}_j-\mathbf{x}_i}{\lVert\mathbf{x}_j-\mathbf{x}_i\rVert}
 ```
 
 ## Implementing custom unary force models

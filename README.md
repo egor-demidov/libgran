@@ -32,8 +32,8 @@ attraction force model called `binary_force_container_t`:
 #include <libgran/granular_system/granular_system.h>
 
 using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
-using vdw_force_dunctor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
-using binary_force_container_t = binary_force_functor_container<Eigen::Vector3d, double, contact_force_functor_t, vdw_force_dunctor_t>; // Binary force container
+using vdw_force_functor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
+using binary_force_container_t = binary_force_functor_container<Eigen::Vector3d, double, contact_force_functor_t, vdw_force_functor_t>; // Binary force container
 ```
 Then, in the driver program, each force model and the force functor container need to be instantiated:
 ```c++
@@ -47,7 +47,7 @@ int main() {
         mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
 
     // Create an instance of Van der Waals attraction model
-    vdw_force_dunctor_t hamaker_model(A, h0,
+    vdw_force_functor_t hamaker_model(A, h0,
         r_part, mass, Eigen::Vector3d::Zero(), 0.0);
 
     binary_force_container_t
@@ -376,10 +376,10 @@ the granular system object.
 Now, let us "assemble" the templates that we will use and create shorter aliases for the produced types:
 ```c++
 using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
-using vdw_force_dunctor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
+using vdw_force_functor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
 using binary_force_container_t
     = binary_force_functor_container<Eigen::Vector3d, double,
-    contact_force_functor_t, vdw_force_dunctor_t>; // Binary force container
+    contact_force_functor_t, vdw_force_functor_t>; // Binary force container
 
 using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double>; // Unary force container (empty)
 
@@ -476,7 +476,7 @@ contact_force_functor_t contact_force_model(x0.size(),
     mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
 
 // Create an instance of Hamaker model
-vdw_force_dunctor_t hamaker_model(A, h0,
+vdw_force_functor_t hamaker_model(A, h0,
     r_part, mass, Eigen::Vector3d::Zero(), 0.0);
 
 // Create an instance of binary force container
@@ -649,7 +649,7 @@ std::pair<field_value_t, field_value_t> operator ()
     /* Compute and return the accelerations */
 }
 ```
-This lengthy statement is the signature of operator () - the function that will be called by the 
+This lengthy statement is the signature of `operator ()` - the function that will be called by the 
 integrator to compute the acceleration acing on particle i due to its linear attractive interaction
 with particle j. The arguments are: index of particle i, index of particle j, position buffer,
 velocity buffer, orientation buffer, angular velocity buffer, and time. All these arguments must be accepted
@@ -665,6 +665,77 @@ field_value_t n = (x[j] - x[i]).normalized(); // Compute the normal unit vector
 real_t delta = (x[j] - x[i]).norm() - 2.0 * r; // COmpute the separation between particles
 field_value_t a = k_a * delta * n / mass; // Compute the translational acceleration
 return std::make_pair(a, zero_field); // Return the translational and angular accelerations
+```
+
+Now, create a simple driver program to test this newly created binary force model
+([driver program tutorial](#simulation-example)):
+
+```c++
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include <sstream>
+#include <fstream>
+
+// Using Eigen for linear algebra
+#include <Eigen/Eigen>
+
+#include <libgran/contact_force/contact_force.h>
+#include <libgran/hamaker_force/hamaker_force.h>
+#include <libgran/granular_system/granular_system.h>
+
+#include "linear_attraction.h" // Include your custom model
+
+using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
+using vdw_force_functor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
+using lienar_force_functor_t = linear_attraction_functor<Eigen::Vector3d, double>; // Your custom model
+using binary_force_container_t =
+    binary_force_functor_container<Eigen::Vector3d, double,
+    contact_force_functor_t, vdw_force_functor_t, lienar_force_functor_t>; // Binary force container
+
+using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double>; // Unary force container (empty)
+
+using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
+    rotational_step_handler, binary_force_container_t, unary_force_container_t>; // Granular system representation
+
+int main() {
+    // General simulation parameters
+    const double dt = 1e-13;
+    const double t_tot = 1.0e-7;
+    const auto n_steps = size_t(t_tot / dt);
+    const size_t n_dumps = 300;
+    const size_t dump_period = n_steps / n_dumps;
+    const size_t n_thermo_dumps = 10000;
+    const size_t thermo_dump_period = n_steps / n_thermo_dumps;
+
+    // General parameters
+    const double rho = 1700.0;
+    const double r_part = 1.4e-8;
+    const double mass = 4.0 / 3.0 * M_PI * pow(r_part, 3.0) * rho;
+    const double inertia = 2.0 / 5.0 * mass * pow(r_part, 2.0);
+
+    // Parameters for the contact model
+    const double k = 10000.0;
+    const double gamma_n = 5.0e-9;
+    const double mu = 1.0;
+    const double phi = 1.0;
+    const double mu_o = 0.1;
+    const double gamma_t = 0.2 * gamma_n;
+    const double gamma_r = 0.05 * gamma_n;
+    const double gamma_o = 0.05 * gamma_n;
+
+    // Parameters for the Van der Waals model
+    const double A = 1.0e-20;
+    const double h0 = 1.0e-9;
+    
+    // Parameter for your custom model
+    const double k_attr = 10.0;
+    
+    std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
+    
+    
+    return 0;
+}
 ```
 
 ## Implementing custom unary force models

@@ -391,7 +391,7 @@ Okay, now we can proceed to implement the main function. After the alias definit
 int main() {
     // General simulation parameters
     const double dt = 1e-13;
-    const double t_tot = 5.0e-8;
+    const double t_tot = 1.0e-9;
     const auto n_steps = size_t(t_tot / dt);
     const size_t n_dumps = 300;
     const size_t dump_period = n_steps / n_dumps;
@@ -538,6 +538,52 @@ dump_particle_positions("run", n / dump_period, system.get_x(), r_part);
 Now, create a directory named run in the same directory as the executable and run it. You should see
 the run directory get populated with 300 .csv files, each containing the coordinates of all particles at the
 corresponding time step.
+
+### Visualizing the results
+
+Generated data files can be visualized using [ParaView](https://www.paraview.org/download/).
+To create a visualization, open the files in ParaView. Press `File->Open` and navigate to
+the directory with generated data files. ParaView will automatically recognize
+sequentially numbered files a time series:
+
+![Screenshot of ParaView file dialog](images/01_pv_open.png)
+
+Select the entry and press OK. ParaView will ask to select the appropriate data reader.
+Select the CSV reader and press OK:
+
+![Prompt to select the data reader](images/02_pv_reader.png)
+
+ParaView will load the data as a table. Press the green Apply button in the left panel.
+A table previewing the data should appear on the right side of the screen. This preview 
+can be closed.
+
+![Previewing the loaded data](images/03_pv_applied.png)
+
+Now, we need to tell ParaView to interpret the rows in the loaded table as x-y-z points.
+Select the loaded data set in the left panel and got to `Filters->Seacrh`. Start typing
+`table to points` and select the corresponding filter when it appears among search results.
+
+![Adding the table to points filter](images/05_filter.png)
+
+Now in the left panel there should be a filter that is a child of the table. Click
+on it and in the dropdowns, select x column, y column, and z column to be x, y, and z
+respectively.
+
+![Selecting the x, y, and z columns](images/06_converted.png)
+
+Press the green Apply button. With the filter selected in the left panel, click the
+`Glyph` button in the ribbon. In the left panel, set Glyph Type to sphere, scale array 
+and orientation array to none, scale factor to 2, and Glyph Mode to all points. Click the 
+green Apply button. Cubes made up of spherical particles should appear:
+
+![Rendered cubes made up of spherical particles](images/07_ready.png)
+
+In the top ribbon, you can see that the current frame is 0 out of 300. You can press the
+green play button to preview the animation, or directly type in 300 in the text box to jump 
+to the last frame. If you do, you will see that at the end of the simulation, the cubes had collided
+and are now stuck together.
+
+![Collided cubes at the end of the simulation](images/08_final_state.png)
 
 ## Implementing custom binary force models
 

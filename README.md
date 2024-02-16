@@ -587,8 +587,8 @@ and are now stuck together.
 
 ## Implementing custom binary force models
 
-Let us create a custom binary force model: linear pairwise attraction.
-Particle $i$ will be attracted to particle $j$ as:
+Let us create a custom binary force model - linear pairwise attraction.
+Particle i will be attracted to particle j as:
 ```math
 \mathbf{f}=k_{\rm a}\delta\mathbf{n}
 ```
@@ -615,6 +615,12 @@ Now, let us implement a constructor. In order compute accelerations, we need to 
 $r$, $k_{\rm a}$, and $m$. The algorithm is then as follows:
 ```math
 \mathbf{n}=\frac{\mathbf{x}_j-\mathbf{x}_i}{\lVert\mathbf{x}_j-\mathbf{x}_i\rVert}
+```
+```math
+\delta=\lVert\mathbf{x}_j-\mathbf{x}_i\rVert - 2r
+```
+```math
+\mathbf{a}=\frac{1}{m}k_{\rm a}\delta\mathbf{n}
 ```
 
 ## Implementing custom unary force models

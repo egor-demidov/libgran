@@ -587,6 +587,12 @@ and are now stuck together.
 
 ## Implementing custom binary force models
 
+Let us create a custom binary force model: linear pairwise attraction.
+Particle $i$ will be attracted to particle $j$ as:
+```math
+\mathbf{f}=k_{\rm attr}\delta\mathbf{n}
+```
+
 ## Implementing custom unary force models
 
 ## Implementing custom step handlers

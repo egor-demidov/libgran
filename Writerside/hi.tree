@@ -6,6 +6,7 @@
                  name="libgran documentation"
                  start-page="Installation.md">
 
+    <toc-element topic="Overview.md"/>
     <toc-element topic="Installation.md"/>
     <toc-element topic="Tutorials.md">
         <toc-element topic="Example-simulation.md"/>

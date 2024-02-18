@@ -1,4 +1,4 @@
-# libgran ![Unit tests workflow badge](https://github.com/egor-demidov/libgran/actions/workflows/test.yml/badge.svg)
+# libgran ![Unit tests workflow badge](https://github.com/egor-demidov/libgran/actions/workflows/test.yml/badge.svg) ![Documentation deployment workflow badge](https://github.com/egor-demidov/libgran/actions/workflows/build-docs.yml/badge.svg)
 
 libgran is a Discrete Element Method (DEM) framework for simulating the mechanical behavior of soot aggregates. DEM is a
 technique for simulation of granular media consisting of rigid spherical particles. The resultant force and torque acting

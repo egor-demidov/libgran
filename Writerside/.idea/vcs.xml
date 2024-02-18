@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../deps/eigen" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../deps/libtimestep" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../deps/libtimestep/test/deps/eigen" vcs="Git" />
+  </component>
+</project>

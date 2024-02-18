@@ -2,7 +2,12 @@
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <variables></variables>
+    <variables>
+        <algolia-id>UMT8CFPGVW</algolia-id>
+        <algolia-index>libgran_doc_index</algolia-index>
+        <algolia-api-key>e905c557ab7adec88a9592dd5fe2e07e</algolia-api-key>
+        <web-root>https://some.domain</web-root>
+    </variables>
     <build-profile instance="hi">
         <variables>
             <noindex-content>true</noindex-content>

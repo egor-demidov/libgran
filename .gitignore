@@ -14,5 +14,7 @@
 !deps
 !deps/**
 !README.md
-!images
-!images/**
+!resources
+!resources/**
+!Writerside
+!Writerside/**

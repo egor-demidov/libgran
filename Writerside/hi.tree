@@ -11,6 +11,8 @@
     <toc-element topic="Tutorials.md">
         <toc-element topic="Example-simulation.md"/>
         <toc-element topic="Custom-binary-force-model.md"/>
+        <toc-element topic="Custom-unary-force-model.md"/>
+        <toc-element topic="Custom-step-handler.md"/>
     </toc-element>
     <toc-element topic="Class-reference.md"/>
 </instance-profile>

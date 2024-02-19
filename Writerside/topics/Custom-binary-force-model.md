@@ -65,6 +65,7 @@ This model will later be used by a driver program in a simulation.
     ```
 
    In your struct, after the constructor and before the `private` keyword, add:
+
    ```c++
    std::pair<field_value_t, field_value_t> operator () 
       (size_t i, size_t j,
@@ -77,6 +78,7 @@ This model will later be used by a driver program in a simulation.
        /* Compute and return the accelerations */
    }
    ```
+   
    This lengthy statement is the signature of `operator ()` - the function that will be called by the
    integrator to compute the acceleration acing on particle i due to its linear attractive interaction
    with particle j. The arguments are: index of particle i, index of particle j, position buffer,
@@ -97,7 +99,7 @@ This model will later be used by a driver program in a simulation.
      ```tex
      \mathbf{a}=\frac{k_{\rm a}\delta}{m}\mathbf{n}
      ```
-   To implement this computation, add inside your `oeprator ()`:
+   To implement this computation, add inside your `operator ()`:
 
    ```C++
    field_value_t n = (x[j] - x[i]).normalized(); // Compute the normal unit vector

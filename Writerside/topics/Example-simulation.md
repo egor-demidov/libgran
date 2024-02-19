@@ -276,6 +276,9 @@ with the frictional contact and Van der Waals force models to simulate a granula
 
 ## Visualizing the results
 
+In this section of the tutorial, we will set up a visualization of the granular system using the **.csv**
+files generated at the previous step.
+
 1. Generated data files can be visualized using [ParaView](https://www.paraview.org/download/).
    To create a visualization, open the files in ParaView. Press `File->Open` and navigate to
    the directory with generated data files. ParaView will automatically recognize
@@ -325,7 +328,7 @@ height="200"}
 
 You have learned how to:
 
-- Initialize a simulation using build-in force models
+- Initialize a simulation using built-in force models
 - Run a simulation and output the results to a **.csv** file
 - Create a visualization using ParaView
 
@@ -346,10 +349,10 @@ You have learned how to:
 #include <libgran/granular_system/granular_system.h>
 
 using contact_force_functor_t = contact_force_functor<Eigen::Vector3d, double>; // Contact force
-using vdw_force_dunctor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
+using vdw_force_functor_t = hamaker_functor<Eigen::Vector3d, double>; // Van der Waals force
 using binary_force_container_t
     = binary_force_functor_container<Eigen::Vector3d, double,
-    contact_force_functor_t, vdw_force_dunctor_t>; // Binary force container
+    contact_force_functor_t, vdw_force_functor_t>; // Binary force container
 
 using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double>; // Unary force container (empty)
 
@@ -439,7 +442,7 @@ int main() {
         mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
 
     // Create an instance of Hamaker model
-    vdw_force_dunctor_t hamaker_model(A, h0,
+    vdw_force_functor_t hamaker_model(A, h0,
         r_part, mass, Eigen::Vector3d::Zero(), 0.0);
 
     // Create an instance of binary force container

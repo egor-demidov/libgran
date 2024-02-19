@@ -5,8 +5,8 @@ A step handler is an object that takes position and velocity increments for each
 as inputs from the integrator and updates the positions and accelerations of particles in
 the granular system. So far, we have been using the built-in trivial step handler that
 merely increments the positions and velocities. However, it may sometimes be desirable 
-to override the default behavior. For example, if you need on particle in the simulation
-to be fixed in space or undergoing uniform motion,
+to override the default behavior. For example, if you need one particle in the simulation
+to be fixed in space or undergo uniform motion,
 you can define a custom step handler that will never increment the velocity
 of that particle. This is what we will do in this tutorial. A custom step handler will
 be created that takes as input the index of a particle that shall be fixed and does not
@@ -45,7 +45,6 @@ project. This step handler will later be used by a driver program in a simulatio
    
     #include <libtimestep/step_handler/step_handler.h>
     
-    // The user must ensure that the force buffer is sufficiently large to store all dumps
     template <
         typename field_container_t,
         typename field_value_t,
@@ -95,7 +94,7 @@ project. This step handler will later be used by a driver program in a simulatio
     
         // Otherwise, let the base step handler handle in
         base_step_handler.increment_v(n, dv, x_begin_itr, v_begin_itr, a_begin_itr, theta_begin_itr, omega_begin_itr, alpha_begin_itr);
-    }       
+    }
     ```
    
     This is the function that will be called by the integrator to increment velocities. Inside the function,
@@ -161,7 +160,6 @@ tutorial, except one of the particles in the system will be fixed in space.
    `fixed_particle_step_handler` and pass it to the granular system constructor. We use the default step
    handler as the base handler for our custom handler. We also increase the Hamaker constant, `A`, by a
    factor of 10 to make adhesion between neighboring monomers stronger (so the aggregate does not fall apart immediately).
-
 
     ```C++
     #include <vector>
@@ -332,7 +330,6 @@ tutorial, except one of the particles in the system will be fixed in space.
 You have leaned how to:
 
 - Implement a custom step handler
-
 - Use the custom step handler in a simulation
 
 ## Complete source file
@@ -345,7 +342,6 @@ You have leaned how to:
 
 #include <libtimestep/step_handler/step_handler.h>
 
-// The user must ensure that the force buffer is sufficiently large to store all dumps
 template <
     typename field_container_t,
     typename field_value_t,

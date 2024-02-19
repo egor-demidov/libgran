@@ -17,13 +17,13 @@ Make sure you have the following:
 In this part of the tutorial, we will install the dependencies for in your cmake-based project.
 The dependencies are libgran, libeigen, and libtimestep.
 
-1. If not done already, initialize a git repository in your project root. Execute the following command:
+1. If not done so already, initialize a git repository in your project root. Execute the following command:
 
    ```bash
     git init
    ```
 
-2. The dependencies will be installed as git sub-modules in the `deps` directory. Execute the following commands:
+2. The dependencies will be installed as git submodules in the `deps` directory. Execute the following commands:
 
    ```bash
     git submodule add https://gitlab.com/libeigen/eigen.git deps/eigen
@@ -31,7 +31,7 @@ The dependencies are libgran, libeigen, and libtimestep.
     git submodule add https://github.com/egor-demidov/libtimestep deps/libtimestep
    ```
 
-3. Now, we need to configure the build system to search for header files in the installed dependencies. Add the
+3. Now, we need to configure the build system to search for header files in the installed submodules. Add the
    following directives to your **CMakeLists.txt** file:
 
    ```CMake
@@ -89,7 +89,7 @@ with the frictional contact and Van der Waals force models to simulate a granula
    models: `binary_force_functor_container` for binary forces and `unary_force_functor_container` for unary forces. Each
    container template accepts the primary field type, real-valued scalar type, and a variadic list of force model types
    as template arguments. Since we do not intend to use any unary force models in this simulation, we created an
-   empty unary force container. Finally, we specialzed the `granular_system` template, which accepts primary field type,
+   empty unary force container. Finally, we specialized the `granular_system` template, which accepts primary field type,
    real-valued scalar type, integrator type, step handler type, binary force container, and unary force container as
    template arguments.
 
@@ -129,18 +129,19 @@ with the frictional contact and Van der Waals force models to simulate a granula
        return 0;
    }
    ```
+   
    Inside the body of the main function, we declared and initialized the simulation constants. They include general
    parameters, such as time step size,
    number of time steps, number of data dumps, etc. The constants in this section also contain parameters
-   for the force models that we are going to use. The list of parameters that each force models requires is provided
+   for the force models that we are going to use. The list of parameters that each force model requires is provided
    in the [class reference](Class-reference.md) section. If `M_PI` is undefined, add the `_USE_MATH_DEFINES` compile
    definition.
 
 4. Now, after the definition of constants, we can initialize the initial conditions for the simulation.
-   We need to provide four buffers populated with initial values, each of size **_N_**, where **_N_** is the number of
+   We need to provide four buffers populated with initial values, each of size _N_, where _N_ is the number of
    particles
    in the system. These buffers correspond to positions, translational velocities, orientations, and angular velocities
-   respectively. Declare four corresponding `std::vector`s: `x0`, `v0`, `theta0`, and `omega0`:
+   respectively. Declare four corresponding `std::vector`'s: `x0`, `v0`, `theta0`, and `omega0`:
 
    ```C++
    std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
@@ -224,6 +225,11 @@ with the frictional contact and Van der Waals force models to simulate a granula
        v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
        step_handler_instance, binary_force_functors, unary_force_functors);
    ```
+   
+   > Since the force model containers only store references to the force model objects, it is important that the storage
+   > duration of the initialized force model objects at least matches the duration of the simulation
+   >
+   {style="warning"}
 
 6. Now, all that is left to do is time stepping. Add the following loop that performs `n_steps` iterations and advances
    the granular system by time step `dt` at each iteration:
@@ -237,7 +243,7 @@ with the frictional contact and Van der Waals force models to simulate a granula
    }
    ```
 
-   To advance the system by on time step of size `dt`, we simply need to call the `do_step(dt)` method
+   To advance the system by one time step of size `dt`, we simply need to call the `do_step(dt)` method
    of the granular system object.
 
 7. If you run the program now, the simulation will be performed but no output will
@@ -282,7 +288,7 @@ files generated at the previous step.
 1. Generated data files can be visualized using [ParaView](https://www.paraview.org/download/).
    To create a visualization, open the files in ParaView. Press `File->Open` and navigate to
    the directory with generated data files. ParaView will automatically recognize
-   sequentially numbered files a time series:
+   sequentially numbered files as a time series:
 
    ![Screenshot of ParaView file dialog](01_pv_open.png){ border-effect="line" thumbnail="true" height="200"}
 

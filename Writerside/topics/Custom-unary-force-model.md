@@ -447,7 +447,7 @@ previous section. For more details about driver programs, refer to the [example 
    {collapsible="true" collapsed-title="tutorial_03.cpp"}
 
 3. Create a directory named **run** in the same folder as the executable and run the simulation. Set up a visualization,
-   as shown in the [example simulation tutorial](Example-simulation.md). You should see an initially fractal aggregate
+   as shown in the [example simulation tutorial](Example-simulation.md). You should see a fractal aggregate
    that undergoes compaction due to the central attractive force:
 
    ![Fractal aggregate undergoing compaction](aggregate_central.gif)

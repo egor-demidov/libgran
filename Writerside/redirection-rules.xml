@@ -14,4 +14,8 @@
         <description>Created after removal of "This is the first topic" from libgran documentation</description>
         <accepts>Default-topic.html</accepts>
     </rule>
+    <rule id="56937573">
+        <description>Created after removal of "granular_system" from libgran documentation</description>
+        <accepts>granular-system.html</accepts>
+    </rule>
 </rules>

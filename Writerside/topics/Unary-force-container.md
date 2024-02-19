@@ -1,10 +1,10 @@
 # Unary force container
 
 <tldr>
-<p>Name: <code>unary_force_container_t</code></p>
-<p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
 <p>A record type that stores a variable number of references to unary force model
 instances</p>
+<p>Name: <code>unary_force_container_t</code></p>
+<p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
 </tldr>
 
 ## Template parameters
@@ -19,21 +19,19 @@ instances</p>
 `unary_force_functors_t ...`
 : list of unary force model types
 
-## Member functions
-
-### Constructor
-
-Arguments:
+## Constructor arguments
 
 {type="wide"}
 `unary_force_functors_t & ...`
 : list of unary force model references
 
+## Public member functions
+
 ### operator ()
 
 Synopsis:
 
-Called by the granular system to compute the acceleration of particle i due to unary forces acting on it
+Called by the [granular system](Granular-system.md) to compute the acceleration of particle i due to unary forces acting on it
 
 Arguments:
 
@@ -61,3 +59,16 @@ Return value:
 {type="wide"}
 `std::pair<field_value_t, field_value_t>`
 : translational acceleration and angular acceleration of particle i due to unary forces acting on it
+
+<seealso>
+<category ref="related">
+   <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
+</seealso>

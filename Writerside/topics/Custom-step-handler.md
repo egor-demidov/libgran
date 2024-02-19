@@ -416,3 +416,16 @@ private:
 #endif //FIXED_PARTICLE_STEP_HANDLER_H
 ```
 {collapsible="true" collapsed-title="fixed_particle_step_handler.h"}
+
+<seealso>
+<category ref="related">
+   <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
+</seealso>

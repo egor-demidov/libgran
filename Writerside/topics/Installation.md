@@ -127,3 +127,15 @@ export OMP_NUM_THREADS=4
 
 The default AppleClang compiler bundled with XCode **is not supported**, because it does not support
 C++ 17 parallel algorithms or OpenMP.
+
+<seealso>
+<category ref="related">
+    <a href="Overview.md">Overview</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
+</seealso>

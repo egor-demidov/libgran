@@ -1,10 +1,9 @@
-# Binary force container
+# Van der Waals attraction
 
 <tldr>
-<p>A record type that stores a variable number of references to binary force model
-instances</p>
-<p>Name: <code>binary_force_container_t</code></p>
-<p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
+<p>A binary force model that simulates Van der Waals attraction</p>
+<p>Name: <code>hamaker_functor</code></p>
+<p>Defined in: <code>&lt;libgran/hamaker_force/hamaker_force.h&gt;</code></p>
 </tldr>
 
 ## Template parameters
@@ -16,14 +15,26 @@ instances</p>
 `real_t`
 : scalar field type
 
-`binary_force_functors_t ...`
-: list of binary force model types
-
 ## Constructor arguments
 
 {type="wide"}
-`binary_force_functors_t & ...`
-: list of binary force model references
+`real_t A`
+: Hamaker constant of the material
+
+`real_t h0`
+: saturation distance
+
+`real_t r_part`
+: particle radius
+
+`real_t mass`
+: particle mass
+
+`field_value_t field_zero`
+: zero-valued primary field
+
+`real_t real_zero`
+: zero-valued scalar field
 
 ## Public member functions
 
@@ -31,8 +42,8 @@ instances</p>
 
 Synopsis:
 
-Called by the [granular system](Granular-system.md) to compute the acceleration of particle i due to binary interactions
-with other particles
+Called by the [binary force container](Binary-force-container.md) to compute the acceleration
+of particle i due to its Van der Waals attraction to particle j
 
 Arguments:
 
@@ -62,8 +73,8 @@ Return value:
 
 {type="wide"}
 `std::pair<field_value_t, field_value_t>`
-: translational acceleration and angular acceleration of particle i due to its interaction
-with particle j
+: translational acceleration and angular acceleration of particle i due to its
+Van der Waals attraction to particle j
 
 <seealso>
 <category ref="related">

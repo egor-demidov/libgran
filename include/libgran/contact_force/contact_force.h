@@ -95,6 +95,7 @@ struct contact_force_functor {
         return std::make_pair((f_n * n + f_t) / mass, (-tau_t + tau_r + tau_o) / inertia);
     }
 
+private:
     void reset_springs(size_t i, size_t j) {
         contact_springs[i * n_part + j] = std::make_tuple(field_zero, field_zero, field_zero);
     }
@@ -145,7 +146,6 @@ struct contact_force_functor {
         return std::min(f_selected, f_0.norm()) * t;
     }
 
-private:
     const size_t n_part;
     const real_t k, gamma_n,
         k_t, gamma_t, mu_s, phi_d,

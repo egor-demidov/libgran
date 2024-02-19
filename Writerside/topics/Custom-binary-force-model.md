@@ -474,3 +474,16 @@ private:
 #endif //LINEAR_ATTRACTION_H
 ```
 {collapsible="true" collapsed-title="linear_attraction.h"}
+
+<seealso>
+<category ref="related">
+   <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
+</seealso>

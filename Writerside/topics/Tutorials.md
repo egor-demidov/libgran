@@ -13,3 +13,15 @@ of available tutorials and a summary of what aspect of libgran each tutorial cov
   independently of other particles and using the custom model in a simulation in combination with built-in models
 
 - [Custom step handler](Custom-step-handler.md) - implementing a custom step handler and using it in a simulation
+
+<seealso>
+<category ref="related">
+    <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
+</seealso>

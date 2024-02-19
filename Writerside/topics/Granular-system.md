@@ -1,9 +1,9 @@
 # Granular system
 
 <tldr>
+<p>An object that represents a granular system with force models</p>
 <p>Name: <code>granular_system</code></p>
 <p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
-<p>An object that represents a granular system with force models</p>
 </tldr>
 
 ## Template parameters
@@ -27,11 +27,7 @@
 `unary_force_container_t`
 : unary force container type
 
-## Member functions
-
-### Constructor
-
-Arguments:
+## Constructor arguments
 
 {type="wide"}
 `std::vector<primary_field_t> x0`
@@ -63,6 +59,8 @@ Arguments:
 
 `unary_force_contatiner_t unary_force_functors`
 : Unary force model container
+
+## Public member functions
 
 ### do_step
 
@@ -246,8 +244,14 @@ Return value:
 : no return value
 
 <seealso>
-<!--<category ref="related">
-           <a href="Links.topic">Topic about links</a>
-           <a href="Some_other.topic"/>
-</category>-->
+<category ref="related">
+   <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
 </seealso>

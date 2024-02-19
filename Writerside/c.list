@@ -2,5 +2,7 @@
 <!DOCTYPE categories
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/categories.dtd">
 <categories>
+    <category id="external" name="External" order="3"/>
+    <category id="related" name="Related" order="2"/>
     <category id="wrs" name="Writerside documentation" order="1"/>
 </categories>

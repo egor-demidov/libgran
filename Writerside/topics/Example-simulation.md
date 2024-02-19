@@ -42,8 +42,8 @@ The dependencies are libgran, libeigen, and libtimestep.
 
 ## Creating the driver program
 
-In this part of the tutorial, we will create a driver program that will use the granular system template together
-with the frictional contact and Van der Waals force models to simulate a granular system.
+In this part of the tutorial, we will create a driver program that will use the [granular system template](Granular-system.md) together
+with the [frictional contact](Frictional-contact.md) and [Van der Waals](Van-der-Waals-attraction.md) force models to simulate a granular system.
 
 1. If not done so already, create a C++ source file and add it as a target to your cmake project. At the top of the
    source file, add the following include statements:
@@ -64,8 +64,8 @@ with the frictional contact and Van der Waals force models to simulate a granula
    ```
 
    In addition to some STL headers and libeigen, we included three libgran headers. Two of them define the force models
-   that we want to use in this simulation, frictional contact force and Van der Waals force, and the third header
-   defines the granular system object.
+   that we want to use in this simulation, [frictional contact force](Frictional-contact.md) and [Van der Waals force](Van-der-Waals-attraction.md), and the third header
+   defines the [granular system template](Granular-system.md).
 
 2. Now, let us "assemble" the templates that we will use and create shorter aliases for the produced types. After your
    includes, add the following statements:
@@ -86,7 +86,7 @@ with the frictional contact and Van der Waals force models to simulate a granula
    For each
    force template, we specified the primary field type (here `Eigen::Vector3d`) and real-valued scalar type (
    here `double`). Then we specialized two container templates for two types of force
-   models: `binary_force_functor_container` for binary forces and `unary_force_functor_container` for unary forces. Each
+   models: [`binary_force_functor_container` for binary forces](Binary-force-container.md) and [`unary_force_functor_container` for unary forces](Unary-force-container.md). Each
    container template accepts the primary field type, real-valued scalar type, and a variadic list of force model types
    as template arguments. Since we do not intend to use any unary force models in this simulation, we created an
    empty unary force container. Finally, we specialized the `granular_system` template, which accepts primary field type,
@@ -217,7 +217,7 @@ with the frictional contact and Van der Waals force models to simulate a granula
        step_handler_instance;
    ```
 
-   Now, initialize the granular system object by passing references to force model containers and the step handler to
+   Now, initialize the [granular system](Granular-system.md) object by passing references to force model containers and the step handler to
    the constructor:
 
    ```C++
@@ -244,7 +244,7 @@ with the frictional contact and Van der Waals force models to simulate a granula
    ```
 
    To advance the system by one time step of size `dt`, we simply need to call the `do_step(dt)` method
-   of the granular system object.
+   of the [granular system object](Granular-system.md).
 
 7. If you run the program now, the simulation will be performed but no output will
    be produced. We need to add some code to write out the state of the system periodically. Above your
@@ -480,5 +480,14 @@ int main() {
 {collapsible="true" collapsed-title="tutorial_01.cpp"}
 
 <seealso>
-<!--Give some related links to how-to articles-->
+<category ref="related">
+   <a href="Overview.md">Overview</a>
+    <a href="Installation.md">Installation</a>
+    <a href="Tutorials.md">Tutorials</a>
+    <a href="Class-reference.md">Class reference</a>
+</category>
+<category ref="external">
+    <a href="https://github.com/egor-demidov/libgran">libgran on GitHub</a>
+    <a href="https://github.com/egor-demidov/libtimestep">libtimestep on GitHub</a>
+</category>
 </seealso>

@@ -4,7 +4,7 @@
 
 <instance-profile id="hi"
                  name="libgran documentation"
-                 start-page="Installation.md">
+                 start-page="Overview.md">
 
     <toc-element topic="Overview.md"/>
     <toc-element topic="Installation.md"/>

@@ -7,10 +7,13 @@
         <algolia-index>libgran_doc_index</algolia-index>
         <algolia-api-key>e905c557ab7adec88a9592dd5fe2e07e</algolia-api-key>
         <web-root>https://some.domain</web-root>
+        <download-title>View on GitHub</download-title>
+        <download-page>https://github.com/egor-demidov/libgran</download-page>
+        <showDownloadButton>true</showDownloadButton>
     </variables>
     <build-profile instance="hi">
         <variables>
-            <noindex-content>true</noindex-content>
+            <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
 

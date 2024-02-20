@@ -14,7 +14,7 @@ and is designed to be easily [extensible with custom models](Custom-binary-force
 ## libgran architecture
 
 Each libgran simulation is initialized and driven by a program that specializes and
-creates instances of libgran's templates. In particular, libgran has to initialize
+creates instances of libgran's templates. In particular, the driver program has to initialize
 three components:
 
 - Force model containers - [binary](Binary-force-container.md) and [unary](Unary-force-container.md)

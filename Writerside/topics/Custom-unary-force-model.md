@@ -103,7 +103,7 @@ This model will later be used by a driver program in a simulation.
    > Note that the return type
    > is an `std::pair`, because we need to return two accelerations: translational and angular. However, we assume that
    > this central attractive model is a body force acting on the particles and does not directly produce torques. Therefore,
-   > the angular acceleration that we return is be zero.
+   > the angular acceleration that we return is zero.
 
 5. At every time step, the center of mass needs to be re-computed as it may shift with the evolution of the system.
    We do not want to compute the center of mass directly in the body of `operator ()` because that computation would be

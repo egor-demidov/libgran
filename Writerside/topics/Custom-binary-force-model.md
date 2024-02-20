@@ -111,7 +111,7 @@ This model will later be used by a driver program in a simulation.
    > Note that the return type
    > is an `std::pair`, because we need to return two accelerations: translational and angular. However, we assume that
    > this linear attractive model is a body force acting on the particles and does not directly produce torques. Therefore,
-   > the angular acceleration that we return is be zero.
+   > the angular acceleration that we return is zero.
 
 ## Driver program for this model
 

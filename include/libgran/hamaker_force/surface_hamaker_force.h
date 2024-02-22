@@ -20,13 +20,10 @@ struct surface_hamaker_functor {
             std::vector<field_value_t> const & theta [[maybe_unused]], std::vector<field_value_t> const & omega [[maybe_unused]], real_t t [[maybe_unused]]) const {
 
         field_value_t r = (x_facet - x[i]); // Distance vector
-        real_t h = r.norm() - 2.0 * r_part; // Surface separation
+        real_t h = r.norm() - r_part; // Surface separation
         if (h < h0)
             h = h0;
-        field_value_t f = -A / 6.0 * ((4.0*r_part+2.0*h)/(4.0*r_part+h)/h
-                - 2.0/(2.0*r_part+h)
-                - 4.0*square(r_part)/cube(2.0*r_part+h)
-                -2.0*square(r_part)*(4.0*r_part+2.0*h)/square(4.0*r_part+h)/square(h))
+        field_value_t f = 2.0*A/3.0 * (cube(r_part) / square(h) / square(h + 2.0 * r_part))
                 * r.normalized();
 
         return std::make_pair(f/mass, field_zero);

@@ -36,7 +36,8 @@ using binary_force_container_t =
     contact_force_functor_t>;
 
 using surface_contact_force_functor_t = surface_contact_force_functor<Eigen::Vector3d, double>;
-using triangular_facet_t = triangular_facet<Eigen::Vector3d, double, surface_contact_force_functor_t>;
+using surface_hamaker_functor_t = surface_hamaker_functor<Eigen::Vector3d, double>;
+using triangular_facet_t = triangular_facet<Eigen::Vector3d, double, surface_contact_force_functor_t, surface_hamaker_functor_t>;
 using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, double, triangular_facet_t>;
 
 using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
@@ -86,12 +87,16 @@ int main() {
     // Parameters for the contact model
     const double k = 10000.0;
     const double gamma_n = 5.0e-9;
-    const double mu = 1.0;
+    const double mu = 0.5;
     const double phi = 1.0;
     const double mu_o = 0.1;
     const double gamma_t = 0.2 * gamma_n;
     const double gamma_r = 0.05 * gamma_n;
     const double gamma_o = 0.05 * gamma_n;
+
+    // Parameters for the Van der Waals model
+    const double A = 0.0;
+    const double h0 = 1.0e-9;
 
     const double a = 50.0 * r_part;
     const facet_t facet {
@@ -102,7 +107,7 @@ int main() {
 
     // Declare the initial condition buffers
     std::vector<Eigen::Vector3d> x0, v0, theta0, omega0;
-    x0.emplace_back(0.5*r_part, 0.5*r_part, 4.0 * r_part);
+    x0.emplace_back(0.5*r_part, 0.5*r_part, 2.5 * r_part);
     v0.resize(x0.size());
     theta0.resize(x0.size());
     omega0.resize(x0.size());
@@ -116,8 +121,12 @@ int main() {
     binary_force_container_t
         binary_force_functors {contact_force_model};
 
-    surface_contact_force_functor_t surface_contact_force(100.0, 0, r_part, mass, Eigen::Vector3d::Zero());
-    triangular_facet_t facet_model(facet, surface_contact_force);
+    surface_contact_force_functor_t surface_contact_force(x0.size(),
+        k, gamma_n, k, gamma_t, mu, phi, k, gamma_r, mu_o, phi, k, gamma_o,
+        mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
+    surface_hamaker_functor_t surface_hamaker_force(A, h0, r_part, mass, Eigen::Vector3d::Zero(), 0.0);
+
+    triangular_facet_t facet_model(facet, surface_contact_force, surface_hamaker_force);
     unary_force_container_t unary_force_functors {facet_model};
 
     rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d>

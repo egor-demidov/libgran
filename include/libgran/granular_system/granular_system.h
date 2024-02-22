@@ -65,7 +65,7 @@ struct unary_force_functor_container {
                                                                   field_container_t const & theta,
                                                                   field_container_t const & omega,
                                                                   real_t t) {
-        static_assert(std::tuple_size<decltype(unary_force_functors)>::value > 0, "at least one binary force functor must be provided "
+        static_assert(std::tuple_size<decltype(unary_force_functors)>::value > 0, "at least one unary force functor must be provided "
                                                                             "as a template parameter");
 
         std::pair<field_value_t, field_value_t> accelerations = std::apply([i, &x, &v, &theta, &omega, t] (auto & ... e) -> std::pair<field_value_t, field_value_t> {

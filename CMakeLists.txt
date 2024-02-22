@@ -58,6 +58,8 @@ add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
 # A sintered lattice undergoing rigid-body motion with the new sintering model
 add_executable(alt_sintered_test test/alt_sintered.cpp writer.cpp test/mass_distribution.cpp)
 
+add_executable(surface_test test/surface.cpp writer.cpp)
+
 add_executable(sintered_2_test test/sintered_2.cpp writer.cpp)
 
 target_link_libraries(libgran ${LIBRARY_LIST})
@@ -68,8 +70,10 @@ target_link_libraries(hamaker_3_test ${LIBRARY_LIST})
 target_link_libraries(sintered_test ${LIBRARY_LIST})
 target_link_libraries(sintered_2_test ${LIBRARY_LIST})
 target_link_libraries(alt_sintered_test ${LIBRARY_LIST})
+target_link_libraries(surface_test ${LIBRARY_LIST})
 
 add_test(NAME contact_test COMMAND ${CMAKE_BINARY_DIR}/contact_test)
 add_test(NAME hamaker_test COMMAND ${CMAKE_BINARY_DIR}/hamaker_test)
 add_test(NAME sintered_test COMMAND ${CMAKE_BINARY_DIR}/sintered_test)
 add_test(NAME alt_sintered_test COMMAND ${CMAKE_BINARY_DIR}/alt_sintered_test)
+add_test(NAME surface_test COMMAND ${CMAKE_BINARY_DIR}/surface_test)

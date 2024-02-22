@@ -57,8 +57,8 @@ add_executable(hamaker_3_test test/hamaker_3.cpp writer.cpp)
 add_executable(sintered_test test/sintered.cpp test/mass_distribution.cpp)
 # A sintered lattice undergoing rigid-body motion with the new sintering model
 add_executable(alt_sintered_test test/alt_sintered.cpp writer.cpp test/mass_distribution.cpp)
-
-add_executable(surface_test test/surface.cpp writer.cpp)
+# Particle is collided with a plane
+add_executable(surface_test test/surface.cpp writer.cpp test/compute_energy.cpp)
 
 add_executable(sintered_2_test test/sintered_2.cpp writer.cpp)
 

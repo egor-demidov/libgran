@@ -15,9 +15,9 @@ struct triangular_facet {
 
     typedef std::vector<field_value_t> field_container_t;
 
-    explicit triangular_facet(std::tuple<field_value_t, field_value_t, field_value_t> vertices,
+    explicit triangular_facet(field_value_t v_facet, std::tuple<field_value_t, field_value_t, field_value_t> vertices,
         surface_force_functors_t & ... force_functors) :
-            vertices(std::move(vertices)), surface_force_functors{force_functors...} {
+            v_facet(std::move(v_facet)), vertices(std::move(vertices)), surface_force_functors{force_functors...} {
 
         // Compute the area of the triangle
         field_value_t u = std::get<1>(vertices) - std::get<0>(vertices);
@@ -40,12 +40,18 @@ struct triangular_facet {
         // Compute the nearest point on the facet to the center of the particle
         field_value_t x_facet = closest_point_on_triangle(x[i]);
 
+        // Create a copy of facet velocity that can be captured by lambdas
+        field_value_t v_facet_copy = v_facet;
+
         // Call the surface force functors passing the x_facet to each of them as an argument
-        std::pair<field_value_t, field_value_t> accelerations = std::apply([i, &x_facet, &x, &v, &theta, &omega, t] (auto & ... e) -> std::pair<field_value_t, field_value_t> {
-            return (e(i, x_facet, x, v, theta, omega, t) + ...);
+        std::pair<field_value_t, field_value_t> accelerations = std::apply([i, &x_facet, &v_facet_copy, &x, &v, &theta, &omega, t] (auto & ... e) -> std::pair<field_value_t, field_value_t> {
+            return (e(i, x_facet, v_facet_copy, x, v, theta, omega, t) + ...);
         }, surface_force_functors);
         return accelerations;
     }
+
+    // Velocity of the facet
+    field_value_t v_facet;
 
 private:
 

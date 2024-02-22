@@ -15,7 +15,7 @@ struct surface_hamaker_functor {
                     real_t real_zero) :         // Zero value of real_t
         A(A), h0(h0), r_part(r_part), mass(mass), real_zero(real_zero), field_zero(field_zero) {}
 
-    std::pair<field_value_t, field_value_t> operator () (size_t i, field_value_t const & x_facet,
+    std::pair<field_value_t, field_value_t> operator () (size_t i, field_value_t const & x_facet, field_value_t const & v_facet [[maybe_unused]],
             std::vector<field_value_t> const & x, std::vector<field_value_t> const & v [[maybe_unused]],
             std::vector<field_value_t> const & theta [[maybe_unused]], std::vector<field_value_t> const & omega [[maybe_unused]], real_t t [[maybe_unused]]) const {
 

@@ -56,6 +56,7 @@ struct surface_contact_force_functor {
 
     std::pair<field_value_t, field_value_t> operator () (size_t i,
                                                          field_value_t const & x_facet,
+                                                         field_value_t const & v_facet,
                                                          std::vector<field_value_t> const & x,
                                                          std::vector<field_value_t> const & v,
                                                          std::vector<field_value_t> const & theta [[maybe_unused]],
@@ -72,11 +73,13 @@ struct surface_contact_force_functor {
 
         real_t r_part_prime = r_part - overlap;
 
-        real_t v_n = -v[i].dot(n);
+        real_t v_n = -(v[i] - v_facet).dot(n);
 
         real_t f_n = k * overlap + gamma_n * v_n;
 
-        field_value_t v_t = v[i] - v_n * n + r_part_prime * n.cross(omega[i]);
+        field_value_t v_ij = v[i] - v_facet + r_part_prime * n.cross(omega[i]);
+
+        field_value_t v_t = v_ij - v_ij.dot(n) * n;
         field_value_t v_r = -r_part_prime * n.cross(omega[i]);
         field_value_t v_o = r_part * n.dot(omega[i]) * n;
 

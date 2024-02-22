@@ -27,6 +27,7 @@
 #include <libgran/surface_force/triangular_facet.h>
 
 #include "../writer.h"
+#include "compute_energy.h"
 
 using facet_t = std::tuple<Eigen::Vector3d, Eigen::Vector3d, Eigen::Vector3d>;
 
@@ -42,33 +43,6 @@ using unary_force_container_t = unary_force_functor_container<Eigen::Vector3d, d
 
 using granular_system_t = granular_system<Eigen::Vector3d, double, rotational_velocity_verlet_half,
     rotational_step_handler, binary_force_container_t, unary_force_container_t>;
-
-void dump_mesh(const facet_t * mesh, double r_part, size_t n_facets) {
-    std::ofstream ofs("facet.stl");
-
-    if (!ofs.good()) {
-        std::cerr << "Unable to create a facet file" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    ofs << "solid facet\n";
-    for (size_t n = 0; n < n_facets; n ++) {
-        Eigen::Vector3d u = std::get<1>(mesh[n]) - std::get<0>(mesh[n]);
-        Eigen::Vector3d v = std::get<2>(mesh[n]) - std::get<0>(mesh[n]);
-
-        const Eigen::Vector3d normal = u.cross(v).normalized();
-        auto const & facet = mesh[n];
-
-        ofs << "facet normal " << normal[0] << " " << normal[1] << " " << normal[2] << "\n";
-        ofs << "\touter loop\n";
-        ofs << "\t\tvertex " << std::get<0>(facet)[0] / r_part << " " << std::get<0>(facet)[1] / r_part << " " << std::get<0>(facet)[2] / r_part << "\n";
-        ofs << "\t\tvertex " << std::get<1>(facet)[0] / r_part << " " << std::get<1>(facet)[1] / r_part << " " << std::get<1>(facet)[2] / r_part << "\n";
-        ofs << "\t\tvertex " << std::get<2>(facet)[0] / r_part << " " << std::get<2>(facet)[1] / r_part << " " << std::get<2>(facet)[2] / r_part << "\n";
-        ofs << "\tendloop\n";
-        ofs << "endfacet\n";
-    }
-    ofs << "endsolid facet\n";
-}
 
 int main() {
     // General simulation parameters
@@ -126,7 +100,7 @@ int main() {
         mu_o, phi, r_part, mass, inertia, dt, Eigen::Vector3d::Zero(), 0.0);
     surface_hamaker_functor_t surface_hamaker_force(A, h0, r_part, mass, Eigen::Vector3d::Zero(), 0.0);
 
-    triangular_facet_t facet_model(facet, surface_contact_force, surface_hamaker_force);
+    triangular_facet_t facet_model(Eigen::Vector3d::Zero(), facet, surface_contact_force, surface_hamaker_force);
     unary_force_container_t unary_force_functors {facet_model};
 
     rotational_step_handler<std::vector<Eigen::Vector3d>, Eigen::Vector3d>
@@ -136,14 +110,17 @@ int main() {
         v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
         step_handler_instance, binary_force_functors, unary_force_functors);
 
-    dump_mesh(&facet, r_part, 1);
     for (size_t n = 0; n < n_steps; n ++) {
-        if (n % dump_period == 0) {
-            std::cout << "Dump " << n / dump_period << " out of " << n_dumps << std::endl;
-            write_particles("run", system.get_x(), system.get_theta(), r_part);
-        }
         system.do_step(dt);
     }
+
+    const double ke_target = 1.0922e-21;
+    const double ke = compute_total_kinetic_energy(system.get_v(), system.get_omega(), mass, inertia);
+
+    const double ke_tolerance = 1.0; // Percent
+
+    if (abs(ke - ke_target) / ke_target > ke_tolerance / 100.0)
+        return EXIT_FAILURE;
 
     return 0;
 }

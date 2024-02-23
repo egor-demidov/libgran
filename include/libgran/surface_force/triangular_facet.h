@@ -50,6 +50,10 @@ struct triangular_facet {
         return accelerations;
     }
 
+    field_value_t const & get_unit_normal() const {
+        return plane_unit_normal;
+    }
+
     // Velocity of the facet
     field_value_t v_facet;
 

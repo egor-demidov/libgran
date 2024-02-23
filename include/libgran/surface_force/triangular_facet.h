@@ -58,6 +58,13 @@ struct triangular_facet {
         return vertices;
     }
 
+    // Move the facet according to its velocity
+    void update_positions(real_t dt) {
+        std::get<0>(vertices) += v_facet * dt;
+        std::get<1>(vertices) += v_facet * dt;
+        std::get<2>(vertices) += v_facet * dt;
+    }
+
     // Velocity of the facet
     field_value_t v_facet;
 

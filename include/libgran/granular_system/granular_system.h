@@ -23,6 +23,13 @@ std::pair<T1, T2> operator + (std::pair<T1, T2> const & lhs, std::pair<T1, T2> c
     return std::make_pair(lhs.first + rhs.first, lhs.second + rhs.second);
 }
 
+template<typename T1, typename T2>
+std::pair<T1, T2> & operator += (std::pair<T1, T2> & lhs, std::pair<T1, T2> const & rhs) {
+    lhs.first += rhs.first;
+    lhs.second += rhs.second;
+    return lhs;
+}
+
 template <
     typename field_value_t,
     typename real_t,

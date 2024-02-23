@@ -54,6 +54,10 @@ struct triangular_facet {
         return plane_unit_normal;
     }
 
+    std::tuple<field_value_t, field_value_t, field_value_t> const & get_vertices() const {
+        return vertices;
+    }
+
     // Velocity of the facet
     field_value_t v_facet;
 

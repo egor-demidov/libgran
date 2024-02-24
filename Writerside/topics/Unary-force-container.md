@@ -3,7 +3,7 @@
 <tldr>
 <p>A record type that stores a variable number of references to unary force model
 instances</p>
-<p>Name: <code>unary_force_container_t</code></p>
+<p>Name: <code>unary_force_container</code></p>
 <p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
 </tldr>
 

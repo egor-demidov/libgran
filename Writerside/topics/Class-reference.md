@@ -12,11 +12,20 @@ arguments, and member functions of objects provided in libgran:
 [`unary_force_container.t`](Unary-force-container.md)
 : A record type that stores references to unary force model instances
 
-[`hamaker_funcor`](Van-der-Waals-attraction.md)
-: A force model that simulates Van der Waals attraction
+[`hamaker_functor`](Van-der-Waals-attraction.md)
+: A force model that simulates Van der Waals attraction between two particles
 
 [`contact_force_functor`](Frictional-contact.md)
 : A force model that simulates frictional forces between contacting particles
+
+[`triangular_facet`](Triangular-facet.md)
+: A wrapper for particle-surface force models
+
+[`surface_hamaker_functor`](Van-der-Waals-attraction-surface.md)
+: A force model that simulates Van der Waals attraction between a particle and a surface
+
+[`surface_contact_force_functor`](Frictional-contact-surface.md)
+: A force model that simulates frictional forces between a particle and a plane in contact
 
 <seealso>
 <category ref="related">

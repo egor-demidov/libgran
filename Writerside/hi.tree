@@ -22,5 +22,11 @@
             <toc-element topic="Van-der-Waals-attraction.md"/>
             <toc-element topic="Frictional-contact.md"/>
         </toc-element>
+        <toc-element topic="Unary-force-models.md">
+            <toc-element topic="Triangular-facet.md">
+                <toc-element topic="Van-der-Waals-attraction-surface.md"/>
+                <toc-element topic="Frictional-contact-surface.md"/>
+            </toc-element>
+        </toc-element>
     </toc-element>
 </instance-profile>

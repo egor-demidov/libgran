@@ -1,6 +1,6 @@
 # Binary force models
 
-libran comes with some build-in binary force models. Here, we provide class fererences
+libran comes with some build-in binary force models. Here, we provide class references
 for reach built-in binary model template:
 
 - [Van der Waals attraction](Van-der-Waals-attraction.md) - simulates Van der Waals attraction

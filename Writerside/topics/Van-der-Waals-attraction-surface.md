@@ -1,10 +1,9 @@
-# Binary force container
+# Van der Waals attraction (surface)
 
 <tldr>
-<p>A record type that stores a variable number of references to binary force model
-instances</p>
-<p>Name: <code>binary_force_container</code></p>
-<p>Defined in: <code>&lt;libgran/granular_system/granular_system.h&gt;</code></p>
+<p>A surface force model that simulates particle-surface Van der Waals attraction</p>
+<p>Name: <code>surface_hamaker_functor</code></p>
+<p>Defined in: <code>&lt;libgran/hamaker_force/surface_hamaker_force.h&gt;</code></p>
 </tldr>
 
 ## Template parameters
@@ -16,14 +15,26 @@ instances</p>
 `real_t`
 : scalar field type
 
-`binary_force_functors_t ...`
-: list of binary force model types
-
 ## Constructor arguments
 
 {type="wide"}
-`binary_force_functors_t & ...`
-: list of binary force model references
+`real_t A`
+: Hamaker constant of the material
+
+`real_t h0`
+: saturation distance
+
+`real_t r_part`
+: particle radius
+
+`real_t mass`
+: particle mass
+
+`field_value_t field_zero`
+: zero-valued primary field
+
+`real_t real_zero`
+: zero-valued scalar field
 
 ## Public member functions
 
@@ -31,8 +42,8 @@ instances</p>
 
 Synopsis:
 
-Called by the [granular system](Granular-system.md) to compute the acceleration of particle i due to binary interactions
-with other particles
+Called by the [triangular facet](Triangular-facet.md) to compute the acceleration
+of particle i due to its Van der Waals attraction to the triangular facet
 
 Arguments:
 
@@ -40,8 +51,8 @@ Arguments:
 `size_t i`
 : index of the particle that is being accelerated
 
-`size_t j`
-: index of the particle that is acting on particle i
+`field_value_t const & x_facet`
+: point on the facet closest to the center of particle i
 
 `std::vector<fielv_value_t> const & x`
 : const reference to the position buffer
@@ -62,8 +73,8 @@ Return value:
 
 {type="wide"}
 `std::pair<field_value_t, field_value_t>`
-: translational acceleration and angular acceleration of particle i due to its interaction
-with particle j
+: translational acceleration and angular acceleration of particle i due to its
+Van der Waals attraction to particle j
 
 <seealso>
 <category ref="related">

@@ -12,10 +12,10 @@
 #ifndef LIBGRAN_USE_OMP
 #define binary_system_implementation rotational_binary_system
 #include <libtimestep/rotational_system/rotational_binary_system.h>
-#pragma message("libgran: using C++ 17 parallel algorithms")
+#error "Neighbor lists are not supported with C++ 17 algorithms yet"
 #else
-#define binary_system_implementation rotational_binary_system_omp
-#include <libtimestep/rotational_system/rotational_binary_system_omp.h>
+#define binary_system_implementation rotational_binary_system_neighbors_omp
+#include <libtimestep/rotational_system/rotational_binary_system_neighbors_omp.h>
 #pragma message("libgran: using OpenMP parallelization")
 #endif //LIBGRAN_USE_OMP
 
@@ -42,23 +42,23 @@ template <
         typename step_handler_t,
         typename binary_force_functor_container_t,
         typename unary_force_functor_container_t>
-class granular_system_neignbor_list : public binary_system_implementation<field_value_t, real_t, integrator_t, step_handler_t,
-        granular_system_neignbor_list<field_value_t, real_t, integrator_t, step_handler_t,
+class granular_system_neighbor_list : public binary_system_implementation<field_value_t, real_t, integrator_t, step_handler_t,
+        granular_system_neighbor_list<field_value_t, real_t, integrator_t, step_handler_t,
                 binary_force_functor_container_t, unary_force_functor_container_t>,
         (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)> {
 public:
     typedef std::vector<field_value_t> field_container_t;
 
-    granular_system_neignbor_list(granular_system_neignbor_list const &) = delete;
+    granular_system_neighbor_list(granular_system_neighbor_list const &) = delete;
 
-    granular_system_neignbor_list(field_container_t x0, field_container_t v0,
+    granular_system_neighbor_list(real_t r_verlet, field_container_t x0, field_container_t v0,
                     field_container_t theta0, field_container_t omega0,
                     real_t t0, field_value_t field_zero, real_t real_zero, step_handler_t<field_container_t, field_value_t> & step_handler,
                     binary_force_functor_container_t binary_force_functors, unary_force_functor_container_t unary_force_functors) :
             binary_system_implementation<field_value_t, real_t, integrator_t, step_handler_t,
-                    granular_system_neignbor_list<field_value_t, real_t, integrator_t, step_handler_t, binary_force_functor_container_t, unary_force_functor_container_t>,
+                    granular_system_neighbor_list<field_value_t, real_t, integrator_t, step_handler_t, binary_force_functor_container_t, unary_force_functor_container_t>,
                     (std::tuple_size<decltype(unary_force_functor_container_t::unary_force_functors)>::value > 0)>
-                    (std::move(x0), std::move(v0), std::move(theta0),
+                    (x0.size(), r_verlet, std::move(x0), std::move(v0), std::move(theta0),
                      std::move(omega0), t0, field_zero, real_zero, *this, step_handler),
             binary_force_functors(std::move(binary_force_functors)),
             unary_force_functors(std::move(unary_force_functors)) {}
@@ -82,8 +82,6 @@ public:
     }
 
 private:
-    const real_t r_verlet;  // Verlet radius for neighbor list computation
-
     binary_force_functor_container_t binary_force_functors;
     unary_force_functor_container_t unary_force_functors;
 };

@@ -112,7 +112,7 @@ int main() {
             binary_force_functor_container<Eigen::Vector3d, double,
                     contact_force_functor<Eigen::Vector3d, double>,
                     hamaker_functor<Eigen::Vector3d, double>>,
-            unary_force_functor_container<Eigen::Vector3d, double>> system(5.0 * r_part, x0,
+            unary_force_functor_container<Eigen::Vector3d, double>> system(x0.size(), 5.0 * r_part, x0,
                                                                            v0, theta0, omega0, 0.0, Eigen::Vector3d::Zero(), 0.0,
                                                                            step_handler_instance, binary_force_functors, unary_force_functors);
 

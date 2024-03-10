@@ -65,7 +65,7 @@ struct contact_force_functor {
         field_value_t n = (x[i] - x[j]).normalized();
         real_t overlap = 2.0 * r_part - (x[i] - x[j]).dot(n);
 
-        if (overlap <= 0) {
+        if (overlap <= 0) [[likely]] {
             reset_springs(i, j); // Reset the accumulated tangential springs
             return std::make_pair(field_zero, field_zero); // Return zeros - there is no force or torque for interparticle contact
         }
@@ -114,7 +114,7 @@ private:
         field_value_t & xi = std::get<model_num>(contact_springs[i * n_part + j]); // Access the respective spring
         field_value_t xi_new = xi - xi.dot(n) * n; // rotate the tangential spring
         // Rescale the spring to preserve its magnitude after rotation
-        if (xi_new.norm() > 0.0) {
+        if (xi_new.norm() > 0.0) [[likely]] {
             xi_new.normalize();
             xi_new *= xi.norm();
         }
@@ -126,18 +126,18 @@ private:
 
         // Safely compute the unit tangent vector
         field_value_t t;
-        if (f_0.norm() > 0.0)
+        if (f_0.norm() > 0.0) [[likely]]
             t = f_0.normalized();
-        else
+        else [[unlikely]]
             t = field_zero;
 
         // Select whether static of dynamic friction should be used based on the test force
         real_t f_selected;
-        if (f_0.norm() <= static_friction) {
+        if (f_0.norm() <= static_friction) [[likely]] {
             // This is static friction
             xi += relative_velocity * dt;
             f_selected = static_friction;
-        } else {
+        } else [[unlikely]] {
             // This is dynamic friction
             xi = -1.0 / stiffness * (dynamic_friction * t + damping * relative_velocity);
             f_selected = dynamic_friction;

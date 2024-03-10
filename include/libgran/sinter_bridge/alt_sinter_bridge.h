@@ -77,7 +77,7 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          real_t t [[maybe_unused]]) {
 
-        if (!bonded_contacts[i*n_part + j])
+        if (!bonded_contacts[i*n_part + j]) [[likely]]
             return contact_force(i, j, x, v, theta, omega, t);
 
         field_value_t n = (x[i] - x[j]).normalized();
@@ -123,7 +123,7 @@ struct alt_sinter_functor {
         field_value_t & xi = std::get<model_num>(contact_springs[i * n_part + j]); // Access the respective spring
         field_value_t xi_new = xi - xi.dot(n) * n; // rotate the tangential spring
         // Rescale the spring to preserve its magnitude after rotation
-        if (xi_new.norm() > 0.0) {
+        if (xi_new.norm() > 0.0) [[likely]] {
             xi_new.normalize();
             xi_new *= xi.norm();
         }

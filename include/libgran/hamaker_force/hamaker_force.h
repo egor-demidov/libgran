@@ -31,7 +31,7 @@ struct hamaker_functor {
 
         field_value_t r = (x[j] - x[i]); // Distance vector
         real_t h = r.norm() - 2.0 * r_part; // Surface separation
-        if (h < h0)
+        if (h < h0) [[unlikely]]
             h = h0;
         field_value_t f = -A / 6.0 * ((4.0*r_part+2.0*h)/(4.0*r_part+h)/h
                 - 2.0/(2.0*r_part+h)

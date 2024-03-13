@@ -13,8 +13,8 @@
 #include "../contact_force/contact_force.h"
 
 template <typename field_value_t, typename real_t, typename neck_strength_distribution_t>
-struct alt_sinter_functor {
-    alt_sinter_functor(size_t n_part,            // Number of particles in the system
+struct alt_breaking_sinter_functor {
+    alt_breaking_sinter_functor(size_t n_part,            // Number of particles in the system
                           std::vector<field_value_t> x0,         // Initial positions
                           real_t k,                 // Normal stiffness coefficient
                           real_t gamma_n,           // Normal damping coefficient

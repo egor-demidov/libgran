@@ -115,7 +115,7 @@ struct alt_breaking_sinter_functor {
         field_value_t f_tot = f_n * n + f_t;
         field_value_t tau_tot = -tau_t + tau_r + tau_o;
 
-        if (f_tot.norm() > bonded_contacts[i * n_part + j])
+        if (f_tot.norm() > neck_strengths[i * n_part + j])
             bonded_contacts[i * n_part + j] = false;
 
         return std::make_pair(f_tot / mass, tau_tot / inertia);

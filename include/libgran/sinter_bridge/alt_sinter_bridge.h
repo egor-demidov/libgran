@@ -135,6 +135,11 @@ struct alt_sinter_functor {
         return f_0;
     }
 
+    [[nodiscard]]
+    std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> const & get_contact_springs() const {
+        return contact_springs;
+    }
+
     std::vector<bool> bonded_contacts;
 
 private:

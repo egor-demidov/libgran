@@ -47,7 +47,9 @@ struct alt_sinter_functor {
         dt(dt),
         real_zero(real_zero),
         field_zero(field_zero),
-        contact_force(std::move(contact_force)) {
+        contact_force(std::move(contact_force)),
+        vertex_subsets(x0.size())
+    {
 
         contact_springs.resize(n_part * n_part);
         std::fill(contact_springs.begin(), contact_springs.end(), std::make_tuple(field_zero, field_zero, field_zero));
@@ -57,13 +59,29 @@ struct alt_sinter_functor {
 
         particle_to_bond_map.resize(n_part);
 
+        // Initialize vertex_subsets for use with the cycle prevention algorithm
+        std::iota(vertex_subsets.begin(), vertex_subsets.end(), 0);
+
         for (size_t i = 0; i < n_part - 1; i ++) {
             for (size_t j = i+1; j < n_part; j ++) {
                 if (abs((x0[i] - x0[j]).norm() - 2.0*r_part) < critical_separation) {
+                    if (vertex_subsets[i] == vertex_subsets[j]) {
+                        std::cout << "Warning: preventing neck insertion to avoid a cycle" << std::endl;
+                        continue;
+                    }
+
                     bonded_contacts[i*n_part + j] = true;
                     bonded_contacts[j*n_part + i] = true;
                     particle_to_bond_map[i].emplace_front(j);
                     particle_to_bond_map[j].emplace_front(i);
+
+                    // Update the cycle detection data structures
+                    undirected_graph_edges.emplace_back(i, j);
+                    // Merge the subsets
+                    size_t subset_j = vertex_subsets[j];
+                    for (auto & subset : vertex_subsets) {
+                        if (subset == subset_j) subset = vertex_subsets[i];
+                    }
                 }
             }
         }
@@ -153,6 +171,10 @@ private:
     std::vector<std::forward_list<size_t>> particle_to_bond_map;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
     contact_force_functor<field_value_t, real_t> contact_force;
+
+    // Data structures for the cycle prevention algorithm
+    std::vector<std::pair<size_t, size_t>> undirected_graph_edges;
+    std::vector<size_t> vertex_subsets;
 };
 
 #endif //LIBGRAN_ALT_SINTER_BRIDGE_H

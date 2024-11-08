@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstddef>
 #include <forward_list>
+#include <algorithm>
 
 #include "../contact_force/contact_force.h"
 

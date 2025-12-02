@@ -57,10 +57,18 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
+                                                         double const & box_length,
                                                          real_t t [[maybe_unused]]) {
+        // Box image convention
+        field_value_t d = x[j] - x[i];
 
-        field_value_t n = (x[i] - x[j]).normalized();
-        real_t overlap = (r[i] + r[j]) - (x[i] - x[j]).dot(n);
+        for(int k = 0; k < 3; ++k) {
+            if (d[k] >  0.5 * box_length) d[k] -= box_length;
+            if (d[k] < -0.5 * box_length) d[k] += box_length;
+        }
+
+        field_value_t n = d.normalized();
+        real_t overlap = (r[i] + r[j]) - d.dot(n);
 
         if (overlap <= 0) [[likely]] {
             reset_springs(i, j); // Reset the accumulated tangential springs

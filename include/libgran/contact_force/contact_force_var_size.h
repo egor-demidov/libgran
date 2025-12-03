@@ -57,14 +57,14 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         double const & box_length,
+                                                         std::vector<double> const & box_dimenstions,
                                                          real_t t [[maybe_unused]]) {
         // Box image convention
         field_value_t d = x[j] - x[i];
 
         for(int k = 0; k < 3; ++k) {
-            if (d[k] >  0.5 * box_length) d[k] -= box_length;
-            if (d[k] < -0.5 * box_length) d[k] += box_length;
+            if (d[k] >  0.5 * box_dimenstions[k]) d[k] -= box_dimenstions[k];
+            if (d[k] < -0.5 * box_dimenstions[k]) d[k] += box_dimenstions[k];
         }
 
         field_value_t n = d.normalized();

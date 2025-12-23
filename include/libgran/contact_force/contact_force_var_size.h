@@ -63,7 +63,7 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          real_t t [[maybe_unused]]) {
         // Box image convention
-        field_value_t d = x[j] - x[i];
+        field_value_t d = x[i] - x[j];
 
         for(int k = 0; k < 3; ++k) {
             if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];

@@ -7,8 +7,8 @@
 #define LIBGRAN_CONTACT_FORCE_H
 
 template <typename field_value_t, typename real_t>
-struct contact_force_functor {
-    contact_force_functor(size_t n_part,            // Number of particles in the system
+struct contact_force_functor_var_size {
+    contact_force_functor_var_size(size_t n_part,            // Number of particles in the system
                           real_t k,                 // Normal stiffness coefficient
                           real_t gamma_n,           // Normal damping coefficient
                           real_t k_t,               // Stiffness coefficient for sticking/sliding
@@ -25,10 +25,8 @@ struct contact_force_functor {
                           real_t phi_o,             // Coulomb coefficient for torsion
                           real_t dt,                // Time step for spring update (same as integration time step for 1st order schemes)
                           field_value_t field_zero, // Zero-valued field_value_t
-                          real_t real_zero,         // Zero-valued real_t
-                          std::vector<real_t> & r,
-                          std::vector<real_t> & m,
-                          std::vector<double> & box_dimension) :       
+                          real_t real_zero         // Zero-valued real_t
+                          ) :       
         n_part(n_part),
         k(k),
         gamma_n(gamma_n),
@@ -46,10 +44,7 @@ struct contact_force_functor {
         phi_o(phi_o),
         dt(dt),
         real_zero(real_zero),
-        field_zero(field_zero), 
-        r(r),
-        m(m),
-        box_dimension(box_dimension) {
+        field_zero(field_zero) {
 
         contact_springs.resize(n_part * n_part);
         std::fill(contact_springs.begin(), contact_springs.end(), std::make_tuple(field_zero, field_zero, field_zero));
@@ -61,6 +56,9 @@ struct contact_force_functor {
                                                          std::vector<field_value_t> const & v,
                                                          std::vector<field_value_t> const & theta [[maybe_unused]],
                                                          std::vector<field_value_t> const & omega,
+                                                         std::vector<real_t> const & r,
+                                                         std::vector<real_t> const & m,
+                                                         std::vector<double> const & box_dimension,
                                                          real_t t [[maybe_unused]]) {
         // Box image convention
         field_value_t d = x[i] - x[j];
@@ -164,7 +162,6 @@ private:
         dt, real_zero;
     const field_value_t field_zero;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
-    std::vector<real_t> & r, & m, & box_dimension;
 };
 
 #endif //LIBGRAN_CONTACT_FORCE_H

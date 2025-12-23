@@ -18,7 +18,6 @@ template <typename field_value_t, typename real_t>
 struct alt_sinter_functor {
     alt_sinter_functor(size_t n_part,            // Number of particles in the system
                           std::vector<field_value_t> x0,         // Initial positions
-                          std::vector<field_value_t> r,         // radius
                           real_t k,                 // Normal stiffness coefficient
                           real_t gamma_n,           // Normal damping coefficient
                           real_t k_t,               // Stiffness coefficient for sticking/sliding
@@ -30,8 +29,11 @@ struct alt_sinter_functor {
                           real_t dt,                // Time step for spring update (same as integration time step for 1st order schemes)
                           field_value_t field_zero, // Zero-valued field_value_t
                           real_t real_zero,         // Zero-valued real_t
+                          std::vector<real_t> & r,  // vector of particle radii
+                          std::vector<real_t> & m,  // vector of particle masses
+                          std::vector<double> & box_dimension, // Dimensions of periodic box 
                           real_t critical_separation, // Critical separation between particles to make them necked
-                          contact_force_functor<field_value_t, real_t> contact_force) : // Instance of contact force functor that handles non-bonded contacts
+                          contact_force_functor_var_size<field_value_t, real_t> contact_force) : // Instance of contact force functor that handles non-bonded contacts
         n_part(n_part),
         k(k),
         gamma_n(gamma_n),
@@ -61,7 +63,14 @@ struct alt_sinter_functor {
 
         for (size_t i = 0; i < n_part - 1; i ++) {
             for (size_t j = i+1; j < n_part; j ++) {
-                if (abs((x0[i] - x0[j]).norm() - (r[i] + r[j])) < critical_separation) {
+                // minimum imae convention
+                field_value_t d = x0[i] - x0[j];
+
+                for(int k = 0; k < 3; ++k) {
+                    if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];
+                    if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
+                }
+                if (abs((d).norm() - (r[i] + r[j])) < critical_separation) {
                     if (vertex_subsets[i] == vertex_subsets[j]) {
                         std::cout << "Warning: preventing neck insertion to avoid a cycle" << std::endl;
                         continue;
@@ -92,13 +101,20 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
+                                                         std::vector<double> & box_dimension,
                                                          real_t t [[maybe_unused]]) {
 
         if (!bonded_contacts[i*n_part + j]) [[likely]]
-            return contact_force(i, j, x, v, theta, omega, r, m, t);
+            return contact_force(i, j, x, v, theta, omega, r, m, box_dimension, t);
 
-        field_value_t n = (x[i] - x[j]).normalized();
-        real_t overlap = (r[i] + r[j]) - (x[i] - x[j]).dot(n);
+        field_value_t d = x[i] - x[j];
+
+        for(int k = 0; k < 3; ++k) {
+            if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];
+            if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
+        }
+        field_value_t n = (d).normalized();
+        real_t overlap = (r[i] + r[j]) - (d).dot(n);
 
         real_t r_part_prime = (r[i] + r[j]) - overlap;
 
@@ -170,7 +186,7 @@ private:
     const field_value_t field_zero;
     std::vector<std::forward_list<size_t>> particle_to_bond_map;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
-    contact_force_functor<field_value_t, real_t> contact_force;
+    contact_force_functor_var_size<field_value_t, real_t> contact_force;
 
     // Data structures for the cycle prevention algorithm
     std::vector<std::pair<size_t, size_t>> undirected_graph_edges;

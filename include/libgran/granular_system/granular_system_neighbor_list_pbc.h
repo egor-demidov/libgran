@@ -8,7 +8,7 @@
 
 
 #include <libtimestep/rotational_integrator/rotational_integrator.h>
-#include <libtimestep/rotational_step_handler/rotational_step_handler.h>
+#include <libtimestep/rotational_step_handler/rotational_step_handler_pbc.h>
 
 #ifndef LIBGRAN_USE_OMP
 #define binary_system_implementation rotational_binary_system

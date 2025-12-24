@@ -76,7 +76,7 @@ struct contact_force_functor_var_size {
             return std::make_pair(field_zero, field_zero); // Return zeros - there is no force or torque for interparticle contact
         }
 
-        real_t r_part_prime = (r[i] + r[j]) - overlap;
+        real_t r_part_prime = (r[i] + r[j])/2 - overlap/2;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 

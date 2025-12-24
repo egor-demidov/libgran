@@ -116,7 +116,7 @@ struct alt_sinter_functor {
         field_value_t n = (d).normalized();
         real_t overlap = (r[i] + r[j]) - (d).dot(n);
 
-        real_t r_part_prime = (r[i] + r[j]) - overlap;
+        real_t r_part_prime = (r[i] + r[j])/2 - overlap/2;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 

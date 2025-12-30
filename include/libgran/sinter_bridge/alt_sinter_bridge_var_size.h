@@ -31,7 +31,7 @@ struct alt_sinter_functor {
                           real_t real_zero,         // Zero-valued real_t
                           std::vector<real_t> & r,  // vector of particle radii
                           std::vector<real_t> & m,  // vector of particle masses
-                          std::vector<double> & box_dimension, // Dimensions of periodic box 
+                          std::array<double, 3> & box_dimension, // Dimensions of periodic box 
                           real_t critical_separation, // Critical separation between particles to make them necked
                           contact_force_functor_var_size<field_value_t, real_t> contact_force) : // Instance of contact force functor that handles non-bonded contacts
         n_part(n_part),
@@ -101,22 +101,25 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<double> & box_dimension,
+                                                         std::array<double, 3> & box_dimension,
+                                                         field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {
 
         if (!bonded_contacts[i*n_part + j]) [[likely]]
-            return contact_force(i, j, x, v, theta, omega, r, m, box_dimension, t);
+            return contact_force(i, j, x, v, theta, omega, r, m, box_dimension, box_shrink_rate, t);
 
-        field_value_t d = x[i] - x[j];
+        field_value_t d_raw = x[i] - x[j];
+        field_value_t d;
+        field_value_t image;
 
-        for(int k = 0; k < 3; ++k) {
-            if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];
-            if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
+        for (int k = 0; k < 3; ++k) {
+            image[k] = std::round(d_raw[k] / box_dimension[k]);
+            d[k] = d_raw[k] - box_dimension[k] * image[k];
         }
         field_value_t n = (d).normalized();
         real_t overlap = (r[i] + r[j]) - (d).dot(n);
 
-        real_t r_part_prime = (r[i] + r[j])/2 - overlap/2;
+        real_t r_part_prime = (r[i] + r[j])/2.0 - overlap/2.0;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
@@ -124,6 +127,9 @@ struct alt_sinter_functor {
                 + gamma_n * v_n; // Viscous contribution
 
         field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
+        for(int i = 0; i < 3; i++){
+            v_ij[i] -= box_shrink_rate[i] * image[i];
+        }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
         field_value_t v_r = -r_part_prime * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity

@@ -58,14 +58,17 @@ struct contact_force_functor_var_size {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<double> const & box_dimension,
+                                                         std::array<double, 3> & box_dimension,
+                                                         field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {
         // Box image convention
-        field_value_t d = x[i] - x[j];
+        field_value_t d_raw = x[i] - x[j];
+        field_value_t d;
+        field_value_t image;
 
-        for(int k = 0; k < 3; ++k) {
-            if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];
-            if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
+        for (int k = 0; k < 3; ++k) {
+            image[k] = std::round(d_raw[k] / box_dimension[k]);
+            d[k] = d_raw[k] - box_dimension[k] * image[k];
         }
 
         field_value_t n = d.normalized();
@@ -76,7 +79,7 @@ struct contact_force_functor_var_size {
             return std::make_pair(field_zero, field_zero); // Return zeros - there is no force or torque for interparticle contact
         }
 
-        real_t r_part_prime = (r[i] + r[j])/2 - overlap/2;
+        real_t r_part_prime = (r[i] + r[j])/2.0 - overlap/2.0;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
@@ -84,6 +87,9 @@ struct contact_force_functor_var_size {
                 + gamma_n * v_n; // Viscous contribution
 
         field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
+        for(int i = 0; i < 3; i++){
+            v_ij[i] -= box_shrink_rate[i] * image[i];
+        }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
         field_value_t v_r = -r_part_prime * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity

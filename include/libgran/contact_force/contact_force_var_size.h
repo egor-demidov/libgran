@@ -6,6 +6,13 @@
 #ifndef LIBGRAN_CONTACT_FORCE_H
 #define LIBGRAN_CONTACT_FORCE_H
 
+template <typename field_value_t>
+void update_particle_pressures(std::vector<field_value_t> & p, field_value_t force, field_value_t rIJ, int i){
+    for(int k = 0; k < 3; k++){
+        p[i][k] += force[k] * rIJ[k];
+    }
+}
+
 template <typename field_value_t, typename real_t>
 struct contact_force_functor_var_size {
     contact_force_functor_var_size(size_t n_part,            // Number of particles in the system
@@ -58,6 +65,7 @@ struct contact_force_functor_var_size {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
+                                                         std::vector<field_value_t> & p,
                                                          std::array<double, 3> & box_dimension,
                                                          field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {
@@ -105,8 +113,12 @@ struct contact_force_functor_var_size {
         field_value_t tau_o = r[i] * f_o;
 
         real_t inertia = 2.0 / 5.0 * m[i] * pow(r[i], 2.0);
+        field_value_t F = f_n * n + f_t;
 
-        return std::make_pair((f_n * n + f_t) / m[i], (-tau_t + tau_r + tau_o) / inertia);
+        // updating particle pressures for barostat
+        update_particle_pressures(p, F, d, i);
+
+        return std::make_pair((F) / m[i], (-tau_t + tau_r + tau_o) / inertia);
     }
 
 private:

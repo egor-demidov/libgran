@@ -1,5 +1,6 @@
 //
 // Created by egor on 2/2/24.
+// Edited by gurdeep on 12/30/25
 //
 
 #ifndef LIBGRAN_ALT_SINTER_BRIDGE_H
@@ -101,12 +102,13 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
+                                                         std::vector<field_value_t> & p,
                                                          std::array<double, 3> & box_dimension,
                                                          field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {
 
         if (!bonded_contacts[i*n_part + j]) [[likely]]
-            return contact_force(i, j, x, v, theta, omega, r, m, box_dimension, box_shrink_rate, t);
+            return contact_force(i, j, x, v, theta, omega, r, m, p, box_dimension, box_shrink_rate, t);
 
         field_value_t d_raw = x[i] - x[j];
         field_value_t d;
@@ -119,20 +121,21 @@ struct alt_sinter_functor {
         field_value_t n = (d).normalized();
         real_t overlap = (r[i] + r[j]) - (d).dot(n);
 
-        real_t r_part_prime = (r[i] + r[j])/2.0 - overlap/2.0;
+        real_t r_i_eff = r[i] - overlap * 0.5;
+        real_t r_j_eff = r[j] - overlap * 0.5;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
+        field_value_t v_ij = (v[i] + r_i_eff * n.cross(omega[i])) - (v[j] - r_j_eff * n.cross(omega[j]));
         for(int i = 0; i < 3; i++){
             v_ij[i] -= box_shrink_rate[i] * image[i];
         }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
-        field_value_t v_r = -r_part_prime * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
+        field_value_t v_r = -r_i_eff * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
         field_value_t v_o = r[i] * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
 
         field_value_t f_t = compute_shear_contribution<0>(i, j, n, k_t, gamma_t, v_t); // Sliding/sticking
@@ -140,12 +143,17 @@ struct alt_sinter_functor {
         field_value_t f_o = compute_shear_contribution<2>(i, j, n, k_o, gamma_o, v_o); // Torsion
 
         // Compute the torques associated with all the shear contributions
-        field_value_t tau_t = r_part_prime * n.cross(f_t);
+        field_value_t tau_t = r_i_eff * n.cross(f_t);
         field_value_t tau_r = r[i] * n.cross(f_r);
         field_value_t tau_o = r[i] * f_o;
 
         real_t inertia = 2.0 / 5.0 * m[i] * pow(r[i], 2.0);
-        return std::make_pair((f_n * n + f_t) / m[i], (-tau_t + tau_r + tau_o) / inertia);
+        field_value_t F = f_n * n + f_t;
+
+        // updating particle pressures for barostat
+        update_particle_pressures(p, F, d, i);
+
+        return std::make_pair((F) / m[i], (-tau_t + tau_r + tau_o) / inertia);
     }
 
     void reset_springs(size_t i, size_t j) {

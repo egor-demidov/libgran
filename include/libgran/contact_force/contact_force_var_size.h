@@ -7,10 +7,13 @@
 #define LIBGRAN_CONTACT_FORCE_H
 
 template <typename field_value_t>
-void update_particle_pressures(std::vector<field_value_t> & p, field_value_t force, field_value_t rIJ, int i){
+void update_particle_pressures(std::vector<std::array<double, 6>> & p, field_value_t force, field_value_t rIJ, int i){
     for(int k = 0; k < 3; k++){
         p[i][k] += force[k] * rIJ[k];
     }
+    p[i][3] += force[1] * rIJ[0];
+    p[i][4] += force[2] * rIJ[0];
+    p[i][5] += force[2] * rIJ[1];
 }
 
 template <typename field_value_t, typename real_t>
@@ -65,7 +68,7 @@ struct contact_force_functor_var_size {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<field_value_t> & p,
+                                                         std::vector<std::array<double, 6>> & p,
                                                          std::array<double, 3> & box_dimension,
                                                          field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {

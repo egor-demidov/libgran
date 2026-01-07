@@ -64,7 +64,7 @@ struct alt_sinter_functor {
 
         for (size_t i = 0; i < n_part - 1; i ++) {
             for (size_t j = i+1; j < n_part; j ++) {
-                // minimum imae convention
+                // minimum image convention
                 field_value_t d = x0[i] - x0[j];
 
                 for(int k = 0; k < 3; ++k) {
@@ -102,7 +102,7 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<field_value_t> & p,
+                                                         std::vector<std::array<double, 6>> & p,
                                                          std::array<double, 3> & box_dimension,
                                                          field_value_t & box_shrink_rate,
                                                          real_t t [[maybe_unused]]) {
@@ -118,24 +118,26 @@ struct alt_sinter_functor {
             image[k] = std::round(d_raw[k] / box_dimension[k]);
             d[k] = d_raw[k] - box_dimension[k] * image[k];
         }
+
         field_value_t n = (d).normalized();
         real_t overlap = (r[i] + r[j]) - (d).dot(n);
 
-        real_t r_i_eff = r[i] - overlap * 0.5;
-        real_t r_j_eff = r[j] - overlap * 0.5;
+        // real_t r_part_prime = r[i] - 1/2 * overlap;
+        real_t r_i_prime = r[i] - 1/2 * overlap;
+        real_t r_j_prime = r[j] - 1/2 * overlap;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_ij = (v[i] + r_i_eff * n.cross(omega[i])) - (v[j] - r_j_eff * n.cross(omega[j]));
+        field_value_t v_ij = v[i] - v[j] + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
         for(int i = 0; i < 3; i++){
             v_ij[i] -= box_shrink_rate[i] * image[i];
         }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
-        field_value_t v_r = -r_i_eff * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
+        field_value_t v_r = -r_i_prime * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
         field_value_t v_o = r[i] * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
 
         field_value_t f_t = compute_shear_contribution<0>(i, j, n, k_t, gamma_t, v_t); // Sliding/sticking
@@ -143,7 +145,7 @@ struct alt_sinter_functor {
         field_value_t f_o = compute_shear_contribution<2>(i, j, n, k_o, gamma_o, v_o); // Torsion
 
         // Compute the torques associated with all the shear contributions
-        field_value_t tau_t = r_i_eff * n.cross(f_t);
+        field_value_t tau_t = r_i_prime * n.cross(f_t);
         field_value_t tau_r = r[i] * n.cross(f_r);
         field_value_t tau_o = r[i] * f_o;
 

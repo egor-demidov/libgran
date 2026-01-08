@@ -90,28 +90,30 @@ struct contact_force_functor_var_size {
             return std::make_pair(field_zero, field_zero); // Return zeros - there is no force or torque for interparticle contact
         }
 
-        real_t r_part_prime = (r[i] + r[j])/2.0 - overlap/2.0;
+        // real_t r_part_prime = (r[i] + r[j])/2.0 - overlap/2.0;
+        real_t r_i_prime = r[i] - 1/2 * overlap;
+        real_t r_j_prime = r[j] - 1/2 * overlap;
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_ij = v[i] - v[j] + r_part_prime * n.cross(omega[i]) + r_part_prime * n.cross(omega[j]);
+        field_value_t v_ij = v[i] - v[j] + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
         for(int i = 0; i < 3; i++){
             v_ij[i] -= box_shrink_rate[i] * image[i];
         }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
-        field_value_t v_r = -r_part_prime * (n.cross(omega[i]) - n.cross(omega[j])); // Rolling velocity
-        field_value_t v_o = r[i] * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
+        field_value_t v_r = 0.5 * (r_i_prime + r_j_prime) * (-n.cross(omega[i]) + n.cross(omega[j])); // Rolling velocity
+        field_value_t v_o = 0.5 * (r[i] + r[j]) * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
 
         field_value_t f_t = compute_shear_contribution<0>(i, j, n, k_t, gamma_t, f_n, mu_s, phi_d, v_t); // Sliding/sticking
         field_value_t f_r = compute_shear_contribution<1>(i, j, n, k_r, gamma_r, f_n, mu_r, phi_r, v_r); // Rolling
         field_value_t f_o = compute_shear_contribution<2>(i, j, n, k_o, gamma_o, f_n, mu_o, phi_o, v_o); // Torsion
 
         // Compute the torques associated with all the shear contributions
-        field_value_t tau_t = r_part_prime * n.cross(f_t);
+        field_value_t tau_t = r_i_prime * n.cross(f_t);
         field_value_t tau_r = r[i] * n.cross(f_r);
         field_value_t tau_o = r[i] * f_o;
 

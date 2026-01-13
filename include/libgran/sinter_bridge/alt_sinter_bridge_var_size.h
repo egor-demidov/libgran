@@ -125,6 +125,7 @@ struct alt_sinter_functor {
         // real_t r_part_prime = r[i] - 1/2 * overlap;
         real_t r_i_prime = r[i] - 1/2 * overlap;
         real_t r_j_prime = r[j] - 1/2 * overlap;
+        real_t r_ij_prime = r_i_prime * r_j_prime / (r_i_prime + r_j_prime);
 
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
 
@@ -137,8 +138,8 @@ struct alt_sinter_functor {
         }
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
-        field_value_t v_r = 0.5 * (r_i_prime + r_j_prime) * (-n.cross(omega[i]) + n.cross(omega[j])); // Rolling velocity
-        field_value_t v_o = 0.5 * (r[i] + r[j]) * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
+        field_value_t v_r = r_ij_prime * (-n.cross(omega[i]) + n.cross(omega[j])); // Rolling velocity
+        field_value_t v_o = r_ij_prime * (n.dot(omega[i]) - n.dot(omega[j])) * n; // Spin velocity
 
         field_value_t f_t = compute_shear_contribution<0>(i, j, n, k_t, gamma_t, v_t); // Sliding/sticking
         field_value_t f_r = compute_shear_contribution<1>(i, j, n, k_r, gamma_r, v_r); // Rolling

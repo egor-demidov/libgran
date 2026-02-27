@@ -62,6 +62,8 @@ struct alt_sinter_functor {
         // Initialize vertex_subsets for use with the cycle prevention algorithm
         std::iota(vertex_subsets.begin(), vertex_subsets.end(), 0);
 
+        initial_normal_dist.resize(n_part * n_part);
+
         for (size_t i = 0; i < n_part - 1; i ++) {
             for (size_t j = i+1; j < n_part; j ++) {
                 // minimum image convention
@@ -72,15 +74,19 @@ struct alt_sinter_functor {
                     if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
                 }
                 if (abs((d).norm() - (r[i] + r[j])) < critical_separation) {
-                    if (vertex_subsets[i] == vertex_subsets[j]) {
-                        std::cout << "Warning: preventing neck insertion to avoid a cycle" << std::endl;
-                        continue;
-                    }
+                    // cycle pervention
+                    // if (vertex_subsets[i] == vertex_subsets[j]) {
+                    //     std::cout << "Warning: preventing neck insertion to avoid a cycle" << std::endl;
+                    //     continue;
+                    // }
 
                     bonded_contacts[i*n_part + j] = true;
                     bonded_contacts[j*n_part + i] = true;
                     particle_to_bond_map[i].emplace_front(j);
                     particle_to_bond_map[j].emplace_front(i);
+                    
+                    initial_normal_dist[i*n_part + j] = d;
+                    initial_normal_dist[j*n_part + i] = -d;
 
                     // Update the cycle detection data structures
                     undirected_graph_edges.emplace_back(i, j);
@@ -105,6 +111,7 @@ struct alt_sinter_functor {
                                                          std::vector<std::array<double, 6>> & p,
                                                          std::array<double, 3> & box_dimension,
                                                          field_value_t & box_shrink_rate,
+                                                         real_t & equilibrium_dist,
                                                          real_t t [[maybe_unused]]) {
 
         if (!bonded_contacts[i*n_part + j]) [[likely]]
@@ -119,8 +126,11 @@ struct alt_sinter_functor {
             d[k] = d_raw[k] - box_dimension[k] * image[k];
         }
 
+        field_value_t d0 = initial_normal_dist[i*n_part + j];
+
         field_value_t n = (d).normalized();
-        real_t overlap = (r[i] + r[j]) - (d).dot(n);
+        //real_t overlap = (r[i] + r[j]) - (d).dot(n);
+        real_t overlap = d0.norm() - d.norm() + equilibrium_dist;
 
         // real_t r_part_prime = r[i] - 1/2 * overlap;
         real_t r_i_prime = r[i] - 1/2 * overlap;
@@ -204,6 +214,8 @@ private:
     std::vector<std::forward_list<size_t>> particle_to_bond_map;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
     contact_force_functor_var_size<field_value_t, real_t> contact_force;
+
+    std::vector<field_value_t> initial_normal_dist;
 
     // Data structures for the cycle prevention algorithm
     std::vector<std::pair<size_t, size_t>> undirected_graph_edges;

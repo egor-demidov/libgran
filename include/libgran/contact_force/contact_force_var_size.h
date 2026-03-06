@@ -16,9 +16,9 @@ void update_particle_pressures(std::vector<std::array<double, 6>> & p, field_val
     p[i][5] += force[2] * rIJ[1];
 }
 
-template <typename field_value_t, typename real_t>
+template <typename field_value_t, typename real_t, typename matrix_t>
 struct contact_force_functor_var_size {
-    contact_force_functor_var_size(size_t n_part,            // Number of particles in the system
+    contact_force_functor_var_size(size_t n_part,   // Number of particles in the system
                           real_t k,                 // Normal stiffness coefficient
                           real_t gamma_n,           // Normal damping coefficient
                           real_t k_t,               // Stiffness coefficient for sticking/sliding
@@ -35,7 +35,7 @@ struct contact_force_functor_var_size {
                           real_t phi_o,             // Coulomb coefficient for torsion
                           real_t dt,                // Time step for spring update (same as integration time step for 1st order schemes)
                           field_value_t field_zero, // Zero-valued field_value_t
-                          real_t real_zero         // Zero-valued real_t
+                          real_t real_zero          // Zero-valued real_t
                           ) :       
         n_part(n_part),
         k(k),
@@ -60,6 +60,7 @@ struct contact_force_functor_var_size {
         std::fill(contact_springs.begin(), contact_springs.end(), std::make_tuple(field_zero, field_zero, field_zero));
     }
 
+    template<typename BoxType>
     std::pair<field_value_t, field_value_t> operator () (size_t i,
                                                          size_t j,
                                                          std::vector<field_value_t> const & x,
@@ -69,18 +70,11 @@ struct contact_force_functor_var_size {
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
                                                          std::vector<std::array<double, 6>> & p,
-                                                         std::array<double, 3> & box_dimension,
-                                                         field_value_t & box_shrink_rate,
+                                                         BoxType const & box,
                                                          real_t t [[maybe_unused]]) {
-        // Box image convention
+        // minimum image convention
         field_value_t d_raw = x[i] - x[j];
-        field_value_t d;
-        field_value_t image;
-
-        for (int k = 0; k < 3; ++k) {
-            image[k] = std::round(d_raw[k] / box_dimension[k]);
-            d[k] = d_raw[k] - box_dimension[k] * image[k];
-        }
+        field_value_t d = box.minimumImage(d_raw);
 
         field_value_t n = d.normalized();
         real_t overlap = (r[i] + r[j]) - d.dot(n);
@@ -95,15 +89,17 @@ struct contact_force_functor_var_size {
         real_t r_j_prime = r[j] - 1/2 * overlap;
         real_t r_ij_prime = r_i_prime * r_j_prime / (r_i_prime + r_j_prime);
 
-        real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
+        const matrix_t& D = box.get_deformation_rate();
+        // Subtract affine streaming velocity
+        field_value_t uij = (v[i] - v[j]) - D * d_raw;
+
+        real_t v_n = -uij.dot(n); // Normal relative velocity
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_ij = v[i] - v[j] + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
-        for(int i = 0; i < 3; i++){
-            v_ij[i] -= box_shrink_rate[i] * image[i];
-        }
+        // Add rotational contributions
+        field_value_t v_ij = uij + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
         field_value_t v_r = r_ij_prime * (-n.cross(omega[i]) + n.cross(omega[j])); // Rolling velocity

@@ -15,7 +15,7 @@
 
 #include "../contact_force/contact_force_var_size.h"
 
-template <typename field_value_t, typename real_t>
+template <typename field_value_t, typename real_t, typename matrix_t, typename BoxType>
 struct alt_sinter_functor {
     alt_sinter_functor(size_t n_part,            // Number of particles in the system
                           std::vector<field_value_t> x0,         // Initial positions
@@ -32,9 +32,9 @@ struct alt_sinter_functor {
                           real_t real_zero,         // Zero-valued real_t
                           std::vector<real_t> & r,  // vector of particle radii
                           std::vector<real_t> & m,  // vector of particle masses
-                          std::array<double, 3> & box_dimension, // Dimensions of periodic box 
+                          BoxType & box,                // Simulation Periodic Box
                           real_t critical_separation, // Critical separation between particles to make them necked
-                          contact_force_functor_var_size<field_value_t, real_t> contact_force) : // Instance of contact force functor that handles non-bonded contacts
+                          contact_force_functor_var_size<field_value_t, real_t, matrix_t> contact_force) : // Instance of contact force functor that handles non-bonded contacts
         n_part(n_part),
         k(k),
         gamma_n(gamma_n),
@@ -68,11 +68,8 @@ struct alt_sinter_functor {
             for (size_t j = i+1; j < n_part; j ++) {
                 // minimum image convention
                 field_value_t d = x0[i] - x0[j];
+                d = box.minimumImage(d);
 
-                for(int k = 0; k < 3; ++k) {
-                    if (d[k] >  0.5 * box_dimension[k]) d[k] -= box_dimension[k];
-                    if (d[k] < -0.5 * box_dimension[k]) d[k] += box_dimension[k];
-                }
                 if (abs((d).norm() - (r[i] + r[j])) < critical_separation) {
                     // cycle pervention
                     // if (vertex_subsets[i] == vertex_subsets[j]) {
@@ -109,22 +106,16 @@ struct alt_sinter_functor {
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
                                                          std::vector<std::array<double, 6>> & p,
-                                                         std::array<double, 3> & box_dimension,
-                                                         field_value_t & box_shrink_rate,
+                                                         BoxType const & box,
                                                          real_t & equilibrium_dist,
                                                          real_t t [[maybe_unused]]) {
 
         if (!bonded_contacts[i*n_part + j]) [[likely]]
-            return contact_force(i, j, x, v, theta, omega, r, m, p, box_dimension, box_shrink_rate, t);
+            return contact_force(i, j, x, v, theta, omega, r, m, p, box, t);
 
+        // minimum image convention
         field_value_t d_raw = x[i] - x[j];
-        field_value_t d;
-        field_value_t image;
-
-        for (int k = 0; k < 3; ++k) {
-            image[k] = std::round(d_raw[k] / box_dimension[k]);
-            d[k] = d_raw[k] - box_dimension[k] * image[k];
-        }
+        field_value_t d = box.minimumImage(d_raw);
 
         field_value_t d0 = initial_normal_dist[i*n_part + j];
 
@@ -137,15 +128,19 @@ struct alt_sinter_functor {
         real_t r_j_prime = r[j] - 1/2 * overlap;
         real_t r_ij_prime = r_i_prime * r_j_prime / (r_i_prime + r_j_prime);
 
+        const matrix_t& D = box.get_deformation_rate();
+        // Subtract affine streaming velocity
+        field_value_t uij = (v[i] - v[j]) - D * d_raw;
+        field_value_t velocity_jump = D * (d_raw - d);
+
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
+        field_value_t uij_tangential = (v[i] - v[j]) - velocity_jump;
 
         real_t f_n = k * overlap // Elastic contribution
                 + gamma_n * v_n; // Viscous contribution
 
-        field_value_t v_ij = v[i] - v[j] + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
-        for(int i = 0; i < 3; i++){
-            v_ij[i] -= box_shrink_rate[i] * image[i];
-        }
+        // Add rotational contributions
+        field_value_t v_ij = uij_tangential + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
 
         field_value_t v_t = v_ij - v_ij.dot(n) * n; // Tangential relative velocity
         field_value_t v_r = r_ij_prime * (-n.cross(omega[i]) + n.cross(omega[j])); // Rolling velocity
@@ -213,7 +208,7 @@ private:
     const field_value_t field_zero;
     std::vector<std::forward_list<size_t>> particle_to_bond_map;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
-    contact_force_functor_var_size<field_value_t, real_t> contact_force;
+    contact_force_functor_var_size<field_value_t, real_t, matrix_t> contact_force;
 
     std::vector<field_value_t> initial_normal_dist;
 

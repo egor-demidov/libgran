@@ -105,7 +105,7 @@ struct alt_sinter_functor {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<std::array<double, 6>> & p,
+                                                         std::vector<std::array<double, 9>> & p,
                                                          BoxType const & box,
                                                          real_t & equilibrium_dist,
                                                          real_t t [[maybe_unused]]) {

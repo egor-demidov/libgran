@@ -7,13 +7,17 @@
 #define LIBGRAN_CONTACT_FORCE_H
 
 template <typename field_value_t>
-void update_particle_pressures(std::vector<std::array<double, 6>> & p, field_value_t force, field_value_t rIJ, int i){
+void update_particle_pressures(std::vector<std::array<double, 9>> & p, field_value_t force, field_value_t rIJ, int i){
     for(int k = 0; k < 3; k++){
         p[i][k] += force[k] * rIJ[k];
     }
     p[i][3] += force[1] * rIJ[0];
     p[i][4] += force[2] * rIJ[0];
     p[i][5] += force[2] * rIJ[1];
+
+    p[i][6] += force[0] * rIJ[1];
+    p[i][7] += force[0] * rIJ[2];
+    p[i][8] += force[1] * rIJ[2];
 }
 
 template <typename field_value_t, typename real_t, typename matrix_t>
@@ -69,7 +73,7 @@ struct contact_force_functor_var_size {
                                                          std::vector<field_value_t> const & omega,
                                                          std::vector<real_t> const & r,
                                                          std::vector<real_t> const & m,
-                                                         std::vector<std::array<double, 6>> & p,
+                                                         std::vector<std::array<double, 9>> & p,
                                                          BoxType const & box,
                                                          real_t t [[maybe_unused]]) {
         // minimum image convention

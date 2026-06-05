@@ -3,8 +3,8 @@
 // Edited by gurdeep on 12/30/25
 //
 
-#ifndef LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_H
-#define LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_H
+#ifndef LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_VAR_FORCE_H
+#define LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_VAR_FORCE_H
 
 #include <tuple>
 #include <vector>
@@ -14,11 +14,11 @@
 #include <numeric>
 #include <random>
 
-#include "../contact_force/contact_force_var_size.h"
+#include "../contact_force/contact_force_var_size_JKR.h"
 
 template <typename field_value_t, typename real_t, typename matrix_t, typename BoxType, typename bond_t>
-struct alt_sinter_functor {
-    alt_sinter_functor(size_t n_part,            // Number of particles in the system
+struct alt_sinter_functor_var_force {
+    alt_sinter_functor_var_force(size_t n_part,            // Number of particles in the system
                           std::vector<field_value_t> x0,         // Initial positions
                           std::vector<bond_t> bond_types,// possible types of bonds
                           real_t dt,                // Time step for spring update (same as integration time step for 1st order schemes)
@@ -159,7 +159,6 @@ struct alt_sinter_functor {
                                                          std::vector<std::array<double, 9>> & p,
                                                          BoxType const & box,
                                                          real_t t [[maybe_unused]]) {
-
         if (!bonded_contacts[i*n_part + j]) [[likely]]
             return contact_force(i, j, x, v, theta, omega, r, m, p, box, t);
 
@@ -195,8 +194,15 @@ struct alt_sinter_functor {
         real_t v_n = -(v[i] - v[j]).dot(n); // Normal relative velocity
         field_value_t uij_tangential = (v[i] - v[j]) - velocity_jump;
 
-        real_t f_n = current_bond.k_n_bond * overlap // Elastic contribution
-                + current_bond.gamma_n_bond * v_n; // Viscous contribution
+        real_t f_n_elastic = 0.0;
+
+        if (overlap > 0.0) {
+            f_n_elastic = current_bond.k_n_bond * std::pow(overlap, 1.5);
+        } else {
+            f_n_elastic = current_bond.k_n_bond * overlap; 
+        }
+        real_t f_n = f_n_elastic // Elastic contribution
+        + current_bond.gamma_n_bond * v_n; // Viscous contribution
 
         // Add rotational contributions
         field_value_t v_ij = uij_tangential + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
@@ -281,4 +287,4 @@ private:
     std::vector<size_t> vertex_subsets;
 };
 
-#endif //LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_H
+#endif //LIBGRAN_ALT_SINTER_BRIDGE_VAR_SIZE_VAR_FORCE_H

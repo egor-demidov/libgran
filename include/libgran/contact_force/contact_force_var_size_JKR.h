@@ -2,9 +2,19 @@
 // Created by egor on 1/23/24.
 // Editted by gurdeep on 11/29/25.
 //
+#include <vector>
 
 #ifndef LIBGRAN_CONTACT_FORCE_H
 #define LIBGRAN_CONTACT_FORCE_H
+
+extern std::vector<double> total_normal_force;
+extern std::vector<double>signed_normal_force;
+extern double contact_count;
+
+extern bool is_dump_step;
+extern std::ofstream temp_plot_file;
+extern std::vector<double> total_normalized_overlap;
+extern std::vector<double> total_radius_ratio;
 
 template <typename field_value_t>
 void update_particle_pressures(std::vector<std::array<double, 9>> & p, field_value_t force, field_value_t rIJ, int i){
@@ -112,25 +122,25 @@ struct contact_force_functor_var_size {
         real_t Reff = (r[i] * r[j]) / (r[i] + r[j]);
 
         real_t E_grain = 88.7e9; // Pa
-        real_t nu = 0.166;
+        real_t nu = 0.166; // poisson ratio
         real_t E_star = E_grain / (2.0 * (1.0 - nu * nu));
 
-        real_t gamma_rh = calculate_gamma(this->RH);
+        real_t gamma_rh = calculate_gamma(RH);
 
-        real_t delta_to = std::pow( (3.0 * M_PI * M_PI * gamma_rh * gamma_rh * Reff) / (16.0 * E_star * E_star), 1.0/3.0 );
+        // pull off distance
+        real_t delta_to = std::pow( (3.0 * M_PI * M_PI * gamma_rh * gamma_rh * Reff) / (16.0 * E_star * E_star), 1.0/3.0 )*1.3;
 
         if (!contact_active[idx]) {
             if (overlap > 0) {
+                // activate contact
                 contact_active[idx] = true; 
                 a_prev[idx] = std::pow((2.0 * M_PI * gamma_rh * Reff * Reff / E_star), 1.0/3.0);
             } else { 
-                contact_radius = 0;
-                normal_force = 0;
-                normalized_overlap = 0;
                 return std::make_pair(field_zero, field_zero);
             }
         } else {
             if (overlap < -delta_to) {
+                // remove contact
                 contact_active[idx] = false; 
                 reset_springs(i, j);
                 a_prev[idx] = 0.0;
@@ -138,14 +148,29 @@ struct contact_force_functor_var_size {
             }
         }
 
+        // Laplace calculation
+        real_t delta_P_L = 0.0;
+        if (RH > 0.70) {
+            const real_t V_m = 1.8e-5; 
+            const real_t Rg = 8.314;
+            const real_t T = 298.0;
+            delta_P_L = std::abs((Rg * T / V_m) * std::log(RH)); 
+        }
+
         real_t a = a_prev[idx];
         real_t a0 = std::pow((4.5 * M_PI * gamma_rh * Reff * Reff) / E_star, 1.0/3.0);
         if (a < 1e-15) a = a0;
 
+        // Newton-Raphson iteration
         for (int iter = 0; iter < 10; ++iter) {
+            // Standard JKR adhesion radical term
             real_t term = std::sqrt(2.0 * M_PI * gamma_rh * a / E_star); 
-            real_t f = (a * a / Reff) - term - overlap;
-            real_t df = (2.0 * a / Reff) - (0.5 * term / a);
+
+            real_t f = (a * a / Reff) - term - overlap - ((delta_P_L * M_PI * a) / E_star);
+            
+            // Analytical derivative with respect to 'a'
+            real_t d_term = (2.0 * M_PI * gamma_rh / E_star) / (2.0 * term);
+            real_t df = (2.0 * a / Reff) - d_term - ((delta_P_L * M_PI) / E_star);
 
             if (std::abs(f) < 1e-12) break;
             
@@ -157,15 +182,9 @@ struct contact_force_functor_var_size {
         real_t f_n_elastic = (4.0 * E_star * std::pow(a, 3.0) / (3.0 * Reff)) 
                    - std::sqrt(8.0 * M_PI * gamma_rh * E_star * std::pow(a, 3.0));
 
-        // remove damping for no hysterisis
-        // real_t f_n = f_n_elastic;// + gamma_n * v_n;
-        real_t f_n = f_n_elastic + gamma_n * v_n;
-        if (i == 0 && j == 1) {
-            real_t F_po = 1.5 * M_PI * gamma_rh * Reff;
-            this->normal_force = f_n/F_po;
-            this->contact_radius = a/a0;
-            this->normalized_overlap = overlap/delta_to;
-        }
+        real_t f_n = f_n_elastic;// + gamma_n * v_n;
+        total_normal_force[idx] = std::abs(f_n);
+        signed_normal_force[idx] = f_n;
 
         // Add rotational contributions
         field_value_t v_ij = uij + r_i_prime * n.cross(omega[i]) + r_j_prime * n.cross(omega[j]);
@@ -189,11 +208,24 @@ struct contact_force_functor_var_size {
         // updating particle pressures for barostat
         update_particle_pressures(p, F, d, i);
 
-        return std::make_pair((F) / m[i], (-tau_t + tau_r + tau_o) / inertia);
-    }
+        if (contact_active[idx]) {
+            // Normalize directly by delta_to to match the reference axis definition
+            double norm_overlap = (delta_to > 1e-15) ? (overlap / delta_to) : 0.0;
+            
+            double f_po = 1.5 * M_PI * gamma_rh * Reff;
+            double dimensionless_force = f_n / (f_po);
+            double radius_ratio = a / (a0);
 
-    std::array<real_t, 3> get_normal_force(){
-        return {normal_force, contact_radius, normalized_overlap};
+            signed_normal_force[idx]       = dimensionless_force;
+            total_normalized_overlap[idx]  = norm_overlap; // Lands perfectly at -1.0
+            total_radius_ratio[idx]        = radius_ratio;
+        } else {
+            signed_normal_force[idx]        = 0.0;
+            total_normalized_overlap[idx]  = 0.0;
+            total_radius_ratio[idx]        = 0.0;
+        }
+
+        return std::make_pair((F) / m[i], (-tau_t + tau_r + tau_o) / inertia);
     }
 
 private:
@@ -274,7 +306,6 @@ private:
     const field_value_t field_zero;
     std::vector<std::tuple<field_value_t, field_value_t, field_value_t>> contact_springs;
     std::vector<bool> contact_active;
-    real_t normal_force, contact_radius, normalized_overlap;
     std::vector<real_t> a_prev;
 };
 
